@@ -1,0 +1,5 @@
+//Install outlook
+sudo snap install outlook-for-linux --edge
+
+
+

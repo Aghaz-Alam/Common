@@ -1,0 +1,43 @@
+Questions from recent interviews
+Project introduction , introduction about self
+1. Difference between Heap and Stack
+2. Difference between pointer and reference
+3. Say somehting about polymorphism in c++ , what it is and how it works ?
+4. derived and based classes, virtual table, vptr 
+5. lamda expressions 
+6. RAII concept - 
+7. name examples from std:: for RAII
+8. difference between shared and unique ptr
+9. C++ containers from std library 
+10. what is difference between vector and list
+
+Difference between heap and stack
+what types of smart pointers.
+how shared pointer is implemented.
+
+When the memory will be allocated on heap , what type of memery
+have you used debugger, ? how are you using ? example scenario
+what is call stack and what it contains ?
+say more about dynamic allocation
+risk with dynamic memoery allocation 
+what is template and how it works.
+write a function to reverse a vector which is passed in argument - also tell what is better way to pass vector
+
+std::array implementation
+base class and derived class concepts.
+
+(only for lead role) Leadership questions
+---> About tools used 
+---> Team size
+---> Projects performed
+---> planning - sprint, kanban etc.
+---> what happens if tasks aren't done on time, how did you manage that.
+---> what techniques used for planning of tasks
+---> how did u manage pressure on team.
+---> how long u were leader
+---> describe conflict situation with client
+---> How do you manage if someone not performing found
+
+
+
+

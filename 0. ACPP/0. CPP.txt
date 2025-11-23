@@ -1,0 +1,64 @@
+CPP Topics to be practised and prepared
+----------------------------------------
+1. Inheritance
+    - Public, private inheritance
+    - Is-a relation, has-a relation, composition, aggregation
+2. Polymorphism
+    - Creating interfaces and using them
+    - defining concrete classes and accessing them
+    - casting between objects
+    - virtual function and behaviour of ctor and dtor
+3. Templates
+    - Normal template usage
+    - template specialization
+    - SFINAE
+    - metaprogramming
+4. Friend functions
+    - class , function
+    - mutual friendship?
+5. Optimization
+    - constexpr, templates ( compile time resolution)
+    - memory optimization
+6. memeory management
+    - smart pointers and their implementations
+    - how they internaly work ?
+7. Variables and usage
+    - using pass by value, pass by reference, const
+    - using const, decltype other directives at functions
+8. Structures & operations
+9. STL
+    - vector, map, tuple and using them
+10. std::optional , std::enable if
+11. type traits
+12. Exception handling - custom exceptions, checked and unchecked exceptions ( autosar cpp guidelines)
+13. multithreading and syncronization
+    - lock_guard, unique_lock
+    - condition variables
+    - calling class members from thread , or using as thread function
+14. lamda functions
+15. Pointers
+16. String and std::string operations / implementaion
+17. pragma
+18. what are deleters , how deleters can be used in templates.
+19. Macros usage.
+
+
+System understanding & cpp internals
+----------------------------------------
+1. What is heap ?
+2. What is stack trace ? what element / pointer used to represent stack.  ----------vvi
+3. what concepts in c++ can be used for better memeory management
+4. explain std move. how std move is implemented underneath.
+5. design patterns and anti design patterns
+6. design principles, SOLID
+7. advanatages of using smart pointers
+
+
+Generic
+------------
+1. Gtest, coverity
+2. Usage of git , gerrit
+3. static, dyn libs, executables.
+4. Debugging - gdb, using tools like addr2line, nm, readelf etc
+5. Given a program identify what UT can be written, what all does it cover ( boundary conditions etc)
+
