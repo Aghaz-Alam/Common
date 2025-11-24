@@ -538,3 +538,74 @@ int main() {
 20
 10
 */
+
+
+
+
+✔️ How C++14 Deduces Lambda Return Types Automatically
+✅ C++11 Limitation
+In C++11, a lambda must specify a return type if the body contains multiple return statements with different types.
+
+Example (C++11):
+auto f = [](int x) -> double {
+    if (x > 0) return x;   // int
+    return 0.5;            // double
+};
+
+C++11 cannot deduce a common type, so you must write -> double.
+
+
+✅ C++14 Improvement — Automatic Return Type Deduction
+Starting from C++14:
+The compiler deduces the return type the same way it deduces auto for normal functions.
+It uses the rules of auto deduction from each return statement.
+If deduction from all returns agrees on a single type, the lambda return type is deduced automatically.
+
+Example (C++14+):
+auto f = [](int x) {
+    if (x > 0) return x;   // int
+    return 0.5;            // double
+};
+
+❗But Wait — This Is Actually an Error!
+Because:
+x → int
+0.5 → double
+
+C++14 requires all deduced return types to match exactly
+So this code is not valid unless both returns deduce to the same type.
+
+✔️ Valid C++14 Example (Both return int)
+auto g = [](int x) {
+    if (x > 0) return x;  // int
+    return -1;            // int
+};
+
+Here both branches return int, so type is deduced as int.
+
+✔️ How deduction works internally
+The compiler effectively transforms:
+auto g = [](int x) {
+    return expression;
+};
+
+Into something like:
+auto g = [](int x) -> auto {   // C++14 allows return-type deduction
+    return expression;
+};
+
+This means:
+The lambda's operator() is treated like a function with auto return type.
+The return type is deduced from all the return statements.
+All deduced types must match exactly.
+
+
+
+
+⭐ Summary Table
+| Feature                                                  | C++11  | C++14+ |
+| -------------------------------------------------------- | ------ | ------ |
+| Automatic return type deduction                          | ❌ No   | ✔️ Yes |
+| Must specify `-> return_type` for complex returns        | ✔️ Yes | ❌ No   |
+| Can deduce only if all return expressions have same type | —      | ✔️ Yes |
+
