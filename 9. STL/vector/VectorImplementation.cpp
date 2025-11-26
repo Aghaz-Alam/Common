@@ -1,376 +1,454 @@
-
-//Vector implementation
+//fixed sized vector
 #include <iostream>
 #include <stdexcept>
 using namespace std;
 
+template<typename T, size_t CAP>
 class MyVector {
-  private:
-    int* arr;
-    int n;
-    int cap;
+private:
+    T* arr;
+    size_t n;
 
-  public:
-    MyVector() : arr(nullptr), n(0), cap(0) {}
-    
-    ~MyVector() {
-        delete[] arr;
-    }
+public:
+    // Constructor
+    MyVector();
 
-    void push_back(const int& val);
+    // Destructor
+    ~MyVector();
+
+    // Copy Constructor
+    MyVector(const MyVector& other);
+
+    // Copy Assignment
+    MyVector& operator=(const MyVector& other);
+
+    // Move Constructor
+    MyVector(MyVector&& other) noexcept;
+
+    // Move Assignment
+    MyVector& operator=(MyVector&& other) noexcept;
+
+    void push_back(const T& value);
     void pop_back();
-    int& operator[](int index);
-    int size() const;
-    int capacity() const;
+
+    T& operator[](size_t index);
+    T& at(size_t index);
+
+    size_t size() const;
+    size_t capacity() const;
+
     void clear();
     void Display() const;
-
-  private:
-    void resize() {
-        cap = (cap == 0) ? 1 : cap * 2;
-        int* newArr = new int[cap];
-
-        for (int i = 0; i < n; ++i) {
-            newArr[i] = arr[i];
-        }
-
-        delete[] arr;
-        arr = newArr;
-    }
 };
 
-void MyVector::push_back(const int& val) {
-    if (n == cap) resize();
-    arr[n++] = val;
+/* =======================
+      DEFINITIONS
+   ======================= */
+
+template<typename T, size_t CAP>
+MyVector<T, CAP>::MyVector() : arr(new T[CAP]), n(0) {}
+
+template<typename T, size_t CAP>
+MyVector<T, CAP>::~MyVector() {
+    delete[] arr;
 }
 
-void MyVector::pop_back() {
-    if (n == 0) {
-        throw runtime_error("pop_back called on an empty vector");
+template<typename T, size_t CAP>
+MyVector<T, CAP>::MyVector(const MyVector& other)
+    : arr(new T[CAP]), n(other.n)
+{
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+}
+
+template<typename T, size_t CAP>
+MyVector<T, CAP>& MyVector<T, CAP>::operator=(const MyVector& other)
+{
+    if (this == &other)
+        return *this;
+
+    n = other.n;
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+
+    return *this;
+}
+
+template<typename T, size_t CAP>
+MyVector<T, CAP>::MyVector(MyVector&& other) noexcept
+    : arr(other.arr), n(other.n)
+{
+    other.arr = nullptr;
+    other.n = 0;
+}
+
+template<typename T, size_t CAP>
+MyVector<T, CAP>& MyVector<T, CAP>::operator=(MyVector&& other) noexcept
+{
+    if (this != &other) {
+        delete[] arr;
+
+        arr = other.arr;
+        n = other.n;
+
+        other.arr = nullptr;
+        other.n = 0;
     }
-    --n;
+    return *this;
 }
 
-int& MyVector::operator[](int index) {
+template<typename T, size_t CAP>
+void MyVector<T, CAP>::push_back(const T& value)
+{
+    if (n == CAP)
+        throw runtime_error("push_back overflow: Vector is full");
+
+    arr[n++] = value;
+}
+
+template<typename T, size_t CAP>
+void MyVector<T, CAP>::pop_back()
+{
+    if (n == 0)
+        throw runtime_error("pop_back underflow: Vector is empty");
+    n--;
+}
+
+template<typename T, size_t CAP>
+T& MyVector<T, CAP>::operator[](size_t index)
+{
+    if (index >= n)
+        throw out_of_range("operator[] index out of range");
     return arr[index];
 }
 
-int MyVector::size() const { return n; }
-int MyVector::capacity() const { return cap; }
+template<typename T, size_t CAP>
+T& MyVector<T, CAP>::at(size_t index)
+{
+    if (index >= n)
+        throw out_of_range("at() index out of range");
+    return arr[index];
+}
 
-void MyVector::clear() {
+template<typename T, size_t CAP>
+size_t MyVector<T, CAP>::size() const {
+    return n;
+}
+
+template<typename T, size_t CAP>
+size_t MyVector<T, CAP>::capacity() const {
+    return CAP;
+}
+
+template<typename T, size_t CAP>
+void MyVector<T, CAP>::clear() {
     n = 0;
 }
 
-void MyVector::Display() const {
-    for (int i = 0; i < n; ++i) {
-        cout << arr[i] << ' ';
-    }
-    cout << endl;
+template<typename T, size_t CAP>
+void MyVector<T, CAP>::Display() const
+{
+    for (size_t i = 0; i < n; ++i)
+        cout << arr[i] << " ";
+    cout << "\n";
 }
 
-int main() {
-    MyVector v;
+/* =======================
+        MAIN TEST
+   ======================= */
 
+int main() {
     try {
+        MyVector<int,5> v;
+
         v.push_back(10);
         v.push_back(20);
         v.push_back(30);
+        cout << "After pushes: "; v.Display();
+        cout << "Size: " << v.size() << " Capacity: " << v.capacity() << "\n\n";
+
+        cout << "POP...\n";
+        v.pop_back();
+        cout << "After pop: "; v.Display();
+        cout << "Size: " << v.size() << " Capacity: " << v.capacity() << "\n\n";
+
+        cout << "---COPY CTOR TEST---\n";
+        MyVector<int,5> v2 = v;
+        cout << "v2: "; v2.Display();
+
+        cout << "---MOVE CTOR TEST---\n";
+        MyVector<int,5> v3 = std::move(v2);
+        cout << "v3: "; v3.Display();
+
+        cout << "---COPY ASSIGNMENT TEST---\n";
+        MyVector<int,5> v4;
+        v4 = v;
+        cout << "v4 after copy = v: "; 
+        v4.Display();
+
+        cout << "---MOVE ASSIGNMENT TEST---\n";
+        MyVector<int,5> v5;
+        v5 = std::move(v4);
+        cout << "v5 after move = std::move(v4): "; 
+        v5.Display();
+
+        cout << "\nFilling to capacity...\n";
         v.push_back(40);
         v.push_back(50);
+        v.push_back(60);
+        cout << "After filling: "; v.Display();
+        cout << "Size: " << v.size() << " Capacity: " << v.capacity() << "\n\n";
 
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
+        cout << "Attempting one more push (should throw)...\n";
+        v.push_back(70);
 
-        cout << "Elements using operator[]: ";
-        for (int i = 0; i < v.size(); i++) {
-            cout << v[i] << " ";
-        }
-        cout << endl;
-
-        cout << "Elements using Display(): ";
-        v.Display();
-
-        v.pop_back();
-        cout << "Size after pop_back: " << v.size() << endl;
-        cout << "Capacity after pop_back: " << v.capacity() << endl;
-
-        cout << "Elements after pop_back(): ";
-        for (int i = 0; i < v.size(); i++) {
-            cout << v[i] << " ";
-        }
-        cout << endl;
-
-        /// Attempt to pop too many times (this will cause an exception)
-        v.clear();
-        cout << "After clear: Size: " << v.size() << endl;
-        cout << "After clear: Capacity: " << v.capacity() << endl;
-
-        cout << "Trying to pop from empty vector..." << endl;
-        v.pop_back(); // THIS will throw
-
-    }
-    catch (const runtime_error& e) {
-        cout << "Caught exception: " << e.what() << endl;
+    } catch (const exception& e) {
+        cerr << "Exception caught: " << e.what() << "\n";
     }
 
     return 0;
 }
 /*
-Size: 5
-Capacity: 8
-Elements using operator[]: 10 20 30 40 50 
-Elements using Display(): 10 20 30 40 50 
-Size after pop_back: 4
-Capacity after pop_back: 8
-Elements after pop_back(): 10 20 30 40 
-After clear: Size: 0
-After clear: Capacity: 8
-Trying to pop from empty vector...
-Caught exception: pop_back called on an empty vector
+After pushes: 10 20 30 
+Size: 3 Capacity: 5
+
+POP...
+After pop: 10 20 
+Size: 2 Capacity: 5
+
+---COPY CTOR TEST---
+v2: 10 20 
+---MOVE CTOR TEST---
+v3: 10 20 
+---COPY ASSIGNMENT TEST---
+v4 after copy = v: 10 20 
+---MOVE ASSIGNMENT TEST---
+v5 after move = std::move(v4): 10 20 
+
+Filling to capacity...
+After filling: 10 20 40 50 60 
+Size: 5 Capacity: 5
+
+Attempting one more push (should throw)...
+Exception caught: push_back overflow: Vector is full
 */
 
 
 
 
-
-// Vector Implementation 
-// Vector Implementation 
+//vector implementation dynamically grow and shrink
 #include <iostream>
 #include <stdexcept>
 using namespace std;
 
 class MyVector {
+  private:
     int* arr;
-    int n;   // Number of elements in the vector
-    int cap; // Capacity of the vector
-    
+    size_t n;
+    size_t cap;
+
+    void resize(size_t newCap);
+
   public:
-    // Default Constructor
-    MyVector() : arr(nullptr), n(0), cap(0) {}
+    MyVector();
 
-    // Rule 1: Destructor
-    ~MyVector() {
+    // Rule of Five
+    ~MyVector();
+    MyVector(const MyVector& other);
+    MyVector& operator=(const MyVector& other);
+    MyVector(MyVector&& other) noexcept;
+    MyVector& operator=(MyVector&& other) noexcept;
+
+    void push_back(const int& value);
+    void pop_back();
+
+    int& operator[](size_t index);
+    int& at(size_t index);
+
+    size_t size() const;
+    size_t capacity() const;
+
+    void clear();
+    void Display() const;
+};
+
+// Constructor
+MyVector::MyVector() : arr(nullptr), n(0), cap(0) {}
+
+MyVector::~MyVector() {
+    delete[] arr;
+}
+
+// Copy Constructor
+MyVector::MyVector(const MyVector& other) : n(other.n), cap(other.cap) {
+    arr = new int[cap];
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+}
+
+// Copy Assignment
+MyVector& MyVector::operator=(const MyVector& other) {
+    if (this == &other) return *this;
+
+    delete[] arr;
+
+    n = other.n;
+    cap = other.cap;
+
+    arr = new int[cap];
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+
+    return *this;
+}
+
+// Move Constructor
+MyVector::MyVector(MyVector&& other) noexcept
+    : arr(other.arr), n(other.n), cap(other.cap) {
+
+    other.arr = nullptr;
+    other.n = 0;
+    other.cap = 0;
+}
+
+// Move Assignment
+MyVector& MyVector::operator=(MyVector&& other) noexcept {
+    if (this != &other) {
         delete[] arr;
-    }
 
-    // Rule 2: Copy Constructor
-    MyVector(const MyVector& other) {
-        cap = other.cap;
+        arr = other.arr;
         n = other.n;
-        arr = new int[cap];
-        for (int i = 0; i < n; i++)
-            arr[i] = other.arr[i];
-    }
-
-    // Rule 3: Copy Assignment
-    MyVector& operator=(const MyVector& other) {
-        if (this == &other)
-            return *this;
-
-        delete[] arr;
-
         cap = other.cap;
-        n = other.n;
-        arr = new int[cap];
-        for (int i = 0; i < n; i++)
-            arr[i] = other.arr[i];
 
-        return *this;
-    }
-
-    // Rule 4: Move Constructor
-    MyVector(MyVector&& other) noexcept
-        : arr(other.arr), n(other.n), cap(other.cap)
-    {
         other.arr = nullptr;
         other.n = 0;
         other.cap = 0;
     }
+    return *this;
+}
 
-    // Rule 5: Move Assignment
-    MyVector& operator=(MyVector&& other) noexcept {
-        if (this != &other) {
-            delete[] arr;
+// resize()
+void MyVector::resize(size_t newCap) {
+    if (newCap < n) newCap = n;
+    if (newCap == 0) newCap = 1;
 
-            arr = other.arr;
-            n = other.n;
-            cap = other.cap;
+    int* newArr = new int[newCap];
 
-            other.arr = nullptr;
-            other.n = 0;
-            other.cap = 0;
-        }
-        return *this;
-    }
-
-
-    // Functions
-    void push_back(const int& val);
-    void pop_back();
-    int& operator[](int index);
-    int size() const;
-    int capacity() const;
-    void clear();
-    void Display() const;
-
-  private:
-    void resize();
-};
-
-// Resize the array
-void MyVector::resize() {
-    cap = (cap == 0) ? 1 : cap * 2;
-    int* newArr = new int[cap];
-
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; ++i)
         newArr[i] = arr[i];
 
     delete[] arr;
     arr = newArr;
+    cap = newCap;
 }
 
-// Add element at end
-void MyVector::push_back(const int& val) {
-    if (n == cap)
-        resize();
-    arr[n++] = val;
+// push_back
+void MyVector::push_back(const int& value) {
+    if (n == cap) {
+        size_t newCap = (cap == 0 ? 1 : cap * 2);
+        resize(newCap);
+    }
+    arr[n++] = value;
 }
 
-// Remove last element
+// pop_back
 void MyVector::pop_back() {
     if (n == 0)
-        throw runtime_error("pop_back called on an empty vector");
+        throw runtime_error("pop_back on empty vector");
 
-    --n;
+    n--;
+
+    if (n > 0 && n <= cap / 4 && cap > 1)
+        resize(cap / 2);
 }
 
-// operator[] with bounds checking
-int& MyVector::operator[](int index) {
-    if (index < 0 || index >= n)
-        throw out_of_range("Index out of range");
+// operator[]
+int& MyVector::operator[](size_t index) {
+    if (index >= n)
+        throw out_of_range("operator[] index out of range");
     return arr[index];
 }
 
-int MyVector::size() const { return n; }
-
-int MyVector::capacity() const { return cap; }
-
-void MyVector::clear() { n = 0; }
-
-void MyVector::Display() const {
-    for (int i = 0; i < n; i++)
-        cout << arr[i] << " ";
-    cout << endl;
+// at() with exception
+int& MyVector::at(size_t index) {
+    if (index >= n)
+        throw out_of_range("at() index out of range");
+    return arr[index];
 }
 
+size_t MyVector::size() const { return n; }
+size_t MyVector::capacity() const { return cap; }
 
-// ======================= MAIN =========================
+void MyVector::clear() {
+    n = 0;
+    resize(1);
+}
+
+void MyVector::Display() const {
+    for (size_t i = 0; i < n; ++i)
+        cout << arr[i] << " ";
+    cout << "\n";
+}
 
 int main() {
-    cout << "----- Original Vector -----\n";
-    MyVector v;
-
     try {
-        // Adding elements
+        cout << "---Original Vector---\n";
+        MyVector v;
         v.push_back(10);
         v.push_back(20);
         v.push_back(30);
-        v.push_back(40);
-        v.push_back(50);
-
-        cout << "v: ";
         v.Display();
-        cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << "\n\n";
 
-        // ---------------- COPY CONSTRUCTOR ----------------
-        cout << "----- Testing COPY CONSTRUCTOR -----\n";
+        cout << "\n---Copy Constructor Test---\n";
         MyVector v2 = v;
-
-        cout << "v2: ";
         v2.Display();
 
-        v[0] = 999;  // modify original
-        cout << "v after modifying v[0] = 999: ";
-        v.Display();
-        cout << "v2 should remain unchanged: ";
-        v2.Display();
-        cout << "\n";
-
-        // ---------------- COPY ASSIGNMENT ----------------
-        cout << "----- Testing COPY ASSIGNMENT -----\n";
+        cout << "\n---Copy Assignment Test---\n";
         MyVector v3;
-        v3 = v2;
-
-        cout << "v3: ";
+        v3 = v;
         v3.Display();
 
-        v2[1] = 888;
-        cout << "v2 after modifying v2[1] = 888: ";
-        v2.Display();
-        cout << "v3 should remain unchanged: ";
-        v3.Display();
-        cout << "\n";
-
-        // ---------------- MOVE CONSTRUCTOR ----------------
-        cout << "----- Testing MOVE CONSTRUCTOR -----\n";
-        MyVector v4 = std::move(v3);
-
-        cout << "v4 (moved from v3): ";
+        cout << "\n---Move Constructor Test---\n";
+        MyVector v4 = std::move(v2);
         v4.Display();
-        cout << "v3 after move: size=" << v3.size() << ", capacity=" << v3.capacity() << "\n\n";
+        cout << "v2 size after move = " << v2.size() << "\n";
 
-        // ---------------- MOVE ASSIGNMENT ----------------
-        cout << "----- Testing MOVE ASSIGNMENT -----\n";
+        cout << "\n---Move Assignment Test---\n";
         MyVector v5;
-        v5 = std::move(v4);
-
-        cout << "v5 (moved from v4): ";
+        v5 = std::move(v3);
         v5.Display();
-        cout << "v4 after move: size=" << v4.size() << ", capacity=" << v4.capacity() << "\n\n";
+        cout << "v3 size after move = " << v3.size() << "\n";
 
-        // ---------------- Trigger out_of_range exception ----------------
-        cout << "----- Testing Exception: operator[] out_of_range -----\n";
-        cout << v[100] << endl;   // will throw
+        cout << "\n---Exception Test: calling at(10)--- \n";
+        cout << v.at(10);  // Should throw
 
-    }
-    catch (const out_of_range& e) {
-        cout << "Caught out_of_range: " << e.what() << endl;
-    }
-    catch (const runtime_error& e) {
-        cout << "Caught runtime_error: " << e.what() << endl;
     }
     catch (const exception& e) {
-        cout << "Caught exception: " << e.what() << endl;
+        cerr << "Exception caught: " << e.what() << "\n";
     }
 
     return 0;
 }
 /*
------ Original Vector -----
-v: 10 20 30 40 50 
-Size: 5, Capacity: 8
+---Original Vector---
+10 20 30 
 
------ Testing COPY CONSTRUCTOR -----
-v2: 10 20 30 40 50 
-v after modifying v[0] = 999: 999 20 30 40 50 
-v2 should remain unchanged: 10 20 30 40 50 
+---Copy Constructor Test---
+10 20 30 
 
------ Testing COPY ASSIGNMENT -----
-v3: 10 20 30 40 50 
-v2 after modifying v2[1] = 888: 10 888 30 40 50 
-v3 should remain unchanged: 10 20 30 40 50 
+---Copy Assignment Test---
+10 20 30 
 
------ Testing MOVE CONSTRUCTOR -----
-v4 (moved from v3): 10 20 30 40 50 
-v3 after move: size=0, capacity=0
+---Move Constructor Test---
+10 20 30 
+v2 size after move = 0
 
------ Testing MOVE ASSIGNMENT -----
-v5 (moved from v4): 10 20 30 40 50 
-v4 after move: size=0, capacity=0
+---Move Assignment Test---
+10 20 30 
+v3 size after move = 0
 
------ Testing Exception: operator[] out_of_range -----
-Caught out_of_range: Index out of range
+---Exception Test: calling at(10)--- 
+Exception caught: at() index out of range
 */
 
 
@@ -380,684 +458,651 @@ Caught out_of_range: Index out of range
 
 
 
-
-
-
-
-//Correct Behavior: cap = (cap == 0) ? 1 : cap * 2
+//Vector implementation without template shrink and grow dynamically
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 using namespace std;
 
 class MyVector {
+  private:
     int* arr;
-    int n;   // Number of elements in the vector
-    int cap; // Capacity of the vector
-    
+    size_t n;
+    size_t cap;
+
+    void resize(size_t newCap);
+
   public:
-    // Constructor
-    MyVector() : arr(nullptr), n(0), cap(0) {}
+    MyVector();
+    ~MyVector();
+    MyVector(const MyVector& other);
+    MyVector& operator=(const MyVector& other);
+    MyVector(MyVector&& other) noexcept;
+    MyVector& operator=(MyVector&& other) noexcept;
+
+    void push_back(const int& value);
+    void push_back(int&& value);
+
+    template<typename... Args>
+    void emplace_back(Args&&... args);
 
-    // Method to add an element at the end of the vector
-    void push_back(const int& val) {
-        // If the current size is equal to capacity, we need to resize the array
-        if (n == cap) {
-            // If capacity is 0, initialize to 1, otherwise double the current capacity
-            cap = (cap == 0) ? 1 : cap * 2;
-            int* newArr = new int[cap];  // Create a new array with the new capacity
-
-            // Copy existing elements into the new array
-            for (int i = 0; i < n; ++i) {
-                newArr[i] = arr[i];
-            }
-
-            // Delete the old array
-            delete[] arr;
-            arr = newArr;  // Point to the newly allocated array
-        }
-        arr[n++] = val;  // Insert the value at the end and increment the size
-    }
-
-    // Method to remove the last element from the vector (no return value)
-    void pop_back() {
-        if (n == 0) {
-            throw runtime_error("pop_back called on an empty vector");
-        }
-        --n;  // Decrement the size (effectively removing the last element)
-    }
-
-    // Overload subscript operator for element access
-    int& operator[](int i) {
-        if (i >= n) {
-            throw out_of_range("Index out of range");
-        }
-        return arr[i];
-    }
-
-    // Method to get the number of elements in the vector
-    int size() const {
-        return n;
-    }
-
-    // Method to get the current capacity of the vector
-    int capacity() const {
-        return cap;
-    }
-
-    // Method to clear the vector (reset the size to 0)
-    void clear() {
-        n = 0;
-    }
-
-    // Destructor to free dynamically allocated memory
-    ~MyVector() {
-        delete[] arr;
-    }
-
-    // Display elements of the vector
-    void Display() const {
-        for (int i = 0; i < n; ++i) {
-            cout << arr[i] << ' ';
-        }
-        cout << endl;
-    }
-};
-
-int main() {
-    MyVector v;
-
-    // Adding elements to the vector
-    v.push_back(10);
-    v.push_back(20);
-    v.push_back(30);
-    v.push_back(40);
-    v.push_back(50);
-
-    // Display size and capacity
-    cout << "Size: " << v.size() << endl;
-    cout << "Capacity: " << v.capacity() << endl;
-
-    // Display elements using operator[]
-    cout << "Elements using operator[]: ";
-    for (int i = 0; i < v.size(); i++) {
-        cout << v[i] << " ";
-    }
-    cout << endl;
-
-    // Display elements using Display()
-    cout << "Elements using Display(): ";
-    v.Display();
-
-    // Pop last element and display results
-    v.pop_back();
-    cout << "Size after pop_back: " << v.size() << endl;
-    cout << "Capacity after pop_back: " << v.capacity() << endl;
-
-    // Display elements after pop_back()
-    cout << "Elements after pop_back(): ";
-    for (int i = 0; i < v.size(); i++) {
-        cout << v[i] << " ";
-    }
-    cout << endl;
-
-    // Clear the vector
-    v.clear();
-    cout << "After clear: Size: " << v.size() << endl;
-    cout << "After clear: Capacity: " << v.capacity() << endl;
-
-    
-    return 0;
-}
-/*
-Size: 5
-Capacity: 8
-Elements using operator[]: 10 20 30 40 50 
-Elements using Display(): 10 20 30 40 50 
-Size after pop_back: 4
-Capacity after pop_back: 8
-Elements after pop_back(): 10 20 30 40 
-After clear: Size: 0
-After clear: Capacity: 8
-*/
-
-
-
-
-
-
-
-//Internal implementation of vector with Template 
-#include <iostream>
-#include <stdexcept>
-using namespace std;
-
-template<typename T>
-class MyVector {
-    T* arr;
-    size_t n;   // Number of elements in the vector
-    size_t cap; // Capacity of the vector
-    
-public:
-    // Constructor
-    MyVector() : arr(nullptr), n(0), cap(0) {}
-
-    // Method to add an element at the end of the vector
-    void push_back(const T& val) {
-        // If the current size is equal to capacity, we need to resize the array
-        if (n == cap) {
-            // If capacity is 0, initialize to 1, otherwise double the current capacity
-            cap = (cap == 0) ? 1 : cap * 2;
-            T* newArr = new T[cap];  // Create a new array with the new capacity
-
-            // Copy existing elements into the new array
-            for (size_t i = 0; i < n; ++i) {
-                newArr[i] = arr[i];
-            }
-
-            // Delete the old array
-            delete[] arr;
-            arr = newArr;  // Point to the newly allocated array
-        }
-        arr[n++] = val;  // Insert the value at the end and increment the size
-    }
-
-    // Method to remove the last element from the vector (no return value)
-    void pop_back() {
-        if (n == 0) {
-            throw runtime_error("pop_back called on an empty vector");
-        }
-        --n;  // Decrement the size (effectively removing the last element)
-    }
-
-    // Overload subscript operator for element access
-    T& operator[](size_t i) {
-        if (i >= n) {
-            throw out_of_range("Index out of range");
-        }
-        return arr[i];
-    }
-
-    // Method to get the number of elements in the vector
-    size_t size() const {
-        return n;
-    }
-
-    // Method to get the current capacity of the vector
-    size_t capacity() const {
-        return cap;
-    }
-
-    // Method to clear the vector (reset the size to 0)
-    void clear() {
-        n = 0;
-    }
-
-    // Destructor to free dynamically allocated memory
-    ~MyVector() {
-        delete[] arr;
-    }
-
-    // Display elements of the vector
-    void Display() const {
-        for (size_t i = 0; i < n; ++i) {
-            cout << arr[i] << ' ';
-        }
-        cout << endl;
-    }
-};
-
-int main() {
-    MyVector<int> intV;
-
-    // Adding elements to the vector
-    intV.push_back(10);
-    intV.push_back(20);
-    intV.push_back(30);
-    intV.push_back(40);
-    intV.push_back(50);
-
-    // Display size and capacity
-    cout << "Size: " << intV.size() << endl;
-    cout << "Capacity: " << intV.capacity() << endl;
-
-    // Display elements using operator[]
-    cout << "Elements using operator[]: ";
-    for (size_t i = 0; i < intV.size(); i++) {
-        cout << intV[i] << " ";
-    }
-    cout << endl;
-
-    // Display elements using Display()
-    cout << "Elements using Display(): ";
-    intV.Display();
-
-    // Pop last element and display results
-    intV.pop_back();
-    cout << "Size after pop_back: " << intV.size() << endl;
-    cout << "Capacity after pop_back: " << intV.capacity() << endl;
-
-    // Display elements after pop_back()
-    cout << "Elements after pop_back(): ";
-    for (size_t i = 0; i < intV.size(); i++) {
-        cout << intV[i] << " ";
-    }
-    cout << endl;
-
-    // Clear the vector
-    intV.clear();
-    cout << "After clear: Size: " << intV.size() << endl;
-    cout << "After clear: Capacity: " << intV.capacity() << endl;
-
-    // String vector example
-    MyVector<string> strV;
-    strV.push_back("Apple");
-    strV.push_back("Mango");
-    strV.push_back("Guava");
-    strV.push_back("Pomegranate");
-    strV.push_back("Lychee");
-
-    // Display size and capacity
-    cout << "Size: " << strV.size() << endl;
-    cout << "Capacity: " << strV.capacity() << endl;
-
-    // Display elements using operator[]
-    cout << "Elements using operator[]: ";
-    for (size_t i = 0; i < strV.size(); i++) {
-        cout << strV[i] << " ";
-    }
-    cout << endl;
-
-    // Display elements using Display()
-    cout << "Elements using Display(): ";
-    strV.Display();
-
-    // Pop last element and display results
-    strV.pop_back();
-    cout << "Size after pop_back: " << strV.size() << endl;
-    cout << "Capacity after pop_back: " << strV.capacity() << endl;
-
-    // Display elements after pop_back()
-    cout << "Elements after pop_back(): ";
-    for (size_t i = 0; i < strV.size(); i++) {
-        cout << strV[i] << " ";
-    }
-    cout << endl;
-
-    // Clear the vector
-    strV.clear();
-    cout << "After clear: Size: " << strV.size() << endl;
-    cout << "After clear: Capacity: " << strV.capacity() << endl;
-
-    return 0;
-}
-/*
-Size: 5
-Capacity: 8
-Elements using operator[]: 10 20 30 40 50 
-Elements using Display(): 10 20 30 40 50 
-Size after pop_back: 4
-Capacity after pop_back: 8
-Elements after pop_back(): 10 20 30 40 
-After clear: Size: 0
-After clear: Capacity: 8
-Size: 5
-Capacity: 8
-Elements using operator[]: Apple Mango Guava Pomegranate Lychee 
-Elements using Display(): Apple Mango Guava Pomegranate Lychee 
-Size after pop_back: 4
-Capacity after pop_back: 8
-Elements after pop_back(): Apple Mango Guava Pomegranate 
-After clear: Size: 0
-After clear: Capacity: 8
-*/
-
-
-
-
-
-//with template
-#include <iostream>
-#include <stdexcept>
-using namespace std;
-template<typename T>
-class MyVector {
-    T* arr;   // Pointer to the dynamic array
-    size_t n;   // Number of elements in the vector
-    size_t cap; // Capacity of the vector
-    
-  public:
-    // Constructor
-    MyVector() : arr(nullptr), n(0), cap(0) {}
-
-    // Method to add an element at the end of the vector
-    void push_back(const T& val) {
-        // If the current size is equal to capacity, we need to resize the array
-        if (n == cap) {
-            // If capacity is 0, initialize to 1, otherwise double the current capacity
-            cap = (cap == 0) ? 1 : cap * 2;
-            T* newArr = new T[cap];  // Create a new array with the new capacity
-
-            // Copy existing elements into the new array
-            for (size_t i = 0; i < n; ++i) {  // Use size_t for safe indexing
-                newArr[i] = arr[i];
-            }
-
-            // Delete the old array
-            delete[] arr;
-            arr = newArr;  // Point to the newly allocated array
-        }
-        arr[n++] = val;  // Insert the value at the end and increment the size
-    }
-
-    // Method to get the size of the vector
-    size_t size() const {
-        return n;
-    }
-
-    // Method to get the capacity of the vector
-    size_t capacity() const {
-        return cap;
-    }
-
-    // Method to display all elements in the vector
-    void Display() const {
-        for (size_t i = 0; i < n; ++i) {
-            cout << arr[i] << " ";
-        }
-        cout << endl;
-    }
-
-    // Destructor to free allocated memory
-    ~MyVector() {
-        delete[] arr;
-    }
-};
-
-int main() {
-    MyVector <int> vecInt;
-
-    vecInt.push_back(10);
-    vecInt.push_back(20);
-    vecInt.push_back(30);
-    vecInt.push_back(40);
-    vecInt.push_back(50);
-
-    cout << "Vector elements: ";
-    vecInt.Display();
-
-    cout << "Size: " << vecInt.size() << endl;
-    cout << "Capacity: " << vecInt.capacity() << endl;
-    
-    MyVector <string> vecStr;
-
-    vecStr.push_back("Apple");
-    vecStr.push_back("Mango");
-    vecStr.push_back("Orange");
-    vecStr.push_back("PineApple");
-    vecStr.push_back("Litchi");
-
-    cout << "Vector elements: ";
-    vecStr.Display();
-
-    cout << "Size: " << vecStr.size() << endl;
-    cout << "Capacity: " << vecStr.capacity() << endl;
-    return 0;
-}
-/*
-Vector elements: 10 20 30 40 50 
-Size: 5
-Capacity: 8
-Vector elements: Apple Mango Orange PineApple Litchi 
-Size: 5
-Capacity: 8
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Code Example with cap = cap * 2:
-#include <iostream>
-using namespace std;
-
-class MyVector {
-    int* arr;
-    int n;    // current number of elements
-    int cap;  // capacity of the vector
-
-public:
-    MyVector() : arr(nullptr), n(0), cap(0) {}  // Initial state: arr is nullptr, n = 0, cap = 0
-
-    void push_back(int val) {
-        if (n == cap) {
-            cap = cap * 2;  // Problem: cap starts at 0, so cap = 0 * 2 = 0
-            //cap =(cap==0)? 1: cap*2;
-            cout << "Attempting to allocate " << cap << " elements" << endl;
-            int* newarr = new int[cap];  // Trying to allocate an array of size 0
-            for (int i = 0; i < n; i++) {
-                newarr[i] = arr[i];  // Copy existing elements (none in this case, as cap == 0)
-            }
-            delete[] arr;  // Clean up old array (nullptr in this case)
-            arr = newarr;  // arr still points to nullptr (or invalid memory)
-        }
-        arr[n++] = val;  // Add the new element to the vector
-    }
-
-    int size() const {
-        return n;
-    }
-
-    int capacity() const {
-        return cap;
-    }
-
-    ~MyVector() {
-        delete[] arr;  // Clean up allocated memory
-    }
-};
-
-int main() {
-    MyVector v;
-    
-    cout << "Before push_back:" << endl;
-    cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << endl;
-
-    // Add the first element
-    v.push_back(10);  // This will try to allocate an array with 0 capacity, causing issues
-
-    cout << "\nAfter push_back:" << endl;
-    cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << endl;
-
-    return 0;
-}
-/*
-Before push_back:
-Size: 0, Capacity: 0
-Attempting to allocate 0 elements
-
-After push_back:
-Size: 1, Capacity: 0
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//self
-
-#include<iostream>
-#include<stdexcept>
-using namespace std;
-class MyVector{
-    int* arr;
-    int n; 
-    int cap;
-  public:
-    MyVector(): arr(nullptr), n(0), cap(0){}
-    ~MyVector(){ delete[] arr;}
-    void push_back(const int& val);
     void pop_back();
-    int& operator[](const int& index);
-    int size() const;
-    int capacity() const;
-    void display() const;
+
+    int& operator[](size_t index);
+    int& at(size_t index);
+
+    size_t size() const { return n; }
+    size_t capacity() const { return cap; }
+
+    void clear();
+    void Display() const;
 };
 
- void MyVector::push_back(const int& val){
-      if(n==cap){
-          cap = (cap==0)? 1: cap*2;
-          int* newArr = new int[cap];
-          for(int i=0; i<n; i++){
-              newArr[i] = arr[i];
-          }
-          delete[] arr;
-          arr = newArr;
-      }     
-      arr[n++] = val;
- }
- 
- void MyVector::pop_back(){
-     if(n==0) throw runtime_error("Vector is empty!");
-     --n;
- }
- 
-  int& MyVector::operator[](const int& index){
-      if(index>=n) throw runtime_error("Vector is out of range!");
-      
-      return arr[index];
-  }
- 
-int MyVector::size() const{
-    return n;
+// Constructor
+MyVector::MyVector() : arr(nullptr), n(0), cap(0) {}
+
+// Destructor
+MyVector::~MyVector() {
+    delete[] arr;
 }
 
-int MyVector::capacity() const{
-    return cap;
+// Copy Constructor
+MyVector::MyVector(const MyVector& other)
+    : n(other.n), cap(other.cap)
+{
+    arr = (cap == 0 ? nullptr : new int[cap]);
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
 }
-    
- void MyVector::display() const{
-     for(int i=0; i<n; i++){
-         cout<<arr[i]<<" ";
-     }
-     cout<<endl;
- }
- int main(){
-     MyVector v;
-     v.push_back(10);
-     v.push_back(20);
-     v.push_back(30);
-     v.push_back(40);
-     
-     cout<<"Vector Elements: ";
-     v.display();
-     cout<<"Size: "<<v.size()<<endl;
-     cout<<"Capacity: "<<v.capacity()<<endl;
-     
-     v.pop_back();
-     cout<<"Vector Elements after pop: ";
-     v.display();
-     cout<<"Size: "<<v.size()<<endl;
-     cout<<"Capacity: "<<v.capacity()<<endl;
-     cout<<"Vector Elements using [] operator: ";
-     for(int i=0; i<v.size(); i++){
-         cout<<v[i]<<" ";
-     }
-     cout<<endl;
-    return 0;
- }
- /*
- Vector Elements: 10 20 30 40 
-Size: 4
+
+// Copy Assignment
+MyVector& MyVector::operator=(const MyVector& other) {
+    if (this == &other) return *this;
+
+    delete[] arr;
+
+    n = other.n;
+    cap = other.cap;
+    arr = (cap == 0 ? nullptr : new int[cap]);
+
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+
+    return *this;
+}
+
+// Move Constructor
+MyVector::MyVector(MyVector&& other) noexcept
+    : arr(other.arr), n(other.n), cap(other.cap)
+{
+    other.arr = nullptr;
+    other.n = 0;
+    other.cap = 0;
+}
+
+// Move Assignment
+MyVector& MyVector::operator=(MyVector&& other) noexcept {
+    if (this != &other) {
+        delete[] arr;
+
+        arr = other.arr;
+        n = other.n;
+        cap = other.cap;
+
+        other.arr = nullptr;
+        other.n = 0;
+        other.cap = 0;
+    }
+    return *this;
+}
+
+// resize()
+void MyVector::resize(size_t newCap) {
+    if (newCap < n) newCap = n;
+    if (newCap == 0) newCap = 1;
+
+    int* newArr = new int[newCap];
+    for (size_t i = 0; i < n; ++i)
+        newArr[i] = std::move(arr[i]);
+
+    delete[] arr;
+    arr = newArr;
+    cap = newCap;
+}
+
+// push_back (lvalue)
+void MyVector::push_back(const int& value) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    arr[n++] = value;
+}
+
+// push_back (rvalue)
+void MyVector::push_back(int&& value) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    arr[n++] = std::move(value);
+}
+
+// emplace_back
+template<typename... Args>
+void MyVector::emplace_back(Args&&... args) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    new (&arr[n]) int(std::forward<Args>(args)...);
+    n++;
+}
+
+// pop_back
+void MyVector::pop_back() {
+    if (n == 0) throw runtime_error("pop_back on empty vector");
+
+    n--;
+    if (cap > 1 && n <= cap / 4)
+        resize(cap / 2);
+}
+
+// operator[]
+int& MyVector::operator[](size_t index) {
+    if (index >= n) throw out_of_range("operator[] index out of range");
+    return arr[index];
+}
+
+// at()
+int& MyVector::at(size_t index) {
+    if (index >= n) throw out_of_range("at index out of range");
+    return arr[index];
+}
+
+// clear()
+void MyVector::clear() {
+    n = 0;
+    resize(1);
+}
+
+// Display
+void MyVector::Display() const {
+    for (size_t i = 0; i < n; ++i)
+        cout << arr[i] << " ";
+    cout << "\n";
+}
+
+
+// MAIN - Fully Restored Output
+int main() {
+    try {
+        MyVector v;
+
+        cout << "--push_back (lvalue)--\n";
+        int a = 100;
+        v.push_back(a);
+        v.Display();
+        cout << "Size: " << v.size() << "\nCapacity: " << v.capacity() << "\n";
+
+        cout << "\n--After adding one element using push_back (rvalue)--\n";
+        int x = 200;
+        v.push_back(std::move(x));
+        v.Display();
+        cout << "Size: " << v.size() << "\nCapacity: " << v.capacity() << "\n";
+
+        cout << "\n--emplace_back--\n";
+        v.emplace_back(300);
+        v.emplace_back(400);
+        v.emplace_back(500);
+        v.Display();
+        cout << "Size: " << v.size() << "\nCapacity: " << v.capacity() << "\n";
+
+        cout << "\n--Using operator[]--\n";
+        cout << "Element at index 2:" << v[2] << "\n";
+
+        cout << "--Using at()--\n";
+        cout << "Element at index 2:" << v.at(2) << "\n";
+
+        v.pop_back();
+        v.pop_back();
+        v.pop_back();
+        cout << "\nVector Elements after pop_back: ";
+        v.Display();
+        cout << "Size: " << v.size() << "\nCapacity: " << v.capacity() << "\n";
+
+        v.clear();
+        cout << "\n--After clear--Size: " << v.size()
+             << "\nCapacity: " << v.capacity() << "\n";
+
+        MyVector v1;
+        v1.push_back(100);
+
+        cout << "\n---COPY CONSTRUCTOR TEST---\n";
+        MyVector v2 = v1;
+        cout<<"Vector Element: ";
+        v2.Display();
+
+        cout << "\n---COPY ASSIGNMENT TEST---\n";
+        MyVector v3;
+        v3 = v1;
+        cout<<"Vector Element: ";
+        v3.Display();
+
+        cout << "\n---MOVE CONSTRUCTOR TEST---\n";
+        MyVector v4 = std::move(v1);
+        cout<<"Vector Elements: ";
+        v4.Display();
+        cout << "v1 size after move: " << v1.size() << "\n";
+
+        cout << "\n---MOVE ASSIGNMENT TEST---\n";
+        MyVector v5;
+        v5 = std::move(v4);
+        cout<<"Vector Elements: ";
+        v5.Display();
+        cout << "v4 size after move: " << v4.size() << "\n";
+
+        cout << "\n--Trying to pop from empty vector--\n";
+        v.pop_back(); // will throw
+
+    }
+    catch (const exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
+    }
+}
+/*
+--push_back (lvalue)--
+100 
+Size: 1
+Capacity: 1
+
+--After adding one element using push_back (rvalue)--
+100 200 
+Size: 2
+Capacity: 2
+
+--emplace_back--
+100 200 300 400 500 
+Size: 5
+Capacity: 8
+
+--Using operator[]--
+Element at index 2:300
+--Using at()--
+Element at index 2:300
+
+Vector Elements after pop_back: 100 200 
+Size: 2
 Capacity: 4
-Vector Elements after pop: 10 20 30 
-Size: 3
+
+--After clear--Size: 0
+Capacity: 1
+
+---COPY CONSTRUCTOR TEST---
+Vector Element: 100 
+
+---COPY ASSIGNMENT TEST---
+Vector Element: 100 
+
+---MOVE CONSTRUCTOR TEST---
+Vector Elements: 100 
+v1 size after move: 0
+
+---MOVE ASSIGNMENT TEST---
+Vector Elements: 100 
+v4 size after move: 0
+
+--Trying to pop from empty vector--
+Exception: pop_back on empty vector
+*/
+
+
+
+
+//Vector implementation with template shrink and grow dynamically
+#include <iostream>
+#include <stdexcept>
+#include <utility>   // for std::move, std::forward
+using namespace std;
+template <typename T>
+class MyVector {
+  private:
+    T* arr;
+    size_t n;
+    size_t cap;
+    void resize(size_t newCap);
+
+  public:
+    MyVector();
+
+    // Rule of Five
+    ~MyVector();
+    MyVector(const MyVector& other);
+    MyVector& operator=(const MyVector& other);
+    MyVector(MyVector&& other) noexcept;
+    MyVector& operator=(MyVector&& other) noexcept;
+
+    void push_back(const T& value);
+    void push_back(T&& value);
+
+    template<typename... Args>
+    void emplace_back(Args&&... args);
+
+    void pop_back();
+
+    T& operator[](size_t index);
+    T& at(size_t index);
+
+    size_t size() const { return n; }
+    size_t capacity() const { return cap; }
+
+    void clear();
+    void Display() const;
+};
+
+
+// Constructor
+template <typename T>
+MyVector<T>::MyVector() : arr(nullptr), n(0), cap(0) {}
+
+
+// Destructor
+template <typename T>
+MyVector<T>::~MyVector() {
+    delete[] arr;
+}
+
+
+// Copy Constructor
+template <typename T>
+MyVector<T>::MyVector(const MyVector& other)
+    : n(other.n), cap(other.cap)
+{
+    arr = (cap == 0 ? nullptr : new T[cap]);
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+}
+
+
+// Copy Assignment
+template <typename T>
+MyVector<T>& MyVector<T>::operator=(const MyVector& other) {
+    if (this == &other) return *this;
+
+    delete[] arr;
+
+    n = other.n;
+    cap = other.cap;
+    arr = (cap == 0 ? nullptr : new T[cap]);
+
+    for (size_t i = 0; i < n; ++i)
+        arr[i] = other.arr[i];
+
+    return *this;
+}
+
+
+// Move Constructor
+template <typename T>
+MyVector<T>::MyVector(MyVector&& other) noexcept
+    : arr(other.arr), n(other.n), cap(other.cap)
+{
+    other.arr = nullptr;
+    other.n = 0;
+    other.cap = 0;
+}
+
+
+// Move Assignment
+template <typename T>
+MyVector<T>& MyVector<T>::operator=(MyVector&& other) noexcept {
+    if (this != &other) {
+        delete[] arr;
+
+        arr = other.arr;
+        n = other.n;
+        cap = other.cap;
+
+        other.arr = nullptr;
+        other.n = 0;
+        other.cap = 0;
+    }
+    return *this;
+}
+
+
+// resize()
+template <typename T>
+void MyVector<T>::resize(size_t newCap) {
+    if (newCap < n) newCap = n;
+    if (newCap == 0) newCap = 1;
+
+    T* newArr = new T[newCap];
+    for (size_t i = 0; i < n; ++i)
+        newArr[i] = std::move(arr[i]);
+
+    delete[] arr;
+    arr = newArr;
+    cap = newCap;
+}
+
+
+// push_back lvalue
+template <typename T>
+void MyVector<T>::push_back(const T& value) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    arr[n++] = value;
+}
+
+
+// push_back rvalue
+template <typename T>
+void MyVector<T>::push_back(T&& value) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    arr[n++] = std::move(value);
+}
+
+
+// emplace_back
+template <typename T>
+template <typename... Args>
+void MyVector<T>::emplace_back(Args&&... args) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    new (&arr[n]) T(std::forward<Args>(args)...);
+    n++;
+}
+
+
+// pop_back
+template <typename T>
+void MyVector<T>::pop_back() {
+    if (n == 0) throw runtime_error("pop_back on empty vector");
+
+    n--; // Destroy element count
+
+    if (cap > 1 && n <= cap / 4)
+        resize(cap / 2);
+}
+
+
+// operator[]
+template <typename T>
+T& MyVector<T>::operator[](size_t index) {
+    if (index >= n) throw out_of_range("operator[] index out of range");
+    return arr[index];
+}
+
+
+// at()
+template <typename T>
+T& MyVector<T>::at(size_t index) {
+    if (index >= n) throw out_of_range("at index out of range");
+    return arr[index];
+}
+
+
+// clear()
+template <typename T>
+void MyVector<T>::clear() {
+    n = 0;
+    resize(1);
+}
+
+
+// Display
+template <typename T>
+void MyVector<T>::Display() const {
+    for (size_t i = 0; i < n; ++i)
+        cout << arr[i] << " ";
+    cout << "\n";
+}
+
+int main() {
+    try {
+        MyVector<int> v;
+
+        cout << "--push_back (lvalue)--" << endl;
+        int a = 100;
+        v.push_back(a);
+        cout << "Vector Elements lvalue: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        cout << "\n--After adding one element using push_back (rvalue)--" << endl;
+        int x = 200;
+        v.push_back(std::move(x));
+        cout << "Vector Elements rvalue: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        cout << "\n--emplace_back--";
+        v.emplace_back(300);
+        v.emplace_back(400);
+        v.emplace_back(500);
+
+        cout << "\nVector Elements: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+        cout << "\n--Using operator[]--" << endl;
+        cout << "Element at index 2:" << v[2];
+
+        cout << "\n--Using at()--" << endl;
+        cout << "Element at index 2:" << v.at(2) << endl;
+
+
+        v.pop_back();
+        v.pop_back();
+        v.pop_back();
+        cout << "\nVector Elements after pop_back: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        v.clear();
+        cout << "\n--After clear--";
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+
+        MyVector<int> v1;
+        v1.push_back(100);
+
+
+        cout << "\n---COPY CONSTRUCTOR TEST---\n";
+        MyVector<int> v2 = v1;
+        cout << "v2 elements (copied from v1): ";
+        v2.Display();
+
+
+        cout << "\n---COPY ASSIGNMENT TEST---\n";
+        MyVector<int> v3;
+        v3 = v1;
+        cout << "v3 elements (assigned from v1): ";
+        v3.Display();
+
+
+        cout << "\n---MOVE CONSTRUCTOR TEST---\n";
+        MyVector<int> v4 = std::move(v1);
+        cout << "v4 elements (moved from v1): ";
+        v4.Display();
+        cout << "v1 size after move: " << v1.size() << endl;
+
+
+        cout << "\n---MOVE ASSIGNMENT TEST---\n";
+        MyVector<int> v5;
+        v5 = std::move(v4);
+        cout << "v5 elements (moved from v4): ";
+        v5.Display();
+        cout << "v4 size after move: " << v4.size() << endl;
+
+
+        // FIXED crashing print
+        cout << "\n--Trying to pop from empty vector--" << endl;
+        cout.flush();   // ensure print happens BEFORE exception
+        v.pop_back();   // throws
+
+    } 
+    catch (const exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
+    }
+}
+/*
+--push_back (lvalue)--
+Vector Elements lvalue: 100 
+Size: 1
+Capacity: 1
+
+--After adding one element using push_back (rvalue)--
+Vector Elements rvalue: 100 200 
+Size: 2
+Capacity: 2
+
+--emplace_back--
+Vector Elements: 100 200 300 400 500 
+Size: 5
+Capacity: 8
+
+--Using operator[]--
+Element at index 2:300
+--Using at()--
+Element at index 2:300
+
+Vector Elements after pop_back: 100 200 
+Size: 2
 Capacity: 4
-Vector Elements using [] operator: 10 20 30 
- */
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+--After clear--Size: 0
+Capacity: 1
+
+---COPY CONSTRUCTOR TEST---
+v2 elements (copied from v1): 100 
+
+---COPY ASSIGNMENT TEST---
+v3 elements (assigned from v1): 100 
+
+---MOVE CONSTRUCTOR TEST---
+v4 elements (moved from v1): 100 
+v1 size after move: 0
+
+---MOVE ASSIGNMENT TEST---
+v5 elements (moved from v4): 100 
+v4 size after move: 0
+
+--Trying to pop from empty vector--
+Exception: pop_back on empty vector
+*/

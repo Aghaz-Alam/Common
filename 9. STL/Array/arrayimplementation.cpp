@@ -1,143 +1,3 @@
-Function Inside Class
-//std::array internal implementation with template
-#include <iostream>
-#include <stdexcept>
-#include <string>
-using namespace std;
-
-//std::array internal implementation with template
-template <typename T, size_t N>
-class MyArray {
-  private:
-    T arr[N];
-
-  public:
-    // constructors
-    MyArray() = default;
-
-    // element access
-    constexpr T& operator[](size_t index) noexcept { 
-        return arr[index]; 
-    }
-
-    constexpr const T& operator[](size_t index) const noexcept {  
-        return arr[index];
-    }
-
-    // at() performs bounds-check
-    T& at(size_t index) {
-        if (index >= N) throw std::out_of_range("Index out of range");
-        return arr[index];
-    }
-
-    const T& at(size_t index) const {
-        if (index >= N) throw std::out_of_range("Index out of range");
-        return arr[index];
-    }
-
-    // capacity
-    constexpr size_t size() const noexcept { 
-        return N; 
-    }
-
-    // modifiers
-    void fill(const T& value) {
-        for (size_t i = 0; i < N; ++i) arr[i] = value;
-    }
-
-    // pointer access
-    constexpr T* data() noexcept { return arr; }
-    constexpr const T* data() const noexcept { return arr; }
-
-    // iterators
-    constexpr T* begin() noexcept { return arr; }
-    constexpr const T* begin() const noexcept { return arr; }
-
-    constexpr T* end() noexcept { return arr + N; }
-    constexpr const T* end() const noexcept { return arr + N; }
-};
-
-int main() {
-
-    // Test with int
-    MyArray<int, 5> arr;
-    arr.fill(10);
-
-    cout << "Array size: " << arr.size() << endl;
-    cout << "Array elements: ";
-    for (size_t i = 0; i < arr.size(); ++i)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    arr[2] = 20;
-    cout << "Modified Array elements: ";
-    for (auto v : arr)
-        cout << v << " ";
-    cout << endl;
-
-
-    // Test with std::string
-    MyArray<string, 5> arrStr;
-    arrStr.fill("Apple");
-
-    cout << "Array size: " << arrStr.size() << endl;
-    cout << "Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-    arrStr[2] = "Mango";
-    cout << "Modified Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-
-    // Test at() with exception
-    try {
-        cout << arrStr.at(10) << endl; // out of range
-    }
-    catch (const std::exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
-    }
-
-    return 0;
-}
-/*
-Array size: 5
-Array elements: 10 10 10 10 10 
-Modified Array elements: 10 10 20 10 10 
-Array size: 5
-Array elements: Apple Apple Apple Apple Apple 
-Modified Array elements: Apple Apple Mango Apple Apple
-*/
-
-
-/* 
-✅ Corrections & Improvements
-❌ operator[] should NOT throw
-In the Standard Library, operator[] NEVER throws — only .at() performs bounds checking.
-You added a throw inside operator[], which is fine for learning, but not how std::array works.
-
-✔ operator[] should allow UB (undefined behavior) if out-of-bounds
-T& operator[](size_t index) { return arr[index]; }
-
-❌ data() should return pointer, not array
-Your code correctly returns pointer (arr decays to pointer). Good.
-
-❌ You forgot constexpr
-std::array supports constexpr for almost everything.
-
-❌ You missed structured bindings support (tuple_size, tuple_element)
-Not required but important if you want to mimic full std::array.
-
-
-*/
-
-
-
-
-Function Outside Class
 //std::array internal implementation with template
 #include <iostream>
 #include <stdexcept>
@@ -153,7 +13,6 @@ private:
 public:
     MyArray() = default;
 
-    // declarations
     constexpr T& operator[](size_t index) noexcept;
     constexpr const T& operator[](size_t index) const noexcept;
 
@@ -251,44 +110,49 @@ constexpr const T* MyArray<T, N>::end() const noexcept {
 
 int main() {
 
-    // Test with int
-    MyArray<int, 5> arr;
-    arr.fill(10);
-
-    cout << "Array size: " << arr.size() << endl;
-    cout << "Array elements: ";
-    for (size_t i = 0; i < arr.size(); ++i)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    arr[2] = 20;
-    cout << "Modified Array elements: ";
-    for (auto v : arr)
-        cout << v << " ";
-    cout << endl;
-
-    // Test with std::string
-    MyArray<string, 5> arrStr;
-    arrStr.fill("Apple");
-
-    cout << "Array size: " << arrStr.size() << endl;
-    cout << "Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-    arrStr[2] = "Mango";
-    cout << "Modified Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-    // Test at() exception
     try {
-        cout << arrStr.at(10) << endl;
+        // Test with int
+        MyArray<int, 5> arr;
+        arr.fill(10);
+
+        cout << "Array size: " << arr.size() << endl;
+        cout << "Array elements: ";
+        for (size_t i = 0; i < arr.size(); ++i)
+            cout << arr[i] << " ";
+        cout << endl;
+
+        arr[2] = 20;
+        cout << "Modified Array elements: ";
+        for (auto v : arr)
+            cout << v << " ";
+        cout << endl;
+
+
+        // Test with std::string
+        MyArray<string, 5> arrStr;
+        arrStr.fill("Apple");
+
+        cout << "Array size: " << arrStr.size() << endl;
+        cout << "Array elements: ";
+        for (auto& s : arrStr)
+            cout << s << " ";
+        cout << endl;
+
+        arrStr[2] = "Mango";
+        cout << "Modified Array elements: ";
+        for (auto& s : arrStr)
+            cout << s << " ";
+        cout << endl;
+
+        // Test at() exception
+        cout << arrStr.at(10) << endl;   // out-of-range → will throw
+
+    }
+    catch (const std::out_of_range& e) {
+        cout << "Out_of_range exception caught: " << e.what() << endl;
     }
     catch (const std::exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
+        cout << "General exception caught: " << e.what() << endl;
     }
 
     return 0;
@@ -300,9 +164,8 @@ Modified Array elements: 10 10 20 10 10
 Array size: 5
 Array elements: Apple Apple Apple Apple Apple 
 Modified Array elements: Apple Apple Mango Apple Apple 
-Exception caught: Index out of range
+Out_of_range exception caught: Index out of range
 */
-
 
 /* 
 ✅ Answer: NO — Rule of Five is not required here
@@ -343,7 +206,7 @@ Destructor: default destructor is correct (no dynamic memory)
 
 
 
-//Dynamic Array using Rule 5
+// Dynamic Array using Rule of 5
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -352,145 +215,209 @@ using namespace std;
 template <typename T, size_t N>
 class MyArray {
   private:
-    T* arr;  // dynamically allocated block
+    T* arr;
 
-  public
-    // ---------- 1. Constructor ----------
-    MyArray():arr(new T[N]) {}   // default-initialize all elements
+  public:
+    // Constructors & Rule of Five
+    MyArray();                              
+    ~MyArray();                             
+    MyArray(const MyArray& other);          
+    MyArray& operator=(const MyArray& other); 
+    MyArray(MyArray&& other) noexcept;      
+    MyArray& operator=(MyArray&& other) noexcept;
 
-    // ---------- 2. Destructor ----------
-    ~MyArray() {
-        delete[] arr;
-    }
+    // Element Access
+    T& operator[](size_t index) noexcept;
+    const T& operator[](size_t index) const noexcept;
 
-    // ---------- 3. Copy Constructor ----------
-    MyArray(const MyArray& other): arr(new T[N]) {
-        for (size_t i = 0; i < N; i++)
-            arr[i] = other.arr[i];
-    }
+    T& at(size_t index);
+    const T& at(size_t index) const;
 
-    // ---------- 4. Copy Assignment ----------
-    MyArray& operator=(const MyArray& other) {
-        if (this == &other) return *this;
-        for (size_t i = 0; i < N; i++)
-            arr[i] = other.arr[i];
+    // Capacity
+    constexpr size_t size() const noexcept;
 
-        return *this;
-    }
+    // Modifiers
+    void fill(const T& value);
 
-    // ---------- 5. Move Constructor ----------
-    MyArray(MyArray&& other) noexcept : arr(other.arr){
-        other.arr = nullptr;
-    }
+    // Data Access
+    T* data() noexcept;
+    const T* data() const noexcept;
 
-    // ---------- 6. Move Assignment ----------
-    MyArray& operator=(MyArray&& other) noexcept {
-        if (this == &other) return *this;
+    // Iterators
+    T* begin() noexcept;
+    const T* begin() const noexcept;
 
-        delete[] arr;            // delete current data
-        arr = other.arr;         // steal pointer
-        other.arr = nullptr;     // reset source
-
-        return *this;
-    }
-
-
-    // ---------- Element Access ----------
-    T& operator[](size_t index) noexcept {
-        return arr[index];
-    }
-
-    const T& operator[](size_t index) const noexcept {
-        return arr[index];
-    }
-
-    T& at(size_t index) {
-        if (index >= N) throw out_of_range("Index out of range");
-        return arr[index];
-    }
-
-    const T& at(size_t index) const {
-        if (index >= N) throw out_of_range("Index out of range");
-        return arr[index];
-    }
-
-    // ---------- Capacity ----------
-    constexpr size_t size() const noexcept {
-        return N;
-    }
-
-    // ---------- Modifiers ----------
-    void fill(const T& value) {
-        for (size_t i = 0; i < N; i++)
-            arr[i] = value;
-    }
-
-    // ---------- Data Access ----------
-    T* data() noexcept { return arr; }
-    const T* data() const noexcept { return arr; }
-
-    // ---------- Iterators ----------
-    T* begin() noexcept { return arr; }
-    const T* begin() const noexcept { return arr; }
-
-    T* end() noexcept { return arr + N; }
-    const T* end() const noexcept { return arr + N; }
+    T* end() noexcept;
+    const T* end() const noexcept;
 };
 
+// ---------- 1. Default Constructor ----------
+template <typename T, size_t N>
+MyArray<T, N>::MyArray() : arr(new T[N]) {}
 
-// -------------------------- MAIN ------------------------------
+// ---------- 2. Destructor ----------
+template <typename T, size_t N>
+MyArray<T, N>::~MyArray() {
+    delete[] arr;
+}
+
+// ---------- 3. Copy Constructor ----------
+template <typename T, size_t N>
+MyArray<T, N>::MyArray(const MyArray& other) : arr(new T[N]) {
+    for (size_t i = 0; i < N; i++)
+        arr[i] = other.arr[i];
+}
+
+// ---------- 4. Copy Assignment ----------
+template <typename T, size_t N>
+MyArray<T, N>& MyArray<T, N>::operator=(const MyArray& other) {
+    if (this == &other) return *this;
+    for (size_t i = 0; i < N; i++)
+        arr[i] = other.arr[i];
+    return *this;
+}
+
+// ---------- 5. Move Constructor ----------
+template <typename T, size_t N>
+MyArray<T, N>::MyArray(MyArray&& other) noexcept : arr(other.arr) {
+    other.arr = nullptr;
+}
+
+// ---------- 6. Move Assignment ----------
+template <typename T, size_t N>
+MyArray<T, N>& MyArray<T, N>::operator=(MyArray&& other) noexcept {
+    if (this == &other) return *this;
+    delete[] arr;
+    arr = other.arr;
+    other.arr = nullptr;
+    return *this;
+}
+
+// ---------- Element Access ----------
+template <typename T, size_t N>
+T& MyArray<T, N>::operator[](size_t index) noexcept {
+    return arr[index];
+}
+
+template <typename T, size_t N>
+const T& MyArray<T, N>::operator[](size_t index) const noexcept {
+    return arr[index];
+}
+
+template <typename T, size_t N>
+T& MyArray<T, N>::at(size_t index) {
+    if (index >= N) throw out_of_range("Index out of range");
+    return arr[index];
+}
+
+template <typename T, size_t N>
+const T& MyArray<T, N>::at(size_t index) const {
+    if (index >= N) throw out_of_range("Index out of range");
+    return arr[index];
+}
+
+// ---------- Capacity ----------
+template <typename T, size_t N>
+constexpr size_t MyArray<T, N>::size() const noexcept {
+    return N;
+}
+
+// ---------- Modifiers ----------
+template <typename T, size_t N>
+void MyArray<T, N>::fill(const T& value) {
+    for (size_t i = 0; i < N; i++)
+        arr[i] = value;
+}
+
+// ---------- Data Access ----------
+template <typename T, size_t N>
+T* MyArray<T, N>::data() noexcept { return arr; }
+
+template <typename T, size_t N>
+const T* MyArray<T, N>::data() const noexcept { return arr; }
+
+// ---------- Iterators ----------
+template <typename T, size_t N>
+T* MyArray<T, N>::begin() noexcept { return arr; }
+
+template <typename T, size_t N>
+const T* MyArray<T, N>::begin() const noexcept { return arr; }
+
+template <typename T, size_t N>
+T* MyArray<T, N>::end() noexcept { return arr + N; }
+
+template <typename T, size_t N>
+const T* MyArray<T, N>::end() const noexcept { return arr + N; }
+
 
 int main() {
 
-    // Test with int
-    MyArray<int, 5> arr;
-    arr.fill(10);
-
-    cout << "Array size: " << arr.size() << endl;
-    cout << "Array elements: ";
-    for (size_t i = 0; i < arr.size(); ++i)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    arr[2] = 20;
-    cout << "Modified Array elements: ";
-    for (auto v : arr)
-        cout << v << " ";
-    cout << endl;
-
-    // Test with std::string
-    MyArray<string, 5> arrStr;
-    arrStr.fill("Apple");
-
-    cout << "Array size: " << arrStr.size() << endl;
-    cout << "Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-    arrStr[2] = "Mango";
-    cout << "Modified Array elements: ";
-    for (auto& s : arrStr)
-        cout << s << " ";
-    cout << endl;
-
-    // Test at() exception
     try {
-        cout << arrStr.at(10) << endl;
+        cout << "===== Testing int array =====\n";
+
+        MyArray<int, 5> arr;
+        arr.fill(10);
+
+        cout << "Array size: " << arr.size() << endl;
+        cout << "Array elements: ";
+        for (size_t i = 0; i < arr.size(); ++i)
+            cout << arr[i] << " ";
+        cout << endl;
+
+        arr[2] = 20;
+
+        cout << "Modified Array elements: ";
+        for (auto v : arr)
+            cout << v << " ";
+        cout << endl;
     }
-    catch (const std::exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
+    catch (const exception& e) {
+        cout << "Error in int array block: " << e.what() << endl;
+    }
+
+    try {
+        cout << "\n===== Testing string array =====\n";
+
+        MyArray<string, 5> arrStr;
+        arrStr.fill("Apple");
+
+        cout << "Array size: " << arrStr.size() << endl;
+        cout << "Array elements: ";
+        for (auto& s : arrStr)
+            cout << s << " ";
+        cout << endl;
+
+        arrStr[2] = "Mango";
+
+        cout << "Modified Array elements: ";
+        for (auto& s : arrStr)
+            cout << s << " ";
+        cout << endl;
+
+        // Test at() exception
+        cout << "\nTesting out-of-range access...\n";
+        cout << arrStr.at(10) << endl;   // will throw
+    }
+    catch (const out_of_range& e) {
+        cout << "out_of_range caught: " << e.what() << endl;
+    }
+    catch (const exception& e) {
+        cout << "General exception: " << e.what() << endl;
     }
 
     return 0;
 }
-
 /*
+===== Testing int array =====
 Array size: 5
 Array elements: 10 10 10 10 10 
 Modified Array elements: 10 10 20 10 10 
+
+===== Testing string array =====
 Array size: 5
 Array elements: Apple Apple Apple Apple Apple 
 Modified Array elements: Apple Apple Mango Apple Apple 
-Exception caught: Index out of range
+
+Testing out-of-range access...
+out_of_range caught: Index out of range
 */

@@ -1,3 +1,191 @@
+//Example: std::enable_if to enable a function only for integral types
+/*
+#include <iostream>
+#include <type_traits> // For std::enable_if, std::is_integral
+using namespace std;
+// Function template for integral types only
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, T>::type
+add(T a, T b) {
+    return a + b;
+}
+int main() {
+    std::cout << "Sum of 5 and 3 (int): " << add(5, 3) << std::endl; // Works (integral type)
+
+    // std::cout << "Sum of 5.5 and 3.3 (double): " << add(5.5, 3.3) << std::endl; // Error (not an integral type)
+    
+  return 0;
+}
+/*
+Sum of 5 and 3 (int): 8
+*/
+
+
+
+
+//Example: std::enable_if to enable a function only for arithmetic types
+/*
+#include <iostream>
+#include <type_traits> // For std::enable_if, std::is_arithmetic
+using namespace std;
+template <typename T>
+typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Sum of 5 and 3 (int): " << add(5, 3) << std::endl; 
+
+    std::cout << "Sum of 5.5 and 3.3 (double): " << add(5.5, 3.3) << std::endl;
+
+    return 0;
+}
+/*
+Sum of 5 and 3 (int): 8
+Sum of 5.5 and 3.3 (double): 8.8
+*/
+
+
+
+
+
+//C++14 SFINAE
+/*
+#include <iostream>
+#include <type_traits>   // std::enable_if_t, std::is_arithmetic
+
+// SFINAE-enabled add() — only works for arithmetic types
+template <typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+T add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Sum (int): " << add(5, 3) << std::endl;
+    std::cout << "Sum (double): " << add(5.5, 3.3) << std::endl;
+    std::cout << "Sum (long long): " << add(100000LL, 200000LL) << std::endl;
+
+    // The following line will NOT compile because std::string is not arithmetic:
+    // std::cout << add(std::string("a"), std::string("b")) << std::endl;
+
+    return 0;
+}
+/*
+Sum (int): 8
+Sum (double): 8.8
+Sum (long long): 300000
+*/
+
+
+
+
+
+//C++17 Style 1 — enable_if in the template parameter list (cleanest)
+/*
+#include <iostream>
+#include <type_traits>
+
+// C++17: SFINAE using enable_if in template parameter list
+template <
+    typename T,
+    std::enable_if_t<std::is_arithmetic_v<T>, int> = 0
+>
+T add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Sum (int): " << add(5, 3) << std::endl;
+    std::cout << "Sum (double): " << add(5.5, 3.3) << std::endl;
+    std::cout << "Sum (long long): " << add(100000LL, 200000LL) << std::endl;
+
+    // Will NOT compile:
+    // std::cout << add(std::string("a"), std::string("b"));
+
+    return 0;
+}
+/*
+Sum (int): 8
+Sum (double): 8.8
+Sum (long long): 300000
+*/
+
+
+
+//C++17 Style 2 — enable_if in the return type
+/*
+#include <iostream>
+#include <type_traits>
+
+template <typename T>
+std::enable_if_t<std::is_arithmetic_v<T>, T>
+add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Sum (int): " << add(5, 3) << std::endl;
+    std::cout << "Sum (double): " << add(5.5, 3.3) << std::endl;
+    std::cout << "Sum (long long): " << add(100000LL, 200000LL) << std::endl;
+
+    return 0;
+}
+/*
+Sum (int): 8
+Sum (double): 8.8
+Sum (long long): 300000
+*/
+
+
+//C++17 Style 3 — enable_if as a default parameter (your original approach improved)
+
+#include <iostream>
+#include <type_traits>
+
+template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+T add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Sum (int): " << add(5, 3) << std::endl;
+    std::cout << "Sum (double): " << add(5.5, 3.3) << std::endl;
+    std::cout << "Sum (long long): " << add(100000LL, 200000LL) << std::endl;
+}
+/*
+Sum (int): 8
+Sum (double): 8.8
+Sum (long long): 300000
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 1. std::enable_if in C++11
 In C++11, std::enable_if is used to conditionally enable a function or class template based on a type trait or expression. 
 The std::enable_if works by using the SFINAE (Substitution Failure Is Not An Error) principle, 
