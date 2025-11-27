@@ -184,7 +184,7 @@ int main() {
 
 
 
-✔ Using switch
+✔ Using switch   (C++14)
 #include <iostream>
 constexpr const char* num_to_word(int n) {
     switch (n) {         // switch allowed in C++14 constexpr
@@ -692,3 +692,349 @@ but can change later."
 
 
 /* ------------------------------------------------------------------------------------- */
+
+
+/* ------------------------------------------------------------------------ */
+✅ 1. constexpr variables
+A variable declared with constexpr must be known at compile time.
+constexpr int x = 10;   // OK
+
+❌ Not allowed:
+int y = 5;
+constexpr int z = y;    // ERROR: y not compile-time constant
+
+👍 Allowed only if value is constant at compile time:
+constexpr int a = 5 + 10;   // OK
+
+/* -------------------------- */
+#include <iostream>
+using namespace std;
+int main() {
+
+    // ------------------------------------------
+    // 1. constexpr variable: compile-time constant
+    // ------------------------------------------
+    constexpr int x = 10;     // OK
+    cout << "x = " << x << endl;
+
+    // ------------------------------------------
+    // 2. Not allowed: initializer not constant
+    // ------------------------------------------
+    int y = 5;
+
+    // constexpr int z = y;   // ❌ ERROR
+    // ERROR: y is NOT a compile-time constant
+
+    // ------------------------------------------
+    // 3. Allowed: constexpr with compile-time expression
+    // ------------------------------------------
+    constexpr int a = 5 + 10;  // OK (15)
+    cout << "a = " << a << endl;
+
+    return 0;
+}
+/*
+x = 10
+a = 15
+*/
+/* ------------------------------------------------------------------------ */
+✅ 2. constexpr functions
+A constexpr function can run at compile time OR runtime, depending on inputs.
+constexpr int square(int x) {
+    return x * x;
+}
+
+Compile-time execution:
+constexpr int val = square(5);   // computed at compile time
+Runtime execution:
+int r;
+cin >> r;
+cout << square(r);              // runtime
+
+🎯 constexpr is NOT “always compile time”
+It means:
+Function is allowed to be computed at compile time.
+If arguments are constant → compile time
+If arguments are runtime → evaluated normally
+
+/* ----------------------- */
+#include <iostream>
+using namespace std;
+// -----------------------------------------
+// constexpr function
+// Can run at compile-time OR runtime
+// -----------------------------------------
+constexpr int square(int x) {
+    return x * x;
+}
+int main() {
+    // -----------------------------------------
+    // 1. Compile-time execution
+    // -----------------------------------------
+    constexpr int val = square(5);   // computed at compile time
+    cout << "Compile-time square(5) = " << val << endl;
+
+    // -----------------------------------------
+    // 2. Runtime execution
+    // -----------------------------------------
+    int r;
+    cout << "Enter a number: ";
+    cin >> r;
+
+    // r is not constexpr → runtime evaluation
+    cout << "Runtime square(" << r << ") = " << square(r) << endl;
+
+    return 0;
+}
+/*
+Compile-time square(5) = 25
+Enter a number: 5
+Runtime square(5) = 25
+*/
+/* ------------------------------------------------------------------------ */
+✅ 3. constexpr objects
+Can define static lookup tables at compile time:
+struct Point {
+    int x, y;
+};
+constexpr Point p{10, 20};      // OK
+
+/* --------------------- */
+//1. constexpr with STRUCT
+#include <iostream>
+using namespace std;
+// -----------------------------------------
+// constexpr with STRUCT
+// -----------------------------------------
+struct Point {
+    int x;
+    int y;
+};
+// constexpr object of struct (compile-time)
+constexpr Point p1{10, 20};
+int main() {
+    cout << "Struct Point p1 = (" << p1.x << ", " << p1.y << ")\n";
+    // Runtime example
+    int a, b;
+    cout << "Enter x and y: ";
+    cin >> a >> b;
+
+    Point p2{a, b};  // runtime object
+    cout << "Point p2 = (" << p2.x << ", " << p2.y << ")\n";
+  return 0;
+}
+/*
+Struct Point p1 = (10, 20)
+Enter x and y: 5 6
+Point p2 = (5, 6)
+*/
+
+
+//2. constexpr with CLASS
+#include <iostream>
+using namespace std;
+// -----------------------------------------
+// constexpr with CLASS
+// Requires constexpr constructor
+// -----------------------------------------
+class Rectangle {
+  private:
+    int width;
+    int height;
+  public:
+    // constexpr constructor
+    constexpr Rectangle(int w, int h) : width(w), height(h) {}
+    // constexpr function
+    constexpr int area() const {
+        return width * height;
+    }
+};
+// Compile-time object
+constexpr Rectangle r1(4, 5);
+constexpr int area1 = r1.area(); // compile-time area
+int main() {
+    cout << "Rectangle r1 area (compile-time) = " << area1 << "\n";
+    // Runtime example
+    int w, h;
+    cout << "Enter width & height: ";
+    cin >> w >> h;
+
+    Rectangle r2(w, h);  // runtime object
+    cout << "Rectangle r2 area (runtime) = " << r2.area() << "\n";
+  return 0;
+}
+/*
+Rectangle r1 area (compile-time) = 20
+Enter width & height: 10 5
+Rectangle r2 area (runtime) = 50
+*/
+/* ------------------------------------------------------------------------ */
+✅ 4. constexpr constructors
+Allows creating constant objects at compile time.
+class Point {
+  public:
+    int x, y;
+
+    constexpr Point(int a, int b) : x(a), y(b) {}
+};
+constexpr Point p(3, 4);
+
+/* ------------------ */
+#include <iostream>
+using namespace std;
+// -----------------------------------------
+// Class with constexpr constructor
+// -----------------------------------------
+class Point {
+  public:
+    int x;
+    int y;
+    // constexpr constructor
+    constexpr Point(int a, int b) : x(a), y(b) {}
+    // constexpr member function
+    constexpr int sum() const {
+        return x + y;
+    }
+};
+// constexpr object (compile-time)
+constexpr Point p(3, 4);
+constexpr int sum1 = p.sum();
+int main() {
+    // -----------------------------------------
+    // Using constexpr object
+    // -----------------------------------------
+    cout << "Compile-time Point p = (" << p.x << ", " << p.y << ")\n";
+    cout << "Sum of p = " << sum1 << "\n";
+    // -----------------------------------------
+    // Runtime object
+    // -----------------------------------------
+    int a, b;
+    cout << "Enter x and y: ";
+    cin >> a >> b;
+    Point q(a, b);  // runtime object
+    cout << "Runtime Point q = (" << q.x << ", " << q.y << ")\n";
+    cout << "Sum of q = " << q.sum() << "\n";
+  return 0;
+}
+/*
+Compile-time Point p = (3, 4)
+Sum of p = 7
+Enter x and y: 5 3
+Runtime Point q = (5, 3)
+Sum of q = 8
+*/
+/* ------------------------------------------------------------------------ */
+✅ 5. constexpr if (C++17)
+Compile-time branching for templates.
+template <typename T>
+void show(T v) {
+    if constexpr (std::is_integral_v<T>)
+        cout << "Integral\n";
+    else
+        cout << "Non-integral\n";
+}
+
+/* ------------------------- */
+#include <iostream>
+#include <type_traits>
+using namespace std;
+// -----------------------------------------
+// Template function with constexpr if
+// -----------------------------------------
+template <typename T>
+void show(T v) {
+    if constexpr (std::is_integral_v<T>) {
+        cout << v << " is Integral\n";
+    } else {
+        cout << v << " is Non-integral\n";
+    }
+}
+int main() {
+
+    int a = 10;
+    double b = 3.14;
+    char c = 'X';
+    string s = "Hello";
+
+    show(a); // Integral
+    show(b); // Non-integral
+    show(c); // Integral
+    show(s); // Non-integral
+
+    return 0;
+}
+/*  
+Output: in C++17
+
+10 is Integral
+3.14 is Non-integral
+X is Integral
+Hello is Non-integral
+*/
+/* ------------------------------------------------------------------------ */
+✅ 6. constexpr with arrays
+You can use constexpr to create fixed compile-time arrays.
+constexpr int arr[] = {1,2,3,4};
+
+⚡ Important rules
+✔ constexpr function must contain only one return statement (C++11)
+
+C++14 removes this restriction → allows loops, if, etc.
+✔ constexpr variable must be initialized
+constexpr int n;   // ❌ ERROR
+
+✔ constexpr object must have a constexpr constructor
+
+/* --------------------------- */
+#include <iostream>
+using namespace std;
+// -----------------------------------------
+// 1. constexpr array
+// -----------------------------------------
+constexpr int arr[] = {1, 2, 3, 4, 5};
+constexpr size_t arrSize = sizeof(arr)/sizeof(arr[0]);
+// -----------------------------------------
+// 2. constexpr function (C++11: single return)
+// -----------------------------------------
+constexpr int sumArray_C11(int a, int b) {
+    return a + b; // only single return
+}
+// -----------------------------------------
+// 3. constexpr function (C++14: can use loops)
+// -----------------------------------------
+constexpr int sumArray_C14() {
+    int sum = 0;
+    for (size_t i = 0; i < arrSize; ++i)
+        sum += arr[i];
+    return sum;
+}
+int main() {
+
+    // -----------------------------------------
+    // Using constexpr array
+    // -----------------------------------------
+    cout << "constexpr array: ";
+    for (size_t i = 0; i < arrSize; ++i)
+        cout << arr[i] << " ";
+    cout << "\n";
+
+    // -----------------------------------------
+    // Using C++11 constexpr function
+    // -----------------------------------------
+    constexpr int s1 = sumArray_C11(10, 20);
+    cout << "C++11 constexpr sum(10,20) = " << s1 << "\n";
+
+    // -----------------------------------------
+    // Using C++14 constexpr function with loop
+    // -----------------------------------------
+    constexpr int s2 = sumArray_C14();
+    cout << "C++14 constexpr sum of array = " << s2 << "\n";
+
+  return 0;
+}
+/*
+constexpr array: 1 2 3 4 5 
+C++11 constexpr sum(10,20) = 30
+C++14 constexpr sum of array = 15
+*/
+/* ------------------------------------------------------------------------ */
