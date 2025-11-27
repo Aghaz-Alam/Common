@@ -1,3 +1,114 @@
+
+Creational Design Patterns (Object Creation)
+Singleton
+Factory Method
+Abstract Factory
+
+/* ------------- */
+Observer design pattern
+
+ISubjec               iobserver
+Ival;
+register()=0;          update()=0;
+unregister()=0         weak_ptr<>();
+notify()=0;
+
+set_stau();
+get_state();
+             push()
+             ------>
+
+             pull()
+             <-----
+/* ------------- */
+
+
+List of Creational Patterns
+Singleton
+→ Ensures only one instance exists.
+Factory Method
+→ Creates objects using a method, not new.
+Abstract Factory
+→ Creates families of related objects.
+Builder
+→ Constructs complex objects step-by-step.
+Prototype
+→ Cloning existing objects.
+
+
+2. Structural Design Patterns (Object Composition)
+
+These patterns explain how classes/objects are combined to form larger structures.
+
+List of Structural Patterns
+
+Adapter
+→ Converts one interface to another.
+
+Bridge
+→ Decouples abstraction from implementation.
+
+Composite
+→ Treat group of objects like a single object (tree structure).
+
+Decorator
+→ Add behavior dynamically without modifying class.
+
+Facade
+→ Simplify complex subsystem into one interface.
+
+Flyweight
+→ Use shared objects to save memory.
+
+Proxy
+→ Substitute or control access to another object.
+
+
+
+
+3. Behavioral Design Patterns (Communication Between Objects)
+
+These patterns focus on how objects interact and communicate.
+
+List of Behavioral Patterns
+
+Strategy
+→ Swap algorithms at runtime.
+
+Observer
+→ Notify multiple objects on state change.
+
+Command
+→ Turn requests into objects.
+
+State
+→ Change class behavior based on state.
+
+Template Method
+→ Define algorithm skeleton; subclass fills details.
+
+Iterator
+→ Sequential access to collections.
+
+Mediator
+→ Central object handles communication.
+
+Visitor
+→ Add new operations without changing classes.
+
+Interpreter
+→ Define grammar + interpreter for expressions.
+
+Memento
+→ Capture and restore object state.
+
+Chain of Responsibility
+→ Pass request along a chain until handled.
+
+
+
+
+
 design patterns and anti design patterns
 
 | Category     | Pattern                | Purpose                  |

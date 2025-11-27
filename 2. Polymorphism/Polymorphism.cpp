@@ -47,7 +47,7 @@ class IDrawable {
 
 // Concrete Class 1 (implements the interface)
 class Circle : public IDrawable {
-public:
+  public:
     void draw() const override {
         cout << "Drawing a Circle on screen." << endl;
     }
@@ -97,7 +97,7 @@ int main() {
 
     return 0;
 }
-
+/* 
 Output:
 --- Drawing individual shapes ---
 Drawing a Circle on screen.
@@ -111,7 +111,7 @@ Drawing a Square on screen.
 Drawing a Circle on screen.
 Drawing a Square on screen.
 Drawing a Circle on screen.
-
+*/
 /*----------------------------------------------------------------*/
 2. Defining Concrete Classes and Accessing Them
 Concrete classes inherit from the interface and must provide an implementation 
@@ -179,7 +179,6 @@ C++ provides dynamic_cast for safe, runtime-checked downcasting in polymorphic h
 
 #include <iostream>
 #include <typeinfo> // Required for typeid operator
-
 class Base { 
     public: 
       virtual ~Base() = default; 
@@ -529,96 +528,79 @@ Called derived function!
 
 VVI
 
-how we can overload both types of casting operators:
+how can we overload both types of casting operators:
 
 1. Conversion Operator (Implicit Type Casting)
-
 This allows you to implicitly convert an object of a class to another type.
 
 Example of Implicit Casting:
 #include <iostream>
 using namespace std;
-
 class MyClass {
-public:
-    int value;
-    
+  public:
+    int value;  
     MyClass(int v) : value(v) {}
-
     // Conversion operator to convert MyClass to int
     operator int() const {
         return value;
     }
 };
-
 int main() {
     MyClass obj(42);
     int x = obj;  // Implicit conversion from MyClass to int using the overloaded operator
-    cout << "Converted value: " << x << endl;
-    
+    cout << "Converted value: " << x << endl;  
     return 0;
 }
 
 Explanation:
-
 The operator int() is a conversion operator that allows an object of type MyClass to be implicitly converted to an int.
-
 The line int x = obj; will call the operator int() function to perform the conversion.
 
 Output:
 Converted value: 42
 
-
 In this case, the MyClass object obj is implicitly converted to an int because of the overloaded operator int().
 
+
 2. Explicit Conversion Operator (Prevent Implicit Conversion)
-
 If you want to prevent implicit conversions and force the user to perform an explicit cast, you can use the explicit keyword.
-
 Example of Explicit Casting:
 #include <iostream>
 using namespace std;
-
 class MyClass {
-public:
-    int value;
-    
+  public:
+    int value;  
     MyClass(int v) : value(v) {}
-
     // Explicit conversion operator to convert MyClass to int
     explicit operator int() const {
         return value;
     }
 };
-
 int main() {
     MyClass obj(42);
     // int x = obj;  // Error: Cannot implicitly convert MyClass to int
-
     // Use explicit casting
     int x = static_cast<int>(obj);  // Explicit conversion using static_cast
     cout << "Converted value: " << x << endl;
-    
     return 0;
 }
 
 Explanation:
-
 The operator int() is marked as explicit, so you cannot implicitly convert MyClass to int.
-
 You must now use explicit casting with static_cast<int>(obj) to perform the conversion.
 
 Output:
 Converted value: 42
 
-
 This approach is often used when you want to avoid accidental or undesired implicit conversions and require the user to explicitly cast objects.
 
+
+
 3. Dynamic Cast Operator (for Polymorphic Classes)
-
-You cannot directly overload the dynamic_cast operator. However, polymorphic classes (classes with at least one virtual function) can be casted using dynamic_cast to safely convert base class pointers or references to derived class pointers or references.
-
-Here’s an example of how dynamic_cast works in polymorphic classes, although you don't overload dynamic_cast:
+--> You cannot directly overload the dynamic_cast operator. 
+--> However, polymorphic classes (classes with at least one virtual function) can be casted using dynamic_cast to safely convert 
+    base class pointers or references to derived class pointers or references.
+--> Here’s an example of how dynamic_cast works in polymorphic classes, although you don't overload dynamic_cast:
 
 #include <iostream>
 using namespace std;
