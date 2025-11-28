@@ -121,10 +121,25 @@ int main() {
             cout << arr[i] << " ";
         cout << endl;
 
+
+        int* ptr = arr.data();   // raw pointer to first element
+        cout << "Using data(): ";
+        for (size_t i = 0; i < arr.size(); i++){
+            cout << *(ptr + i) << " ";
+        }
+        cout << endl;
+
         arr[2] = 20;
         cout << "Modified Array elements: ";
         for (auto v : arr)
             cout << v << " ";
+        cout << endl;
+
+
+        cout << "Using begin()/end(): ";
+        for (int* it = arr.begin(); it != arr.end(); ++it){
+            cout << *it << " ";
+        }
         cout << endl;
 
 
