@@ -63,7 +63,7 @@ T CQueue<T, N>::front() const {
     return arr[frontIndex];
 }
 
-// Back
+// Back --to check if the latest inserted element at end
 template <typename T, size_t N>
 T CQueue<T, N>::back() const {
     if (count == 0) throw underflow_error("Queue is empty!");
