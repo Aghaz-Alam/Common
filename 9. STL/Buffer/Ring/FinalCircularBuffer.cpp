@@ -37,7 +37,7 @@ public:
 template <typename T, size_t N>
 CQueue<T, N>::CQueue() : frontIndex(0), rearIndex(0), count(0) {}
 
-// Push
+// Push---elements entered in the back
 template <typename T, size_t N>
 void CQueue<T, N>::push(const T& value) {
     if (count == N) throw overflow_error("Queue is full!");
@@ -47,7 +47,7 @@ void CQueue<T, N>::push(const T& value) {
     ++count;
 }
 
-// Pop
+// Pop  --elements removed from front
 template <typename T, size_t N>
 void CQueue<T, N>::pop() {
     if (count == 0) throw underflow_error("Queue is empty!");
