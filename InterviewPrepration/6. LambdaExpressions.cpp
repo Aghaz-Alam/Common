@@ -66,7 +66,21 @@ auto lam = [&]() { x++; y++; };
 4.6 Mixed Captures
 auto lam = [x, &y]() { cout << x << y; };
 
+/* ----------------- */
+#include<iostream>
+using namespace std;
+int main(){
+    int x=10, y=20;
+    //4.4 Capture All by Value
+     //auto lam = [=]() { cout << x <<"\t"<< y<<endl; };   10  20
+     //lam();
 
+    //4.5 Capture All by Reference
+    auto lam = [&]() { x++; y++; };
+    lam();
+    cout<<x<<"\t"<<y<<endl;   //11 21
+
+}
 /* --------------------------------------------------------------------------------------------------------- */
 5. Mutable Lambdas
 ---> By default, value-captured variables are const inside the lambda.
@@ -188,8 +202,7 @@ sort(v.begin(), v.end(), [](int a, int b) {
 });
 
 Example: count_if
-int countEven = count_if(v.begin(), v.end(),
-                         [](int x){ return x % 2 == 0; });
+int countEven = count_if(v.begin(), v.end(),[](int x){ return x % 2 == 0; });
 
 
 
@@ -242,7 +255,7 @@ cout << add(2.5, 3.5);   // 6.0
 Inside a class:
 
 class A {
-public:
+  public:
     int x = 5;
     void show() {
         auto lam = [this]() { cout << x; };

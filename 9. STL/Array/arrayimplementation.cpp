@@ -7,30 +7,30 @@ using namespace std;
 //std::array internal implementation with template
 template <typename T, size_t N>
 class MyArray {
-private:
+  private:
     T arr[N];
 
-public:
+  public:
     MyArray() = default;
 
     constexpr T& operator[](size_t index) noexcept;
-    constexpr const T& operator[](size_t index) const noexcept;
+    //constexpr const T& operator[](size_t index) const noexcept;
 
     T& at(size_t index);
-    const T& at(size_t index) const;
+    //const T& at(size_t index) const;
 
     constexpr size_t size() const noexcept;
 
     void fill(const T& value);
 
     constexpr T* data() noexcept;
-    constexpr const T* data() const noexcept;
+    //constexpr const T* data() const noexcept;
 
     constexpr T* begin() noexcept;
-    constexpr const T* begin() const noexcept;
+    //constexpr const T* begin() const noexcept;
 
     constexpr T* end() noexcept;
-    constexpr const T* end() const noexcept;
+    //constexpr const T* end() const noexcept;
 };
 
 
@@ -42,10 +42,10 @@ constexpr T& MyArray<T, N>::operator[](size_t index) noexcept {
     return arr[index];
 }
 
-template <typename T, size_t N>
-constexpr const T& MyArray<T, N>::operator[](size_t index) const noexcept {
-    return arr[index];
-}
+// template <typename T, size_t N>
+// constexpr const T& MyArray<T, N>::operator[](size_t index) const noexcept {
+//     return arr[index];
+// }
 
 // at()
 template <typename T, size_t N>
@@ -54,11 +54,11 @@ T& MyArray<T, N>::at(size_t index) {
     return arr[index];
 }
 
-template <typename T, size_t N>
-const T& MyArray<T, N>::at(size_t index) const {
-    if (index >= N) throw std::out_of_range("Index out of range");
-    return arr[index];
-}
+// template <typename T, size_t N>
+// const T& MyArray<T, N>::at(size_t index) const {
+//     if (index >= N) throw std::out_of_range("Index out of range");
+//     return arr[index];
+// }
 
 // size()
 template <typename T, size_t N>
@@ -79,10 +79,10 @@ constexpr T* MyArray<T, N>::data() noexcept {
     return arr;
 }
 
-template <typename T, size_t N>
-constexpr const T* MyArray<T, N>::data() const noexcept {
-    return arr;
-}
+// template <typename T, size_t N>
+// constexpr const T* MyArray<T, N>::data() const noexcept {
+//     return arr;
+// }
 
 // iterators
 template <typename T, size_t N>
@@ -90,20 +90,20 @@ constexpr T* MyArray<T, N>::begin() noexcept {
     return arr;
 }
 
-template <typename T, size_t N>
-constexpr const T* MyArray<T, N>::begin() const noexcept {
-    return arr;
-}
+// template <typename T, size_t N>
+// constexpr const T* MyArray<T, N>::begin() const noexcept {
+//     return arr;
+// }
 
 template <typename T, size_t N>
 constexpr T* MyArray<T, N>::end() noexcept {
     return arr + N;
 }
 
-template <typename T, size_t N>
-constexpr const T* MyArray<T, N>::end() const noexcept {
-    return arr + N;
-}
+// template <typename T, size_t N>
+// constexpr const T* MyArray<T, N>::end() const noexcept {
+//     return arr + N;
+// }
 
 
 // -------------------------- MAIN ------------------------------

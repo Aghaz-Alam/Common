@@ -246,7 +246,8 @@ int main() {
   return 0;
 }
 /* 
-Thread Thread 1 stack x = 12 stack x = 2
+Thread 1 stack x = 1
+Thread 2 stack x = 2
 */
 
 
@@ -451,7 +452,38 @@ int main() {
 ---> any can hold any type.
 ---> any_cast throws exception if type mismatched.
 ---> More flexible than variant but less type-safe.
+/* ---------------------------- */
+#include <iostream>
+#include <any>
+#include <string>
+using namespace std;
+int main() {
+    any data;
 
+    data = 42;
+    cout << "Stored int: " << any_cast<int>(data) << endl;
+
+    data = 4.2;
+    cout << "Stored double: " << any_cast<double>(data) << endl;
+
+    data = 4.2f;
+    cout << "Stored float: " << any_cast<float>(data) << endl;
+
+    data = string("Hello any!");
+    cout << "Stored string: " << any_cast<string>(data) << endl;
+
+    // Safe type checking
+    if (data.type() == typeid(string)) {
+        cout << "data currently holds a string" << endl;
+    }
+}
+/* 
+Stored int: 42
+Stored double: 4.2
+Stored float: 4.2
+Stored string: Hello any!
+data currently holds a string
+*/
 /* ---------------------------- */
 2. Guaranteed RVO (Return Value Optimization)
 ---> Returning objects from functions does not require copying or heap allocation.

@@ -197,7 +197,8 @@ void task() {
     std::cout << "Mutex automatically released\n";
 }
 int main() {
-    task();
+    std::thread t(task);
+    t.join();
 }
 
 ✔ Lock exists only within the block
