@@ -5,9 +5,7 @@
 | **Inheritance**   | “IS-A”         | Derived is a type of base       | Car IS-A Vehicle                         |
 
 
-
-
-3. Inheritance ["IS-A" Relation]
+Inheritance ["IS-A" Relation]
    --> Inheritance represents an “IS-A” relationship between classes.
    --> A derived class is a specialized type of the base class.
    --> The derived class inherits the properties and behavior of the base class.
