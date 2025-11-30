@@ -8,6 +8,7 @@ Composition ["Has-a" (strong ownership)]
 --> Composition is a strong "has-a" relationship where the contained object (part) cannot exist without the container object (whole). 
 --> If the container is destroyed, the contained object is also destroyed.
 
+
 #include <iostream>
 #include <memory>
 using namespace std;
@@ -437,3 +438,97 @@ Name: Alice, Address: 123 Main St, Anytown
 Person Destroyed: Alice
 Address Destroyed: 123 Main St, Anytown
 */
+
+
+
+
+
+
+
+//“Car owns Engine” (strong HAS-A relationship)-Composition
+#include <iostream>
+using namespace std;
+class Engine {
+  public:
+    virtual void start() { cout << "Generic engine start\n"; }
+    virtual ~Engine() {}
+};
+class PetrolEngine : public Engine {
+  public:
+    void start() override { cout << "Petrol engine start\n"; }
+};
+class Car {
+  private:
+    Engine* engine;  // Car owns this
+   public:
+    Car() {
+        // Car creates the engine → strong ownership
+        engine = new PetrolEngine();
+    }
+    void startCar() {
+        engine->start(); // Polymorphism works here
+    }
+    ~Car() {
+        delete engine; // Car destroys the engine
+    }
+};
+int main() {
+    Car c;
+    c.startCar();
+}
+/*
+Petrol engine start
+*/
+
+Explanation (Composition)
+--> Car creates the Engine object inside its constructor.
+--> Car destroys the engine in its destructor.
+--> Engine object cannot exist without the Car.
+--> This is Composition. 
+--> Polymorphism is used because Engine* points to PetrolEngine.
+
+
+
+
+//AGGREGATION- “Car uses Engine” (weak HAS-A relationship)
+#include <iostream>
+using namespace std;
+class Engine {
+  public:
+    virtual void start() { cout << "Generic engine start\n"; }
+    virtual ~Engine() {}
+};
+class DieselEngine : public Engine {
+  public:
+    void start() override { cout << "Diesel engine start\n"; }
+};
+class Car {
+  private:
+    Engine* engine; // Car does NOT own the engine
+  public:
+    Car(Engine* eng) : engine(eng) {} // Car only uses engine
+
+    void startCar() {
+        engine->start(); // Polymorphism works here
+    }
+    // No delete! Car does NOT own engine
+};
+int main() {
+    Engine* eng = new DieselEngine(); // Engine created outside Car
+    Car c(eng);
+    c.startCar();
+
+    delete eng; // Engine must be deleted by creator
+  return 0
+}
+/*
+Diesel engine start
+*/
+
+Explanation (Aggregation)
+--> Engine is created outside the Car.
+--> Car only uses the existing Engine.
+--> Car does not destroy the Engine.
+--> Engine can live independently even after Car is destroyed.
+--> This is Aggregation.
+--> Polymorphism works because Engine* can point to DieselEngine.
