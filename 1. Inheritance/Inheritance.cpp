@@ -432,73 +432,68 @@ Engine destroyed
 ➡️ Engine dies WITH Car → Composition.
 
 
+
+//Composition
 #include <iostream>
 #include <string>
-#include <memory> // Required for smart pointers, which are good for composition
+#include <memory>   // For unique_ptr
 using namespace std;
-// The 'Part' class (Engine)
-class Engine {
+class Engine final {
   private:
     string type;
-
   public:
-    Engine(string t) : type(t) {
-        cout << "Engine (" << type << ") Created" << endl;
+    explicit Engine(string t) : type(move(t)){
+        cout << "Engine (" << type << ") Created\n";
     }
-
-    ~Engine() {
-        cout << "Engine (" << type << ") Destroyed" << endl;
+    ~Engine() noexcept {
+        cout << "Engine (" << type << ") Destroyed\n";
     }
-
-    void start() {
-        cout << "Engine started" << endl;
+    void start() const noexcept {
+        cout << "Engine started\n";
     }
+    // Prevent copying
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine&) = delete;
+    
+    // Allow moving if usable (optional)
+    Engine(Engine&&) noexcept = default;
+    Engine& operator=(Engine&&) noexcept = default;
 };
-
-// The 'Whole' class (Car) - strongly owns the Engine
-class Car {
+class Car final {
   private:
-    // Engine is a member variable, its lifetime is tied to the Car
-    // std::unique_ptr ensures single ownership and automatic destruction
-    unique_ptr<Engine> engine;
+    unique_ptr<Engine> engine;   // Strong ownership
     string name;
-
   public:
-    Car(string n, string engineType) : name(n), engine(make_unique<Engine>(engineType)) {
-        cout << "Car (" << name << ") Created" << std::endl;
+    Car(string n, string engineType): name(move(n)), engine(make_unique<Engine>(move(engineType))){
+        cout << "Car (" << name << ") Created\n";
     }
-
-    ~Car() {
-        cout << "Car (" << name << ") Destroyed" << endl;
-        // The unique_ptr automatically destroys the Engine here
+    ~Car() noexcept {
+        cout << "Car (" << name << ") Destroyed\n";
+        // unique_ptr automatically destroys the Engine
     }
+    // Prevent copying (unique_ptr cannot be copied)
+    Car(const Car&) = delete;
+    Car& operator=(const Car&) = delete;
 
-    void drive() {
+    // Allow moves
+    Car(Car&&) noexcept = default;
+    Car& operator=(Car&&) noexcept = default;
+
+    void drive() const noexcept {
         cout << "Driving the " << name << ": ";
         engine->start();
     }
 };
-
 int main() {
-    cout << "--- Entering main scope ---" << endl;
-    
-    // When the Car object is created, the Engine object is automatically created inside it.
-    Car myCar("Sedan", "V6");
-
+    Car myCar("Sedan", "V6");   // Composition: Engine created *inside* Car
     myCar.drive();
-
-    cout << "--- Exiting main scope (Car destroyed) ---" << endl;
-    // When myCar goes out of scope, its destructor is called, which destroys the Engine.
-    
-    return 0;
+  return 0;
 }
-/* 
+/*
 Output:
---- Entering main scope ---
 Engine (V6) Created
 Car (Sedan) Created
 Driving the Sedan: Engine started
---- Exiting main scope (Car destroyed) ---
 Car (Sedan) Destroyed
 Engine (V6) Destroyed
 */

@@ -130,3 +130,164 @@ Car destroyed
 Main ends, Engine still exists until here
 Engine destroyed
 */
+
+
+
+
+
+
+
+//Composition
+#include <iostream>
+#include <string>
+#include <memory>   // For unique_ptr
+using namespace std;
+class Engine final {
+  private:
+    string type;
+  public:
+    explicit Engine(string t) : type(move(t)){
+        cout << "Engine (" << type << ") Created\n";
+    }
+    ~Engine() noexcept {
+        cout << "Engine (" << type << ") Destroyed\n";
+    }
+    void start() const noexcept {
+        cout << "Engine started\n";
+    }
+    // Prevent copying
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine&) = delete;
+    
+    // Allow moving if usable (optional)
+    Engine(Engine&&) noexcept = default;
+    Engine& operator=(Engine&&) noexcept = default;
+};
+class Car final {
+  private:
+    unique_ptr<Engine> engine;   // Strong ownership
+    string name;
+  public:
+    Car(string n, string engineType): name(move(n)), engine(make_unique<Engine>(move(engineType))){
+        cout << "Car (" << name << ") Created\n";
+    }
+    ~Car() noexcept {
+        cout << "Car (" << name << ") Destroyed\n";
+        // unique_ptr automatically destroys the Engine
+    }
+    // Prevent copying (unique_ptr cannot be copied)
+    Car(const Car&) = delete;
+    Car& operator=(const Car&) = delete;
+
+    // Allow moves
+    Car(Car&&) noexcept = default;
+    Car& operator=(Car&&) noexcept = default;
+
+    void drive() const noexcept {
+        cout << "Driving the " << name << ": ";
+        engine->start();
+    }
+};
+int main() {
+    Car myCar("Sedan", "V6");   // Composition: Engine created *inside* Car
+    myCar.drive();
+  return 0;
+}
+/*
+Output:
+Engine (V6) Created
+Car (Sedan) Created
+Driving the Sedan: Engine started
+Car (Sedan) Destroyed
+Engine (V6) Destroyed
+*/
+
+
+Cars
+Name: Sedan, Type: V6
+Name: Hatchback, Type: Inline-4
+Name: SportsCar, Type: V8
+Name: HyperCar, Type: W16
+Name: MuscleCar, Type: V8 Supercharged
+Name: CompactCar, Type: Inline-3 Turbo
+Name: LuxuryCar, Type: V12
+Name: FamilySUV, Type: V6 Turbo
+Name: ElectricSedan, Type: Dual Electric Motors
+Name: HybridSUV, Type: Inline-4 Hybrid
+
+
+
+
+
+//Aggregation
+#include <iostream>
+#include <string>
+using namespace std;
+class Engine {
+  private:
+    string type;
+  public:
+    explicit Engine(string t): type(move(t)){
+        cout << "Engine (" << type << ") Created\n";
+    }
+    ~Engine() noexcept {
+        cout << "Engine (" << type << ") Destroyed\n";
+    }
+    void start() const noexcept {
+        cout << "Engine started\n";
+    }
+    // Prevent copying
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine&) = delete;
+
+    // Allow moves
+    Engine(Engine&&) noexcept = default;
+    Engine& operator=(Engine&&) noexcept = default;
+};
+class Car final {
+  private:
+    Engine* engine;   // Non-owning raw pointer → Aggregation
+    string name;
+
+  public:
+    // Car receives an existing engine → no ownership
+    Car(string n, Engine* eng) noexcept: name(move(n)), engine(eng){
+        cout << "Car (" << name << ") Created\n";
+    }
+    ~Car() noexcept {
+        cout << "Car (" << name << ") Destroyed\n";
+        // Engine is NOT destroyed here — Car does NOT own it
+    }
+
+    // No copying or moving needed (but we can delete copy ops anyway)
+    Car(const Car&) = delete;
+    Car& operator=(const Car&) = delete;
+
+    void drive() const noexcept {
+        cout << "Driving the " << name << ": ";
+        engine->start();   // Polymorphic-safe if Engine were polymorphic
+    }
+};
+
+int main() {
+    Engine engine("V6");      // Engine exists independently
+    Car myCar("Sedan", &engine);  // Aggregation → Car uses Engine
+
+    myCar.drive();
+
+    return 0;
+}
+/*
+Output:
+Engine (V6) Created
+Car (Sedan) Created
+Driving the Sedan: Engine started
+Car (Sedan) Destroyed
+Engine (V6) Destroyed
+*/
+
+
+Cars,
+Name: Sedan, Type: V6
+Name: SUV, Type: V6
+Name: Minivan, Type: V6
