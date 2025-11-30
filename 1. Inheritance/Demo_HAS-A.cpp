@@ -532,3 +532,86 @@ Explanation (Aggregation)
 --> Engine can live independently even after Car is destroyed.
 --> This is Aggregation.
 --> Polymorphism works because Engine* can point to DieselEngine.
+
+
+
+
+//COMPOSITION (Modern C++)-- “Car owns Engine” → strong HAS-A
+// Modern C++ Version (using std::unique_ptr)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+  public:
+    virtual void start() { cout << "Generic engine start\n"; }
+    virtual ~Engine() = default;
+};
+class PetrolEngine : public Engine {
+  public:
+    void start() override { cout << "Petrol engine start\n"; }
+};
+class Car {
+  private:
+    unique_ptr<Engine> engine;  // Car owns this strongly
+  public:
+    Car() : engine(std::make_unique<PetrolEngine>()) {}  // Composition
+    void startCar() {
+        engine->start();  // Polymorphism
+    }
+};
+int main() {
+    Car c;
+    c.startCar();
+}
+/*
+Output
+Petrol engine start
+*/
+✔ Explanation (Composition)
+--> Car uses unique_ptr<Engine> → exclusive ownership
+--> Car creates the Engine internally
+--> Car automatically destroys the Engine (RAII)
+--> Engine cannot exist without Car → Composition
+--> Polymorphism through Engine pointer
+
+
+
+
+//AGGREGATION (Modern C++)--“Car uses Engine” → weak HAS-A
+//Modern C++ Version (using std::shared_ptr)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+  public:
+    virtual void start() { cout << "Generic engine start\n"; }
+    virtual ~Engine() = default;
+};
+class DieselEngine : public Engine {
+  public:
+    void start() override { cout << "Diesel engine start\n"; }
+};
+class Car {
+  private:
+    shared_ptr<Engine> engine;   // Car does NOT own the engine strongly
+  public:
+    Car(shared_ptr<Engine> eng) : engine(eng) {}  // Aggregation
+    void startCar() {
+        engine->start();  // Polymorphism
+    }
+};
+int main() {
+    auto eng = std::make_shared<DieselEngine>();  // Engine created outside Car
+    Car c(eng);
+    c.startCar();
+}
+/*
+Output
+Diesel engine start
+*/
+✔ Explanation (Aggregation)
+--> Engine is created outside the Car
+--> Car receives a shared_ptr<Engine> → non-owning usage
+--> Engine can live even after Car is destroyed
+--> This is aggregation
+--> Polymorphism works through the Engine pointer
