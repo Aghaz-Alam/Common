@@ -291,3 +291,149 @@ Cars,
 Name: Sedan, Type: V6
 Name: SUV, Type: V6
 Name: Minivan, Type: V6
+
+
+
+
+
+
+
+
+// Composition -- Person owns Address
+#include <iostream>
+#include <string>
+#include <memory>
+using namespace std;
+class Address {
+  private:
+    string street;
+    string city;
+  public:
+    Address(string s, string c): street(move(s)), city(move(c)){
+        cout << "Address Created: " << street << ", " << city << '\n';
+    }
+    ~Address() noexcept {
+        cout << "Address Destroyed: " << street << ", " << city << '\n';
+    }
+    const string& getStreet() const noexcept { return street; }
+    const string& getCity() const noexcept { return city; }
+
+    // Prevent copying
+    Address(const Address&) = delete;
+    Address& operator=(const Address&) = delete;
+
+    // Allow moving
+    Address(Address&&) noexcept = default;
+    Address& operator=(Address&&) noexcept = default;
+};
+class Person {
+  private:
+    string name;
+    unique_ptr<Address> address;   // Strong ownership
+  public:
+    Person(string n, string street, string city): name(move(n)), address(make_unique<Address>(move(street), move(city))){
+        cout << "Person Created: " << name << '\n';
+    }
+    ~Person() noexcept {
+        cout << "Person Destroyed: " << name << '\n';
+        // unique_ptr automatically destroys Address
+    }
+    // Prevent copying (unique_ptr is non-copyable)
+    Person(const Person&) = delete;
+    Person& operator=(const Person&) = delete;
+
+    // Allow move semantics
+    Person(Person&&) noexcept = default;
+    Person& operator=(Person&&) noexcept = default;
+
+    void display() const noexcept {
+        std::cout << "Name: " << name<< ", Address: " << address->getStreet()<< ", " << address->getCity() << '\n';
+    }
+};
+int main() {
+    Person p1("Alice", "123 Main St", "Anytown");
+    p1.display();
+  return 0;
+}
+/*
+--- Creating Person (Composition) ---
+Address Created: 123 Main St, Anytown
+Person Created: Alice
+Name: Alice, Address: 123 Main St, Anytown
+--- End of main ---
+Person Destroyed: Alice
+Address Destroyed: 123 Main St, Anytown
+*/
+
+
+
+
+
+
+// Aggregation -- Person uses Address
+#include <iostream>
+#include <string>
+using namespace std;
+class Address {
+  private:
+    string street;
+    string city;
+  public:
+    Address(string s, string c): street(move(s)), city(move(c)){
+        cout << "Address Created: " << street << ", " << city << '\n';
+    }
+    ~Address() noexcept {
+        cout << "Address Destroyed: " << street << ", " << city << '\n';
+    }
+    const string& getStreet() const noexcept { return street; }
+    const string& getCity()   const noexcept { return city; }
+
+    // Disable copying
+    Address(const Address&) = delete;
+    Address& operator=(const Address&) = delete;
+
+    // Allow moves
+    Address(Address&&) noexcept = default;
+    Address& operator=(Address&&) noexcept = default;
+};
+class Person {
+  private:
+    string name;
+    const Address* addressPtr;   // Non-owning → aggregation
+
+  public:
+    // Person receives an Address from outside (weak relationship)
+    Person(string n, const Address* addr) noexcept: name(move(n)), addressPtr(addr){
+        cout << "Person Created: " << name << '\n';
+    }
+    ~Person() noexcept {
+        cout << "Person Destroyed: " << name << '\n';
+        // DO NOT delete addressPtr → Person does NOT own Address
+    }
+    // Prevent copy
+    Person(const Person&) = delete;
+    Person& operator=(const Person&) = delete;
+
+    // Move allowed
+    Person(Person&&) noexcept = default;
+    Person& operator=(Person&&) noexcept = default;
+
+    void display() const noexcept {
+        cout << "Name: " << name << ", Address: " << addressPtr->getStreet()<< ", " << addressPtr->getCity() << '\n';
+    }
+};
+int main() {
+    Address addr("123 Main St", "Anytown");  // Independent object
+
+    Person p1("Alice", &addr); // Person does NOT own Address
+    p1.display();
+
+  return 0;
+}
+/*
+Address Created: 123 Main St, Anytown
+Person Created: Alice
+Name: Alice, Address: 123 Main St, Anytown
+Person Destroyed: Alice
+Address Destroyed: 123 Main St, Anytown
+*/

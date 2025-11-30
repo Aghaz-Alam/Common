@@ -1167,57 +1167,63 @@ Name: HybridSUV, Type: Inline-4 Hybrid
 #include <string>
 #include <memory>
 using namespace std;
-
-// The 'Part' class (Address) - exists ONLY inside Person
 class Address {
- public:
+  private:
     string street;
     string city;
 
-    Address(string s, string c) : street(s), city(c) {
-        cout << "Address Created: " << street << ", " << city << endl;
+  public:
+    Address(string s, string c): street(move(s)), city(move(c)){
+        cout << "Address Created: " << street << ", " << city << '\n';
     }
 
-    ~Address() {
-        cout << "Address Destroyed: " << street << ", " << city << endl;
+    ~Address() noexcept {
+        cout << "Address Destroyed: " << street << ", " << city << '\n';
     }
+
+    const string& getStreet() const noexcept { return street; }
+    const string& getCity() const noexcept { return city; }
+
+    // Prevent copying
+    Address(const Address&) = delete;
+    Address& operator=(const Address&) = delete;
+
+    // Allow moving
+    Address(Address&&) noexcept = default;
+    Address& operator=(Address&&) noexcept = default;
 };
-
-// Person strongly owns Address (Composition)
 class Person {
   private:
     string name;
     unique_ptr<Address> address;   // Strong ownership
 
   public:
-    // Person CREATES its own Address → COMPOSITION
-    Person(string n, string street, string city) : name(n), address(make_unique<Address>(street, city)){
-        cout << "Person Created: " << name << endl;
+    Person(string n, string street, string city): name(move(n)), address(make_unique<Address>(move(street), move(city))){
+        cout << "Person Created: " << name << '\n';
     }
-
-    ~Person() {
-        cout << "Person Destroyed: " << name << endl;
-        // unique_ptr automatically destroys address
+    ~Person() noexcept {
+        cout << "Person Destroyed: " << name << '\n';
+        // unique_ptr automatically destroys Address
     }
+    // Prevent copying (unique_ptr is non-copyable)
+    Person(const Person&) = delete;
+    Person& operator=(const Person&) = delete;
 
-    void display() {
-        cout << "Name: " << name << ", Address: " << address->street << ", " << address->city << endl;
+    // Allow move semantics
+    Person(Person&&) noexcept = default;
+    Person& operator=(Person&&) noexcept = default;
+
+    void display() const noexcept {
+        std::cout << "Name: " << name<< ", Address: " << address->getStreet()<< ", " << address->getCity() << '\n';
     }
 };
-
 int main() {
-    cout << "--- Creating Person (composition) ---" << endl;
-
     Person p1("Alice", "123 Main St", "Anytown");
-
     p1.display();
-
-    cout << "--- End of main ---" << endl;
-
-    return 0;
+  return 0;
 }
 /*
---- Creating Person (composition) ---
+--- Creating Person (Composition) ---
 Address Created: 123 Main St, Anytown
 Person Created: Alice
 Name: Alice, Address: 123 Main St, Anytown
@@ -1225,6 +1231,7 @@ Name: Alice, Address: 123 Main St, Anytown
 Person Destroyed: Alice
 Address Destroyed: 123 Main St, Anytown
 */
+
 
 
 4. Aggregation  ["Has-a" (weak ownership)]
