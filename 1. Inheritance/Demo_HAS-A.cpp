@@ -69,10 +69,7 @@ Aggregation  ["Has-a" (weak ownership)]
 
 #include <iostream>
 using namespace std;
-// =====================================
-// Engine Class
-// Represents an engine whose lifetime is independent of Car
-// =====================================
+
 class Engine final {
   public:
     explicit Engine() noexcept {
@@ -85,11 +82,7 @@ class Engine final {
         cout << "Engine started\n";  // Start the engine
     }
 };
-// =====================================
-// Car Class
-// Demonstrates aggregation: Car uses Engine (weak “has-a” relationship)
-// Car does NOT own Engine; Engine lifetime is independent
-// =====================================
+
 class Car final {
   private:
     Engine* enginePtr;  // Non-owning pointer → aggregation
