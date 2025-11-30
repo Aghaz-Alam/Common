@@ -5,13 +5,13 @@ using namespace std;
 
 template <typename T, size_t N>
 class CQueue {
-private:
+  private:
     T arr[N];
     size_t frontIndex;
     size_t rearIndex;
     size_t count;
 
-public:
+  public:
     CQueue();
 
     // Basic Queue Operations

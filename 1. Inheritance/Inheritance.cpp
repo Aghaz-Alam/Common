@@ -2,7 +2,159 @@ Inheritance
 - Public, private inheritance
 - Is-a relation, has-a relation, composition, aggregation
 
+//Modern C++ IS-A relation
+#include <iostream>
+#include <string>
+using namespace std;
+class Vehicle {
+  private:
+    int speed;
+    float fuelLevel;
 
+  public:
+    // Compile-time constants
+    constexpr static int MAX_SPEED = 300;
+    constexpr static float MAX_FUEL = 100.0f;
+
+    explicit Vehicle(int initialSpeed = 0, float initialFuel = MAX_FUEL) noexcept: speed(initialSpeed), fuelLevel(initialFuel) {}
+
+    virtual ~Vehicle() noexcept = default;   //Use the compiler-generated destructor.
+
+    // Getters
+    [[nodiscard]] int getSpeed() const noexcept { return speed; }
+    [[nodiscard]] float getFuelLevel() const noexcept { return fuelLevel; }
+
+    // Virtual methods
+    virtual void start() noexcept {
+        cout << "Vehicle: Engine started.\n";
+    }
+
+    virtual void stop() noexcept {
+        speed = 0;
+        cout << "Vehicle: Stopped.\n";
+    }
+
+    void accelerate(const int amount) noexcept {
+        speed = min(speed + amount, MAX_SPEED);
+        cout << "Vehicle: Accelerating... Current speed: " << speed << " km/h\n";
+    }
+
+    void refuel(const float amount) noexcept {
+        fuelLevel = min(fuelLevel + amount, MAX_FUEL);
+        cout << "Vehicle: Refueled. Current fuel: " << fuelLevel << "%\n";
+    }
+};
+
+class Car final : public Vehicle {
+  private:
+    string currentTrack {"Default Track"};
+
+  public:
+    explicit Car(int initialSpeed = 0, float initialFuel = MAX_FUEL) noexcept: Vehicle(initialSpeed, initialFuel) {}
+
+    // Override base class method
+    void start() noexcept override {
+        cout << "Car: Engine started using push-button.\n";
+    }
+
+    void honk() const noexcept {
+        cout << "Car: Honk! Honk!\n";
+    }
+
+    void turnOnAc() const noexcept {
+        cout << "Car: Air conditioner turned ON.\n";
+    }
+
+    void playMusic(const string& trackName) noexcept {
+        currentTrack = trackName;
+        cout << "Car: Now playing - " << currentTrack << '\n';
+    }
+};
+
+void testDrive(const Vehicle& vehicleRef) noexcept {
+    cout << "Test Drive: Vehicle is currently at "<< vehicleRef.getSpeed() << " km/h\n";
+}
+
+int main() {
+    Car myCar;
+
+    myCar.start();
+    myCar.accelerate(40);
+    myCar.refuel(15.5f);
+    myCar.turnOnAc();
+    myCar.playMusic("Shape of You");
+    myCar.honk();
+    myCar.stop();
+
+    testDrive(myCar);
+
+    return 0;
+}
+/*
+Car: Engine started using push-button.
+Vehicle: Accelerating... Current speed: 40 km/h
+Vehicle: Refueled. Current fuel: 100%
+Car: Air conditioner turned ON.
+Car: Now playing - Shape of You
+Car: Honk! Honk!
+Vehicle: Stopped.
+Test Drive: Vehicle is currently at 0 km/h
+*/
+
+/* --------------------[[nodiscard]] c++17------------------------------- */
+🔹 Simple Example
+[[nodiscard]] int compute() {
+    return 10;
+}
+int main() {
+    compute();  // ⚠️ Compiler WARNING: return value ignored
+}
+
+You get a warning because compute() returns something, but we didn’t use it.
+/* ----------------------- */
+[[nodiscard]] only cares when you do THIS:
+compute();   // ignored → WARNING
+
+
+NOT when you do this:
+cout << compute();   // used → OK, Because you used the 10.
+/* ----------------------- */
+
+
+
+🔹 Without [[nodiscard]]
+int compute() {
+    return 10;
+}
+int main() {
+    compute();  // No warning
+}
+No warning—C++ allows ignoring return values.
+
+
+/* ----------------------- */
+[[nodiscard]] only cares when you do THIS:
+compute();   // ignored → WARNING
+
+
+NOT when you do this:
+cout << compute();   // used → OK
+/* ----------------------- */
+
+⭐ Why is it useful?
+To avoid bugs caused by ignoring important return values:
+
+Example:
+[[nodiscard]] bool saveFile() {
+    return false; // save failed
+}
+saveFile();  // ⚠️ BUG: ignored failure!
+
+
+Compiler warns:
+"the return value is marked nodiscard"
+This helps developers catch mistakes.
+/* --------------------------------------------------- */
 
 C++11
 C++11 brought significant enhancements to object-oriented programming, primarily focused on explicitness 
@@ -598,28 +750,171 @@ Example	        A Library has Books. Books exist even if the library is closed.	
 This relationship signifies that the derived class is a specific type of the base class. 
 It is implemented using public inheritance. A Car is a Vehicle.
 
+
+#include <iostream>
+using namespace std;
+class Vehicle {
+  public:
+    void start() {
+        cout << "Vehicle is starting..." << endl;
+    }
+};
+// Car IS-A Vehicle
+class Car : public Vehicle {
+ public:
+    void honk() {                             //When a car presses the horn, the loud "beep-beep" sound is called honking.
+        cout << "Car is honking..." << endl;
+    }
+};
+int main() {
+    Car c;
+    c.start();  // inherited
+    c.honk();   // own method
+}
+
+/*
+Vehicle is starting...
+Car is honking...
+*/
+
+
+
+
+#include <iostream>
+#include <memory>   // for smart pointers if needed
+using namespace std;
+
+class Vehicle {
+  public:
+    // Default constructor
+    Vehicle() noexcept = default;
+
+    // Virtual destructor → safe polymorphism
+    virtual ~Vehicle() noexcept = default;
+
+    // Start the vehicle (can be overridden by derived classes)
+    virtual void start() const noexcept {
+        cout << "Vehicle: Engine started.\n";
+    }
+
+    // Stop the vehicle
+    virtual void stop() noexcept {
+        cout << "Vehicle: Vehicle stopped.\n";
+    }
+
+    // Prevent accidental copy
+    Vehicle(const Vehicle&) = delete;
+    Vehicle& operator=(const Vehicle&) = delete;
+};
+
+class Car final : public Vehicle {
+ public:
+    Car() noexcept = default;
+    ~Car() noexcept override = default;
+
+    // Override start to show car-specific behavior
+    void start() const noexcept override {
+        cout << "Car: Engine started using push-button ignition.\n";
+    }
+
+    // Car-specific functions
+    void honk() const noexcept {
+        cout << "Car horn: Beep! Beep!\n";
+    }
+
+    void turnOnAc() const noexcept {
+        cout << "Car: Air conditioner turned ON.\n";
+    }
+
+    void playMusic(const string& trackName) noexcept {
+        cout << "Car: Now playing - " << trackName << '\n';
+    }
+};
+
+void testDrive(const Vehicle& vehicle) noexcept {
+    cout << "Test Drive: ";
+    vehicle.start();  // calls derived version if virtual
+}
+
+
+int main() {
+    // Stack object usage
+    Car myCar;
+
+    myCar.start();                 // overridden function
+    myCar.turnOnAc();              // car-specific
+    myCar.playMusic("Shape of You");
+    myCar.honk();                  // car-specific
+    myCar.stop();                  // base class function
+
+    // Demonstrate polymorphism with reference
+    Vehicle& vehicleRef = myCar;
+    testDrive(vehicleRef);         // calls Car::start() → virtual works
+
+    return 0;
+}
+
+/*
+Car: Engine started using push-button ignition.
+Car: Air conditioner turned ON.
+Car: Now playing - Shape of You
+Car horn: Beep! Beep!
+Vehicle: Vehicle stopped.
+Test Drive: Car: Engine started using push-button ignition.
+*/
+
+/* ----------------------------------------- */
+✅ What Modern C++ Features Were Added?
+1. noexcept
+
+Helps optimization and indicates the function will not throw exceptions.
+
+2. override
+
+Ensures you're correctly overriding a base class virtual function.
+
+3. final
+
+Prevents further inheritance — good when class is not meant to be extended.
+
+4. Defaulted and deleted constructors
+
+Modern clean syntax:
+
+Vehicle() noexcept = default;
+Vehicle(const Vehicle&) = delete;
+
+5. Virtual destructor
+
+Needed for safe polymorphism.
+
+6. const correctness
+
+Functions that don’t modify the object are marked as const.
+/* ----------------------------------------- */
 #include <iostream>
 #include <string>
+using namespace std;
 // Base Class (Parent)
 class Vehicle {
   public:
-    std::string brand = "Ford";
+    string brand = "Ford";
 
     void honk() {
-        std::cout << "Tuut, tuut!" << std::endl;
+        cout << "Tuut, tuut!" << endl;
     }
 };
 // Derived Class (Child)
 class Car : public Vehicle {
   public:
-    std::string model = "Mustang";
+    string model = "Mustang";
 };
 
 int main() {
     Car myCar;
     // We can access base class members through the derived class object
     myCar.honk(); 
-    std::cout << "Brand: " << myCar.brand << ", Model: " << myCar.model << std::endl;
+    cout << "Brand: " << myCar.brand << ", Model: " << myCar.model << endl;
    return 0;
 }
 /* 
@@ -629,6 +924,45 @@ Brand: Ford, Model: Mustang
 */
 
 
+
+
+#include <iostream>
+using namespace std;
+class Engine {
+  public:
+    Engine()  { cout << "Engine created\n"; }
+    ~Engine() { cout << "Engine destroyed\n"; }
+    void start() const { cout << "Engine started\n"; }
+};
+
+// Car IS-A Engine
+class Car : public Engine {
+  public:
+    Car() {
+        cout << "Car created\n";
+    }
+    ~Car() {
+        cout << "Car destroyed\n";
+    }
+    void drive() const {
+        start();  // inherited from Engine
+    }
+};
+int main() {
+    {
+        Car c;
+        c.drive();
+    } // Car destroyed → Engine destroyed
+
+    return 0;
+}
+/*
+Engine created
+Car created
+Engine started
+Car destroyed
+Engine destroyed
+*/
 
 
 2. "Has-a" Relation (General Containment)
