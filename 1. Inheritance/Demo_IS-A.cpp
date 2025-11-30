@@ -24,10 +24,6 @@ Key points:
 #include <iostream>
 #include <string>   // Needed for std::string
 using namespace std;
-
-// =====================================
-// Base Class: Vehicle (IS-A relation)
-// =====================================
 class Vehicle {
   public:
     Vehicle() noexcept = default;
@@ -45,9 +41,6 @@ class Vehicle {
     Vehicle& operator=(const Vehicle&) = delete;
 };
 
-// =====================================
-// Derived Class: Car (IS-A Vehicle)
-// =====================================
 class Car final : public Vehicle {
   public:
     Car() noexcept = default;
@@ -70,10 +63,6 @@ class Car final : public Vehicle {
     }
 };
 
-// =====================================
-// Utility Function
-// Demonstrates polymorphic behavior
-// =====================================
 void testDrive(const Vehicle& vehicle) noexcept {
     cout << "Test Drive: ";
     vehicle.start();  // Calls Car::start() if derived object
