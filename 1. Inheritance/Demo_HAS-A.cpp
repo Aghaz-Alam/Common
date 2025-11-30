@@ -4,11 +4,9 @@
 | **Aggregation**   | Weak “has-a”   | Part can exist independently    | Car uses Engine (`Engine*` or `Engine&`) |
 | **Inheritance**   | “IS-A”         | Derived is a type of base       | Car IS-A Vehicle                         |
 
-
-1. Composition ["Has-a" (strong ownership)]
-   --> Composition is a strong "has-a" relationship where the contained object (part) cannot exist without 
-       the container object (whole). 
-   --> If the container is destroyed, the contained object is also destroyed.
+Composition ["Has-a" (strong ownership)]
+--> Composition is a strong "has-a" relationship where the contained object (part) cannot exist without the container object (whole). 
+--> If the container is destroyed, the contained object is also destroyed.
 
 #include <iostream>
 #include <memory>
@@ -65,10 +63,9 @@ Engine destroyed
 
 
 
-2. Aggregation  ["Has-a" (weak ownership)]
-   ---> Aggregation is a weaker "has-a" relationship where the contained object can exist independently of 
-        the container object. 
-   ---> The container typically holds a pointer or reference to an object created elsewhere.
+Aggregation  ["Has-a" (weak ownership)]
+---> Aggregation is a weaker "has-a" relationship where the contained object can exist independently of the container object. 
+---> The container typically holds a pointer or reference to an object created elsewhere.
 
 #include <iostream>
 using namespace std;
