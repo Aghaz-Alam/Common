@@ -3,16 +3,13 @@
 #include <stdexcept>
 #include <string>
 using namespace std;
-
 //std::array internal implementation with template
 template <typename T, size_t N>
 class MyArray {
   private:
     T arr[N];
-
   public:
     MyArray() = default;
-
     constexpr T& operator[](size_t index) noexcept;
     //constexpr const T& operator[](size_t index) const noexcept;
 

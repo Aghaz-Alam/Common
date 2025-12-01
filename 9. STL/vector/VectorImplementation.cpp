@@ -2,14 +2,13 @@
 #include <iostream>
 #include <stdexcept>
 using namespace std;
-
 template<typename T, size_t CAP>
 class MyVector {
-private:
+  private:
     T* arr;
     size_t n;
 
-public:
+  public:
     // Constructor
     MyVector();
 
@@ -54,45 +53,41 @@ MyVector<T, CAP>::~MyVector() {
 }
 
 template<typename T, size_t CAP>
-MyVector<T, CAP>::MyVector(const MyVector& other)
-    : arr(new T[CAP]), n(other.n)
-{
+MyVector<T, CAP>::MyVector(const MyVector& Obj): arr(new T[CAP]), n(Obj.n){
     for (size_t i = 0; i < n; ++i)
-        arr[i] = other.arr[i];
+        arr[i] = Obj.arr[i];
 }
 
 template<typename T, size_t CAP>
-MyVector<T, CAP>& MyVector<T, CAP>::operator=(const MyVector& other)
-{
-    if (this == &other)
-        return *this;
+MyVector<T, CAP>& MyVector<T, CAP>::operator=(const MyVector& Obj){
+    if (this == &Obj) return *this;
 
-    n = other.n;
+    n = Obj.n;
     for (size_t i = 0; i < n; ++i)
-        arr[i] = other.arr[i];
+        arr[i] = Obj.arr[i];
 
     return *this;
 }
 
 template<typename T, size_t CAP>
-MyVector<T, CAP>::MyVector(MyVector&& other) noexcept
-    : arr(other.arr), n(other.n)
+MyVector<T, CAP>::MyVector(MyVector&& Obj) noexcept
+    : arr(Obj.arr), n(Obj.n)
 {
-    other.arr = nullptr;
-    other.n = 0;
+    Obj.arr = nullptr;
+    Obj.n = 0;
 }
 
 template<typename T, size_t CAP>
-MyVector<T, CAP>& MyVector<T, CAP>::operator=(MyVector&& other) noexcept
+MyVector<T, CAP>& MyVector<T, CAP>::operator=(MyVector&& Obj) noexcept
 {
-    if (this != &other) {
+    if (this != &Obj) {
         delete[] arr;
 
-        arr = other.arr;
-        n = other.n;
+        arr = Obj.arr;
+        n = Obj.n;
 
-        other.arr = nullptr;
-        other.n = 0;
+        Obj.arr = nullptr;
+        Obj.n = 0;
     }
     return *this;
 }
@@ -100,33 +95,29 @@ MyVector<T, CAP>& MyVector<T, CAP>::operator=(MyVector&& other) noexcept
 template<typename T, size_t CAP>
 void MyVector<T, CAP>::push_back(const T& value)
 {
-    if (n == CAP)
-        throw runtime_error("push_back overflow: Vector is full");
+    if (n == CAP) throw runtime_error("push_back overflow: Vector is full");
 
     arr[n++] = value;
 }
 
 template<typename T, size_t CAP>
-void MyVector<T, CAP>::pop_back()
-{
-    if (n == 0)
-        throw runtime_error("pop_back underflow: Vector is empty");
+void MyVector<T, CAP>::pop_back(){
+    if (n == 0) throw runtime_error("pop_back underflow: Vector is empty");
+
     n--;
 }
 
 template<typename T, size_t CAP>
-T& MyVector<T, CAP>::operator[](size_t index)
-{
-    if (index >= n)
-        throw out_of_range("operator[] index out of range");
+T& MyVector<T, CAP>::operator[](size_t index){
+    if (index >= n) throw out_of_range("operator[] index out of range");
+
     return arr[index];
 }
 
 template<typename T, size_t CAP>
-T& MyVector<T, CAP>::at(size_t index)
-{
-    if (index >= n)
-        throw out_of_range("at() index out of range");
+T& MyVector<T, CAP>::at(size_t index){
+    if (index >= n) throw out_of_range("at() index out of range");
+
     return arr[index];
 }
 
@@ -280,49 +271,47 @@ MyVector::~MyVector() {
 }
 
 // Copy Constructor
-MyVector::MyVector(const MyVector& other) : n(other.n), cap(other.cap) {
+MyVector::MyVector(const MyVector& Obj) : n(Obj.n), cap(Obj.cap) {
     arr = new int[cap];
     for (size_t i = 0; i < n; ++i)
-        arr[i] = other.arr[i];
+        arr[i] = Obj.arr[i];
 }
 
 // Copy Assignment
-MyVector& MyVector::operator=(const MyVector& other) {
-    if (this == &other) return *this;
+MyVector& MyVector::operator=(const MyVector& Obj) {
+    if (this == &Obj) return *this;
 
     delete[] arr;
 
-    n = other.n;
-    cap = other.cap;
+    n = Obj.n;
+    cap = Obj.cap;
 
     arr = new int[cap];
     for (size_t i = 0; i < n; ++i)
-        arr[i] = other.arr[i];
+        arr[i] = Obj.arr[i];
 
     return *this;
 }
 
 // Move Constructor
-MyVector::MyVector(MyVector&& other) noexcept
-    : arr(other.arr), n(other.n), cap(other.cap) {
-
-    other.arr = nullptr;
-    other.n = 0;
-    other.cap = 0;
+MyVector::MyVector(MyVector&& Obj) noexcept: arr(other.arr), n(other.n), cap(other.cap) {
+    Obj.arr = nullptr;
+    Obj.n = 0;
+    Obj.cap = 0;
 }
 
 // Move Assignment
-MyVector& MyVector::operator=(MyVector&& other) noexcept {
-    if (this != &other) {
+MyVector& MyVector::operator=(MyVector&& Obj) noexcept {
+    if (this != &Obj) {
         delete[] arr;
 
-        arr = other.arr;
-        n = other.n;
-        cap = other.cap;
+        arr = Obj.arr;
+        n = Obj.n;
+        cap = Obj.cap;
 
-        other.arr = nullptr;
-        other.n = 0;
-        other.cap = 0;
+        Obj.arr = nullptr;
+        Obj.n = 0;
+        Obj.cap = 0;
     }
     return *this;
 }
@@ -334,9 +323,9 @@ void MyVector::resize(size_t newCap) {
 
     int* newArr = new int[newCap];
 
-    for (size_t i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i){
         newArr[i] = arr[i];
-
+    }
     delete[] arr;
     arr = newArr;
     cap = newCap;
@@ -353,8 +342,7 @@ void MyVector::push_back(const int& value) {
 
 // pop_back
 void MyVector::pop_back() {
-    if (n == 0)
-        throw runtime_error("pop_back on empty vector");
+    if (n == 0) throw runtime_error("pop_back on empty vector");
 
     n--;
 

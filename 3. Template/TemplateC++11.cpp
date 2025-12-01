@@ -5,7 +5,7 @@ Templates
 - metaprogramming
 
 
--Normal template usage
+Normal template usage
 ==>C++ template is a powerful tool for creating generic classes or functions. 
 ==>This allows us to write code that works for any data type without rewriting it for each type.
 
