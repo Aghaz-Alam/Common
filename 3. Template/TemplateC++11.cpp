@@ -231,33 +231,6 @@ For example, you can specialize a template when one of its parameters is a certa
 #include <iostream>
 using namespace std;
 
-// Primary template with two parameters
-template <typename T, typename U>
-void print(T value1, U value2) {
-    cout << "Generic template: " << value1 << ", " << value2 << endl;
-}
-
-// Partial specialization when the first parameter is int
-template <typename U>
-void print<int, U>(int value1, U value2) {   // ❌ Invalid in C++
-    cout << "Specialized template for int as first parameter: " << value1 << ", " << value2 << endl;
-}
-
-int main() {
-    print(5, 3.14);     // Uses the specialized template for int as the first parameter
-    print("Hello", 42); // Uses the generic template
-    return 0;
-}
-/*
-Specialized template for int as first parameter: 5, 3.14
-Generic template: Hello, 42
-*/
-
-
-//Corrected Program is 
-#include <iostream>
-using namespace std;
-
 // Generic template with two parameters
 template <typename T, typename U>
 void print(T value1, U value2) {
@@ -291,14 +264,12 @@ This is often achieved using SFINAE (Substitution Failure Is Not An Error) along
 #include <iostream>
 #include <type_traits>
 using namespace std;
-
 // Primary template (only enabled for non-integral and non-floating-point types)
 template <typename T>
 typename std::enable_if<!std::is_integral<T>::value && !std::is_floating_point<T>::value>::type
 print(T value) {
     cout << "Generic template: " << value << endl;
 }
-
 // Specialization for integral types (like int, char)
 template <typename T>
 typename std::enable_if<std::is_integral<T>::value>::type
@@ -312,12 +283,11 @@ typename std::enable_if<std::is_floating_point<T>::value>::type
 print(T value) {
     cout << "Specialized for floating-point type: " << value << endl;
 }
-
 int main() {
     print(42);         // Uses the specialization for integral type
     print(3.14);       // Uses the specialization for floating-point type
     print("Hello");    // Uses the generic template
-    return 0;
+   return 0;
 }
 /*
 Specialized for integral type: 42
