@@ -27,18 +27,23 @@ Result = 30
 #include <future>
 #include <thread>
 using namespace std;
-int slowTask(int x) {
-    this_thread::sleep_for(1s);
-    return x * 2;
+int Add(int x, int y) {
+    this_thread::sleep_for(std::chrono::seconds(1));
+    return x + y;
 }
 int main() {
-    packaged_task<int(int)> task(slowTask);
+    // corrected: function takes 2 ints → packaged_task must match
+    packaged_task<int(int, int)> task(Add);
     future<int> f = task.get_future();
-    thread t(move(task), 10);  // execute task asynchronously
+    // run task asynchronously with arguments 10 and 20
+    thread t(move(task), 10, 20);
     t.join();
     cout << "Result = " << f.get() << endl;
+  return 0;
 }
-
+/*
+Result = 30
+*/
 🎯 When to Use std::packaged_task?
 Use it when:
 ✔ You want to run a function asynchronously

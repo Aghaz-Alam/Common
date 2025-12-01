@@ -127,9 +127,54 @@ int main() {
 
 
 
+✅ What is std::packaged_task?
+std::packaged_task wraps any function or callable object so that its result can be retrieved asynchronously via a future (std::future).
 
+It connects a function → to a future result.
+✔ You give it a function
+✔ It returns a std::future
+✔ When the function executes, the result becomes available through the future
 
-////int return type with future and promise
+✅ Simple Example
+#include <iostream>
+#include <future>
+using namespace std;
+int add(int a, int b) {
+    return a + b;
+}
+int main() {
+    packaged_task<int(int,int)> task(add);
+    future<int> f = task.get_future();
+    task(10, 20);  // execute the function
+    cout << "Result = " << f.get() << endl;
+}
+Output:
+Result = 30
+
+✅ Example with Thread
+#include <iostream>
+#include <future>
+#include <thread>
+using namespace std;
+int Add(int x, int y) {
+    this_thread::sleep_for(std::chrono::seconds(1));
+    return x + y;
+}
+int main() {
+    // corrected: function takes 2 ints → packaged_task must match
+    packaged_task<int(int, int)> task(Add);
+    future<int> f = task.get_future();
+    // run task asynchronously with arguments 10 and 20
+    thread t(move(task), 10, 20);
+    t.join();
+    cout << "Result = " << f.get() << endl;
+  return 0;
+}
+/*
+Result = 30
+*/
+
+//int return type with future and promise
 #include <iostream>
 #include <thread>
 #include <future>

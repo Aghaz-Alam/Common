@@ -1,39 +1,61 @@
-Exception handling - custom exceptions, checked and unchecked exceptions ( autosar cpp guidelines)
+1. Basic Concepts
+C++ provides three keywords for exception handling:
+try -- Defines a block of code to monitor for exceptions.
+throw -- Used to signal an exception.
+catch -- Defines a block of code to handle a specific type of exception.
 
-Exception Handling in C++: Custom Exceptions, Checked and Unchecked Exceptions (According to AUTOSAR C++ Guidelines)
-In C++, exception handling is typically done using try, catch, and throw keywords. Exception handling allows the program to handle errors gracefully, 
-ensuring that the application can respond to issues without crashing.
+2. Syntax
+//Simple Program
+#include <iostream>
+#include <stdexcept> // for std::runtime_error
+using namespace std;
+class Calculator {
+    int val;
+  public:
+    Calculator(int x):val(x){}
+    int Divide(int divisor) {
+        if (divisor == 0) {
+            throw runtime_error("Division by zero error!");
+        }
+        return val / divisor;
+    }
+};
+int main() {
+    Calculator calc(10);
+    try {
+        cout << calc.Divide(0) << endl; // will throw
+    }
+    catch (const runtime_error& e) {
+        cout << "Exception caught: " << e.what() << endl;
+    }
+    return 0;
+}
+/*
+Exception caught: Division by zero error!
+*/
 
-When following AUTOSAR C++ guidelines, particularly in embedded systems development, there are specific practices for exception handling 
-to make sure that software is safe, robust, and meets real-time requirements. These guidelines emphasize custom exceptions, checked exceptions, and unchecked exceptions.
+3. How it works
+The try block contains code that might throw an exception.
+The throw statement signals that something went wrong.
+The catch block handles the exception.
+The program does not crash; it jumps to the matching catch.
+If no catch matches, std::terminate() is called, and the program ends.
+
+4. Types of exceptions
+You can throw any type in C++:
+throw 10;              // int
+throw 3.14;            // double
+throw "Error";         // C-string
+throw std::string("Oops"); // std::string
 
 
-
-Overview of Exception Handling Concepts
-Custom Exceptions: These are exceptions that are defined by the user, often to handle domain-specific errors.
-
-Checked Exceptions: These are exceptions that must be declared and handled by the function signature. 
-C++ does not have checked exceptions in the same way as Java, but you can use noexcept and throw specifications to enforce some constraints.
-
-Unchecked Exceptions: These are exceptions that are not declared or checked at compile time, and the program can throw any type of exception.
-
-
-
-
-C++ Version Differences and Exception Handling
-Let us go over the version-wise usage of exception handling in C++11, C++14, and C++17 with a focus on the guidelines provided by 
-AUTOSAR (which emphasizes safety and predictability).
-
-
-
-
-
-1. C++11: Exception Handling (Custom Exceptions, Checked and Unchecked Exceptions)
-C++11 introduced a new noexcept specifier and improved exception handling with better support for lambda expressions. 
-However, C++ does not have true "checked" exceptions (like Java), and all exceptions are unchecked by default.
-
-
-In C++11, you define custom exceptions by inheriting from std::exception or other base exception classes.
+5. Standard Exceptions
+C++ provides a set of standard exceptions in <stdexcept>:
+std::exception – Base class
+std::runtime_error -- Runtime errors
+std::logic_error -- Logic errors
+std::out_of_range -- Out-of-bounds
+std::overflow_error, std::underflow_error, etc.
 
 Custom Exceptions in C++11
 #include <iostream>
@@ -46,7 +68,6 @@ class MyCustomException : public std::exception {
         return "My Custom Exception occurred!";
     }
 };
-
 void testException() {
     throw MyCustomException();
 }

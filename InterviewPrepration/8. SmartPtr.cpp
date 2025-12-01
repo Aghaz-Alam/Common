@@ -333,3 +333,94 @@ int main() {
 | `unique_ptr`  | exclusive    | RAII, resource acquisition, fast     |
 | `shared_ptr`  | shared       | shared ownership, reference counting |
 | `weak_ptr`    | no ownership | avoid cyclic references, cache       |
+
+
+
+
+
+
+
+//Circular reference count in shared_ptr
+
+#include <iostream>
+#include <memory>
+using namespace std;
+
+class Sample;  // Forward declaration
+
+class Test {
+public:
+    shared_ptr<Sample> sptr;
+    Test()  { cout << "Test constructed\n"; }
+    ~Test() { cout << "Test destroyed\n"; }
+};
+
+class Sample {
+public:
+    shared_ptr<Test> tptr;
+    Sample()  { cout << "Sample constructed\n"; }
+    ~Sample() { cout << "Sample destroyed\n"; }
+};
+
+int main() {
+    {
+        shared_ptr<Test> t = make_shared<Test>();
+        shared_ptr<Sample> s = make_shared<Sample>();
+
+        t->sptr = s;   // Test → Sample
+        s->tptr = t;   // Sample → Test  (circular)
+
+        cout << "t use_count = " << t.use_count() << endl;
+        cout << "s use_count = " << s.use_count() << endl;
+    }
+}
+/*
+Test constructed
+Sample constructed
+t use_count = 2
+s use_count = 2
+*/
+
+
+
+//FIX-circular reference count
+#include <iostream>
+#include <memory>
+using namespace std;
+
+class Sample;  // Forward declaration
+
+class Test {
+public:
+    shared_ptr<Sample> sptr;
+    Test()  { cout << "Test constructed\n"; }
+    ~Test() { cout << "Test destroyed\n"; }
+};
+
+class Sample {
+public:
+    weak_ptr<Test> tptr;
+    Sample()  { cout << "Sample constructed\n"; }
+    ~Sample() { cout << "Sample destroyed\n"; }
+};
+
+int main() {
+    {
+        shared_ptr<Test> t = make_shared<Test>();
+        shared_ptr<Sample> s = make_shared<Sample>();
+
+        t->sptr = s;   // Test → Sample
+        s->tptr = t;   // Sample → Test  (circular)
+
+        cout << "t use_count = " << t.use_count() << endl;
+        cout << "s use_count = " << s.use_count() << endl;
+    }
+}
+/*
+Test constructed
+Sample constructed
+t use_count = 1
+s use_count = 2
+Test destroyed
+Sample destroyed
+*/

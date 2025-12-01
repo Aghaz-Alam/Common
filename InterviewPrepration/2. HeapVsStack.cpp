@@ -275,6 +275,9 @@ Thread 1 sees value = 10
 Thread 2 sees value = 10
 */
 
+#include <iostream>
+using namespace std;
+class MyClass {
 /* ------------------------------------------------------------------------------------- */
 C++11: Big Changes to Heap Management
 C++11 introduced many features that reduced the need for manual heap allocation.

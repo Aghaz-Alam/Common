@@ -1,3 +1,232 @@
+//Queue
+#include<iostream>
+using namespace std;
+template<typename T>
+class MyCQueue{
+    T* arr;
+    size_t fIndex;
+    size_t rIndex;
+    size_t count;
+    size_t cap;
+  public:
+    MyCQueue(size_t capacity);
+    ~MyCQueue();
+    void push(const T& val);
+    void pop();
+    T front() const;
+    T back() const;
+    void Display() const;
+};
+template<typename T>
+MyCQueue<T>::MyCQueue(size_t capacity): arr(new T[capacity]), fIndex(0), rIndex(0), count(0), cap(capacity){}
+
+template<typename T>
+MyCQueue<T>::~MyCQueue(){ delete[] arr;}
+
+template<typename T>
+void MyCQueue<T>::push(const T& val){
+    if(count==cap){
+      throw overflow_error("Queue is full!"); // Stop insertion
+    }
+    arr[rIndex] = val;
+    rIndex = (rIndex+1)%cap;
+}
+
+template<typename T>
+void MyCQueue<T>::pop(){
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    fIndex = (fIndex + 1) % cap;
+    count --;
+} 
+
+template<typename T>
+T MyCQueue<T>::front() const{
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    return arr[fIndex];
+}
+
+template<typename T>
+T MyCQueue<T>::back() const{
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    return arr[(rIndex - 1 + cap) % cap];
+}
+
+template<typename T>
+void MyCQueue<T>::Display() const{
+    for(size_t i=0; i<count; i++){
+        cout<<arr[(fIndex + i)%cap]<<" ";
+    }
+    cout<<endl;
+}
+
+int main(){
+    MyCQueue<int>cq(4);
+    cq.push(10);
+    cq.push(20);
+    cq.push(30); 
+    cq.push(40);
+    
+    cout<<"Elements: ";
+    cq.Display();
+    
+    cq.pop();
+    cout<<"Elements after pop: ";
+    cq.Display();
+    
+    cout<<"front: "<<cq.front()<<endl;
+    cout<<"back: "<<cq.back()<<endl;
+    
+  return 0;
+    
+}
+//Elements: 10 20 30 40 
+
+
+
+
+//Circular Queue
+#include<iostream>
+using namespace std;
+template<typename T>
+class MyCQueue{
+    T* arr;
+    size_t fIndex;
+    size_t rIndex;
+    size_t count;
+    size_t cap;
+  public:
+    MyCQueue(size_t capacity);
+    ~MyCQueue();
+    void push(const T& val);
+    void pop();
+    T front() const;
+    T back() const;
+    void Display() const;
+};
+template<typename T>
+MyCQueue<T>::MyCQueue(size_t capacity): arr(new T[capacity]), fIndex(0), rIndex(0), count(0), cap(capacity){}
+
+template<typename T>
+MyCQueue<T>::~MyCQueue(){ delete[] arr;}
+
+template<typename T>
+void MyCQueue<T>::push(const T& val){
+    if(count==cap){
+        fIndex = (fIndex+1)%cap;    // overwrite oldest element
+    }
+    else{
+        count++;
+    }
+    arr[rIndex] = val;
+    rIndex = (rIndex+1)%cap;
+}
+
+template<typename T>
+void MyCQueue<T>::pop(){
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    fIndex = (fIndex + 1) % cap;
+    count --;
+} 
+
+template<typename T>
+T MyCQueue<T>::front() const{
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    return arr[fIndex];
+}
+
+template<typename T>
+T MyCQueue<T>::back() const{
+    if(count == 0) throw underflow_error("CQueue is empty!");
+    
+    return arr[(rIndex - 1 + cap) % cap];
+}
+
+template<typename T>
+void MyCQueue<T>::Display() const{
+    for(size_t i=0; i<count; i++){
+        cout<<arr[(fIndex + i)%cap]<<" ";
+    }
+    cout<<endl;
+}
+
+int main(){
+    MyCQueue<int>cq(4);
+    cq.push(10);
+    cq.push(20);
+    cq.push(30); 
+    cq.push(40);
+    
+    cout<<"Elements: ";
+    cq.Display();
+    
+    cq.pop();
+    cout<<"Elements after pop: ";
+    cq.Display();
+    
+    cout<<"front: "<<cq.front()<<endl;
+    cout<<"back: "<<cq.back()<<endl;
+    
+  return 0;
+    
+}
+//Elements: 10 20 30 40 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //queue dynamic grow and shrink 
 #include <iostream>
 #include <stdexcept>
