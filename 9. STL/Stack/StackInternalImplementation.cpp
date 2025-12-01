@@ -2,14 +2,13 @@
 #include <iostream>
 #include <stdexcept>
 using namespace std;
-
 class MyStack {
-private:
+  private:
     int* arr;
     size_t topIndex;
     size_t cap;
 
-public:
+  public:
     // Constructor
     MyStack(); 
 
@@ -25,7 +24,7 @@ public:
     size_t getCap() const;
     void Display() const;
 
-private:
+  private:
     void resize();
 };
 
