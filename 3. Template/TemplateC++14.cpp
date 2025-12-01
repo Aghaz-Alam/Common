@@ -118,9 +118,7 @@ template <typename T, typename Allocator = std::allocator<T>>
 class MyContainer {
 public:
     void display_type() {
-        std::cout << "Container holds type: " 
-                  << typeid(T).name() 
-                  << std::endl;
+        std::cout << "Container holds type: " << typeid(T).name() << std::endl;
         // The allocator type is inferred as the default unless specified
     }
 };

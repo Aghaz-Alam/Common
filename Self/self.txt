@@ -1,0 +1,9 @@
+My name is John. I completed my graduation in Computer Engineering from a university in Bangalore. 
+After that, I joined Tech Software Pvt. Ltd., where I worked for 1 year and 8 months as a Software Engineer in the payments domain, 
+primarily on banking applications.
+
+I then moved to ABC Pvt. Ltd., where I worked for 3 years and 1 month as a Software Engineer. 
+During this period, I contributed to two major projects. 
+The first was an infotainment media system, where I worked on tuner functionalities (AM/FM), USB, phone and Bluetooth connectivity. 
+The second was a cluster project, where I worked on the information displayed on the cluster screen, 
+including messages, warnings, telltale icons, fuel indicators, speed information, and more.
