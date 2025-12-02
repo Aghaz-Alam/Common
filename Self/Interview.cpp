@@ -11,38 +11,86 @@
 */
 
 // TODO: Implement KeyValueDB
-class KeyValueDB{
-    //implement class
-     map<string, T> stored_data;
-    public:
-     void set(const string& key, const T& val){
-           stored_data[key] = val;
-     }           
-     T& get(const string& key) const{
+#include <iostream>
+#include <string>
+#include <map>
+#include <stdexcept>
+using namespace std;
+template<typename T>
+class KeyValueDB {
+  private:
+    map<string, T> data;   // ordered map; you can switch to unordered_map if needed
+
+  public:
+    // Set or update a value
+    void set(const string& key, const T& val) {
+        data[key] = val;
+    }
+
+    // Access with error checking
+    const T& get(const string& key) const {
         auto it = data.find(key);
-     }
-      
-     T remove(const string& key){
-        data.erase(key);  
-     }
-     size_t size() const{
+        if (it == data.end()) {
+            throw runtime_error("Key not found: " + key);
+        }
+        return it->second;
+    }
+
+    // Remove a key; throw if not found
+    void remove(const string& key) {
+        auto it = data.find(key);
+        if (it == data.end()) {
+            throw runtime_error("Cannot remove - key not found: " + key);
+        }
+        data.erase(it);
+    }
+
+    // Check if key exists (no exception)
+    bool exists(const string& key) const {
+        return data.find(key) != data.end();
+    }
+
+    // Number of stored key-value pairs
+    size_t size() const {
         return data.size();
-     }
-     size_t clear() const{
+    }
+
+    // Clear all items
+    void clear() {
         data.clear();
-     }
+    }
 };
 
+// -------------------------------------------
+// Example usage
+// -------------------------------------------
+int main() {
+    KeyValueDB<int> db;
 
+    db.set("Aman", 25);
+    db.set("Age", 30);
 
+    cout << "Aman = " << db.get("Aman") << endl;
+    cout << "Age = " << db.get("Age") << endl;
 
-int main(int argc, char** argv)
-{
+    cout << "Exists(Age)? " << (db.exists("Age") ? "Yes" : "No") << endl;
 
-    // Basic usage example - design the API as you see fit
-    // ... demonstrate your API
+    db.remove("Aman");
+
+    cout << "Size after removal: " << db.size() << endl;
+
+    try {
+        db.get("Aman");  // should throw
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    db.clear();
+    cout << "Size after clear = " << db.size() << endl;
+
     return 0;
 }
+
 
 /*
 ================================================================================
@@ -66,7 +114,7 @@ Consider implementing:
 - Iterator support for range-based loops
 - TTL (Time To Live) for auto-expiring entries
 - Thread-safety with appropriate locking strategy
-- Transaction support (begin, commit, rollback)
+- Transaction support (begin, commit, rollback)  
 - Advanced queries (get_all_keys, get_all_values, filtering)
 - Unit tests demonstrating your approach
 */
