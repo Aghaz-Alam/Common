@@ -130,8 +130,7 @@ class Car final {
     unique_ptr<Engine> engine;  // Composition → Car owns Engine
 
   public:
-    explicit Car(unique_ptr<Engine> eng) noexcept 
-        : engine(move(eng)) {}
+    explicit Car(unique_ptr<Engine> eng) noexcept: engine(move(eng)) {}
 
     ~Car() noexcept = default; // unique_ptr automatically cleans up Engine
 

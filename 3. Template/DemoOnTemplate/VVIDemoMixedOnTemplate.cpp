@@ -73,7 +73,6 @@ void print(T first, Args... rest) {
     cout << first<< endl;
     print(rest...); // Pack expansion: calls print with the remaining arguments
 }
-
 int main() {
     print(1, 2.5, "Hello", 'A'); 
 }
