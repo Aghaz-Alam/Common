@@ -68,12 +68,12 @@ int main() {
     KeyValueDB<int> db;
 
     db.set("Aman", 25);
-    db.set("Age", 30);
+    db.set("Madan", 30);
 
     cout << "Aman = " << db.get("Aman") << endl;
-    cout << "Age = " << db.get("Age") << endl;
+    cout << "Madan = " << db.get("Madan") << endl;
 
-    cout << "Exists(Age)? " << (db.exists("Age") ? "Yes" : "No") << endl;
+    cout << "Exists(Madan)? " << (db.exists("Madan") ? "Yes" : "No") << endl;
 
     db.remove("Aman");
 
@@ -90,7 +90,14 @@ int main() {
 
     return 0;
 }
-
+/* 
+Aman = 25
+Madan = 30
+Exists(Madan)? Yes
+Size after removal: 1
+Error: Key not found: Aman
+Size after clear = 0
+*/
 
 /*
 ================================================================================
