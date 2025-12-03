@@ -1,4 +1,9 @@
 Question: 1
+Input: nums = [0,10,0,30,12]
+Output: [10,30,12,0,0]
+
+
+Question: 2
 Input: nums = [12,10,10,30,12,12]
 Output: true
 
@@ -7,18 +12,219 @@ Output: false
 
 
 
-Question: 2
-Input: nums = [0,10,0,30,12]
-Output: [10,30,12,0,0]
-
 
 Quetion: 3
 input: {1,2,3,4,5,6,7};
 output: {7,1,6,2,5,4,3};
 
+
+
 Question: 4
 input: {1,2,3,4,5,6};
 output: {2,1,4,3,6,5};
+
+
+/******************************************************************************
+
+Input: nums = [0,10,0,30,12]
+Output: [10,30,12,0,0]
+
+*******************************************************************************/
+//Method:1- In-place Optimal Logic (No extra vector)  ---In-place two-pass (optimal)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+    vector<int> nums = {0,10,0,30,12};
+    int index = 0;
+
+    // Move non-zero to front
+    for(int x : nums) {
+        if(x != 0)
+            nums[index++] = x;
+    }
+
+    // Fill rest with zeros
+    while(index < nums.size())
+        nums[index++] = 0;
+
+    // Print
+    for(int x : nums)
+        cout << x << " ";
+}
+//10 30 12 0 0 
+
+
+
+
+//Method: 2- using another vector --Extra vector
+#include <iostream>
+#include <vector>
+using namespace std;
+int main(){
+    vector<int> nums = {0,10,0,30,12};
+    vector<int> result;
+    
+    // First add non-zero elements
+    for(int x : nums){
+        if(x != 0)
+            result.push_back(x);
+    }
+
+    // Then add zeros
+    for(int x : nums){
+        if(x == 0)
+            result.push_back(x);
+    }
+
+    // Output
+    for(int x : result){
+        cout << x << " ";
+    }
+
+    return 0;
+}
+//10 30 12 0 0 
+
+
+
+//Method-3: Two-Pointers (Swap Technique) — Single Pass
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> nums = {0,10,0,30,12};
+    int j = 0;
+
+    for(int i = 0; i < nums.size(); i++){
+        if(nums[i] != 0){
+            swap(nums[i], nums[j]);
+            j++;
+        }
+    }
+
+    for(int x : nums)
+        cout << x << " ";
+}
+//10 30 12 0 0 
+
+
+
+// Method-4: Partitioning (similar to QuickSort partition)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> nums = {0,10,0,30,12};
+    
+    int pivot = 0;  
+    int j = 0;
+
+    for(int i = 0; i < nums.size(); i++){
+        if(nums[i] != pivot){
+            swap(nums[i], nums[j]);
+            j++;
+        }
+    }
+
+    for(int x : nums)
+        cout << x << " ";
+}
+//10 30 12 0 0 
+
+
+//Method-5: Stable Partition (C++ STL Algorithm)--move all zeros to the end
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> nums = {0,10,0,30,12};
+
+    stable_partition(nums.begin(), nums.end(), [](int x){ return x != 0; });
+
+    for(int x : nums)
+        cout << x << " ";
+}
+
+//10 30 12 0 0 
+/*  
+✔ Notes
+stable_partition keeps order of non-zeros
+Uses extra memory internally → not strictly in-place
+Very clean one-line solution
+*/
+
+//Move all zeros to the front
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> nums = {0,10,0,30,12};
+
+    stable_partition(nums.begin(), nums.end(), [](int x){ return x == 0; });
+
+    for(int x : nums)
+        cout << x << " ";
+}
+//0 0 10 30 12 
+
+
+//Method-6: Counting Zeros
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    vector<int> nums = {0,10,0,30,12};
+
+    int zeroCount = 0;
+    for(int x : nums)
+        if(x == 0) zeroCount++;
+
+    int idx = 0;
+    for(int x : nums)
+        if(x != 0) nums[idx++] = x;
+
+    while(zeroCount--)
+        nums[idx++] = 0;
+
+    for(int x : nums)
+        cout << x << " ";
+}
+//10 30 12 0 0 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* *****************************************************************************
@@ -141,166 +347,6 @@ int main() {
 
 
 
-/******************************************************************************
-
-Input: nums = [0,10,0,30,12]
-Output: [10,30,12,0,0]
-
-*******************************************************************************/
-//Method:1- In-place Optimal Logic (No extra vector)  ---In-place two-pass (optimal)
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int main()
-{
-    vector<int> nums = {0,10,0,30,12};
-    int index = 0;
-
-    // Move non-zero to front
-    for(int x : nums) {
-        if(x != 0)
-            nums[index++] = x;
-    }
-
-    // Fill rest with zeros
-    while(index < nums.size())
-        nums[index++] = 0;
-
-    // Print
-    for(int x : nums)
-        cout << x << " ";
-}
-//10 30 12 0 0 
-
-
-
-
-//Method: 2- using another vector --Extra vector
-#include <iostream>
-#include <vector>
-using namespace std;
-int main(){
-    vector<int> nums = {0,10,0,30,12};
-    vector<int> result;
-    
-    // First add non-zero elements
-    for(int x : nums){
-        if(x != 0)
-            result.push_back(x);
-    }
-
-    // Then add zeros
-    for(int x : nums){
-        if(x == 0)
-            result.push_back(x);
-    }
-
-    // Output
-    for(int x : result){
-        cout << x << " ";
-    }
-
-    return 0;
-}
-//10 30 12 0 0 
-
-
-
-//Method-3: Two-Pointers (Swap Technique) — Single Pass
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int main() {
-    vector<int> nums = {0,10,0,30,12};
-    int j = 0;
-
-    for(int i = 0; i < nums.size(); i++){
-        if(nums[i] != 0){
-            swap(nums[i], nums[j]);
-            j++;
-        }
-    }
-
-    for(int x : nums)
-        cout << x << " ";
-}
-//10 30 12 0 0 
-
-
-
-// Method-4: Partitioning (similar to QuickSort partition)
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int main() {
-    vector<int> nums = {0,10,0,30,12};
-    
-    int pivot = 0;  
-    int j = 0;
-
-    for(int i = 0; i < nums.size(); i++){
-        if(nums[i] != pivot){
-            swap(nums[i], nums[j]);
-            j++;
-        }
-    }
-
-    for(int x : nums)
-        cout << x << " ";
-}
-//10 30 12 0 0 
-
-
-//Method-5: Stable Partition (C++ STL Algorithm)
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    vector<int> nums = {0,10,0,30,12};
-
-    stable_partition(nums.begin(), nums.end(), [](int x){ return x != 0; });
-
-    for(int x : nums)
-        cout << x << " ";
-}
-
-//10 30 12 0 0 
-/*  
-✔ Notes
-stable_partition keeps order of non-zeros
-Uses extra memory internally → not strictly in-place
-Very clean one-line solution
-*/
-
-
-
-//Method-6: Counting Zeros
-#include <iostream>
-#include <vector>
-using namespace std;
-int main() {
-    vector<int> nums = {0,10,0,30,12};
-
-    int zeroCount = 0;
-    for(int x : nums)
-        if(x == 0) zeroCount++;
-
-    int idx = 0;
-    for(int x : nums)
-        if(x != 0) nums[idx++] = x;
-
-    while(zeroCount--)
-        nums[idx++] = 0;
-
-    for(int x : nums)
-        cout << x << " ";
-}
-//10 30 12 0 0 
 
 
 

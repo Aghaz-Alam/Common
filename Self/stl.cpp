@@ -1,0 +1,404 @@
+Category 1: Vector / Array STL (6 Questions)
+
+input: vector<int> v = {1,2,3,4,5}
+output: 5
+(v.size())
+
+input: vector<int> v = {5,4,3,2,1}
+output: {1,2,3,4,5}
+(sort(v.begin(), v.end()))
+
+input: vector<int> v = {1,2,3,4,5}
+output: {5,4,3,2,1}
+(reverse(v.begin(), v.end()))
+
+input: vector<int> v = {1,2,2,3,4,4,4}
+output: 4
+(Most frequent element → use map or unordered_map)
+
+input: vector<int> v = {1,2,3,4,5}
+output: 15
+(accumulate(v.begin(), v.end(), 0))
+
+input: vector<int> v = {1,2,3,4,5}
+output: true
+(find(v.begin(), v.end(), 3) != v.end())
+
+
+
+
+
+
+
+Category 2: Set / Unordered Set (5 Questions)
+
+input: set<int> s = {1,2,3,3,4,4,5}
+output: {1,2,3,4,5}
+(Duplicate removal via set)
+
+input: unordered_set<int> s = {5,3,1,4,2}
+output: {5,3,1,4,2}
+(unordered_set preserves no order)
+
+input: set<int> s = {1,2,3,4,5}
+output: 3
+(s.find(3) != s.end())
+
+input: set<int> s = {1,2,3,4,5}
+output: 1
+(*s.begin() → smallest element)
+
+input: set<int> s = {1,2,3,4,5}
+output: 5
+(*prev(s.end()) → largest element)
+
+
+
+
+
+
+Category 3: Map / Unordered Map (5 Questions)
+
+input: string s = "mississippi"
+output: {'m':1,'i':4,'s':4,'p':2}
+(map<char,int> freq)
+
+input: vector<int> v = {1,2,2,3,3,3}
+output: 3
+(Element with highest frequency → map<int,int>)
+
+input: unordered_map<int,string> m = {{1,"a"},{2,"b"}}
+output: "b"
+(m[2])
+
+input: map<int,int> m = {{1,100},{2,200},{3,300}}
+output: 200
+(m[2])
+
+input: map<int,int> m = {{1,100},{2,200},{3,300}}
+output: {100,200,300}
+(Iterate using for(auto &p: m) → p.second)
+
+
+
+
+
+
+Category 4: Stack / Queue / Deque (5 Questions)
+
+input: stack<int> st; push 1,2,3
+output: 3
+(st.top())
+
+input: queue<int> q; push 1,2,3
+output: 1
+(q.front())
+
+input: deque<int> d = {1,2,3}
+output: 3
+(d.back())
+
+input: deque<int> d = {1,2,3}
+output: 1
+(d.front())
+
+input: priority_queue<int> pq; push 3,1,5,2
+output: 5
+(pq.top())
+
+
+
+
+
+
+Category 5: Algorithm Functions / Iterators (5 Questions)
+
+input: vector<int> v = {5,2,4,1,3}
+output: 3
+(lower_bound(v.begin(), v.end(), 3)-v.begin())
+
+input: vector<int> v = {5,2,4,1,3}
+output: 4
+(upper_bound(v.begin(), v.end(), 3)-v.begin())
+
+input: vector<int> v = {1,2,3,4,5}
+output: 2
+(count(v.begin(), v.end(), 2))
+
+input: vector<int> v = {1,2,3,4,5}
+output: true
+(binary_search(v.begin(), v.end(), 3))
+
+input: vector<int> v = {1,2,3,4,5,6}
+output: {1,3,5}
+(Copy odd elements using copy_if)
+
+
+
+
+
+Category 6: Miscellaneous STL Tricks (4 Questions)
+
+input: vector<int> v = {1,2,3,4,5}
+output: {5,4,3,2,1}
+(rotate(v.rbegin(), v.rbegin()+1, v.rend()))
+
+input: vector<int> v = {1,2,3,4,5}
+output: {2,3,4,5}
+(v.erase(v.begin()))
+
+input: vector<int> v = {1,2,3,4,5,3}
+output: {1,2,4,5}
+(remove all 3s → v.erase(remove(v.begin(),v.end(),3),v.end()))
+
+input: string s = "hello world"
+output: {"hello","world"}
+(split string by space using istringstream)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Map
+
+Category 1: Frequency Counting / Character Count (7 Questions)
+
+input: "mississippi"
+output: {'m':1, 'i':4, 's':4, 'p':2}
+
+input: "aabbcc"
+output: {'a':2, 'b':2, 'c':2}
+
+input: "abcabcabc"
+output: {'a':3, 'b':3, 'c':3}
+
+input: "leetcode"
+output: {'l':1, 'e':3, 't':1, 'c':1, 'o':1, 'd':1}
+
+input: "aaaabbbbcccd"
+output: {'a':4,'b':4,'c':3,'d':1}
+
+input: "xyzxyzxyzxyz"
+output: {'x':4,'y':4,'z':4}
+
+input: "programming"
+output: {'p':1,'r':2,'o':1,'g':2,'a':1,'m':2,'i':1,'n':1}
+
+Category 2: Top-K Frequent Elements (4 Questions)
+
+input: [1,1,1,2,2,3], k=2
+output: [1,2]
+
+input: [5,5,4,6,4,3,5], k=1
+output: [5]
+
+input: [1,2,3,4,5,6,6,6,5,5], k=3
+output: [6,5,1] (any ordering of top 3 freq)
+
+input: [2,2,1,3,1,4,2], k=2
+output: [2,1]
+
+Category 3: Map Key/Value Manipulations (5 Questions)
+
+input: map<int,string> m = {{1,"a"},{2,"b"}}; key=2
+output: "b"
+
+input: map<int,int> m = {{1,100},{2,200},{3,300}}; erase key=2
+output: {1→100,3→300}
+
+input: unordered_map<string,int> m = {{"apple",2},{"banana",3}}; increment "apple"
+output: {apple→3, banana→3}
+
+input: map<int,int> m = {{1,10},{2,20},{3,30}}; find key=4
+output: not found
+
+input: unordered_map<char,int> m = {}; insert 'a',1
+output: {a→1}
+
+Category 4: Sorting / Map Iteration (4 Questions)
+
+input: unordered_map<int,int> m = {{3,30},{1,10},{2,20}}
+output: {1→10,2→20,3→30}
+(sorted by key using map or copy to map)
+
+input: map<int,int> m = {{1,10},{2,20},{3,30}}
+output: [10,20,30]
+(iterate values in ascending key order)
+
+input: map<string,int> m = {{"c",3},{"a",1},{"b",2}}
+output: a→1, b→2, c→3
+(keys automatically sorted)
+
+input: unordered_map<string,int> m = {{"apple",5},{"orange",2},{"banana",3}}
+output: [apple, banana, orange]
+(sorted keys using map or custom)
+
+Category 5: Two Maps / Merge / Compare (5 Questions)
+
+input: m1 = {1→10,2→20}, m2 = {2→200,3→300} → merge
+output: {1→10,2→200,3→300}
+
+input: m1 = {"a"→1,"b"→2}, m2 = {"b"→2,"c"→3} → intersection
+output: {"b"→2}
+
+input: m1 = {"x"→10,"y"→20}, m2 = {"x"→5,"z"→30} → sum values if key exists
+output: {"x"→15,"y"→20,"z"→30}
+
+input: map<int,int> m = {{1,10},{2,20},{3,30}}; remove values >15
+output: {1→10}
+
+input: map<int,int> m = {{1,10},{2,20},{3,30}}; increment all values by 5
+output: {1→15,2→25,3→35}
+
+
+
+
+
+
+
+
+
+//Solution
+#include <bits/stdc++.h>
+using namespace std;
+
+// Helper to print map<char,int>
+void printMap(const map<char,int>& m){
+    for(auto &[k,v]: m) cout << k << ":" << v << " ";
+    cout << endl;
+}
+
+// Helper to print map<int,int>
+void printMapInt(const map<int,int>& m){
+    for(auto &[k,v]: m) cout << k << ":" << v << " ";
+    cout << endl;
+}
+
+int main(){
+    // ==================== Frequency Counting (Map / Unordered_Map) ====================
+
+    string s = "mississippi";
+    map<char,int> freq;
+    for(char c : s) freq[c]++;
+    cout << "Frequency of characters: ";
+    printMap(freq);  // output: i:4 m:1 p:2 s:4
+
+    vector<int> v = {1,1,1,2,2,3};
+    unordered_map<int,int> freqInt;
+    for(int x : v) freqInt[x]++;
+    cout << "Frequency of integers: ";
+    for(auto &[k,val]: freqInt) cout << k << ":" << val << " ";
+    cout << endl; // output: 1:3 2:2 3:1
+
+    // ==================== Iteration ====================
+
+    cout << "Iterating map: ";
+    for(auto &[k,v]: freq) cout << k << "->" << v << " ";
+    cout << endl;
+
+    // ==================== Insert ====================
+
+    map<int,string> m;
+    m.insert({1,"one"});
+    m[2] = "two";
+    cout << "After insert: ";
+    for(auto &[k,v]: m) cout << k << "->" << v << " ";
+    cout << endl; // output: 1->one 2->two
+
+    // ==================== Erase ====================
+
+    m.erase(1);
+    cout << "After erase key=1: ";
+    for(auto &[k,v]: m) cout << k << "->" << v << " ";
+    cout << endl; // output: 2->two
+
+    // ==================== Find ====================
+
+    auto it = m.find(2);
+    if(it != m.end()) cout << "Found key 2: " << it->second << endl; // output: Found key 2: two
+    else cout << "Key not found" << endl;
+
+    it = m.find(3);
+    if(it != m.end()) cout << "Found key 3" << endl;
+    else cout << "Key 3 not found" << endl; // output: Key 3 not found
+
+    // ==================== Merge Maps ====================
+
+    map<int,int> m1 = {{1,10},{2,20}};
+    map<int,int> m2 = {{2,200},{3,300}};
+    for(auto &[k,v]: m2) m1[k] = v; // overwrite if key exists
+    cout << "After merge: ";
+    printMapInt(m1); // output: 1:10 2:200 3:300
+
+    // ==================== Sum values if key exists ====================
+
+    map<string,int> mm1 = { {"a",10}, {"b",20} };
+    map<string,int> mm2 = { {"b",5}, {"c",30} };
+    for(auto &[k,v]: mm2) mm1[k] += v; // adds if exists else inserts
+    cout << "After sum merge: ";
+    for(auto &[k,v]: mm1) cout << k << ":" << v << " ";
+    cout << endl; // output: a:10 b:25 c:30
+
+    // ==================== Remove values conditionally ====================
+
+    map<int,int> m3 = {{1,10},{2,20},{3,30}};
+    for(auto it = m3.begin(); it != m3.end(); ){
+        if(it->second > 15) it = m3.erase(it);
+        else ++it;
+    }
+    cout << "After removing values>15: ";
+    printMapInt(m3); // output: 1:10
+
+    // ==================== Increment all values ====================
+
+    map<int,int> m4 = {{1,10},{2,20},{3,30}};
+    for(auto &[k,v]: m4) v += 5;
+    cout << "After increment all values by 5: ";
+    printMapInt(m4); // output: 1:15 2:25 3:35
+
+    // ==================== Top-K Frequent Elements ====================
+
+    vector<int> arr = {1,1,1,2,2,3};
+    unordered_map<int,int> freqMap;
+    for(int x : arr) freqMap[x]++;
+
+    int k = 2;
+    priority_queue<pair<int,int>> pq; // max heap by frequency
+    for(auto &[num,f]: freqMap) pq.push({f,num});
+
+    cout << "Top-" << k << " frequent elements: ";
+    for(int i=0; i<k && !pq.empty(); i++){
+        cout << pq.top().second << " ";
+        pq.pop();
+    }
+    cout << endl; // output: 1 2
+
+    return 0;
+}
+/*
+Output: 
+Frequency of characters: i:4 m:1 p:2 s:4 
+Frequency of integers: 3:1 2:2 1:3 
+Iterating map: i->4 m->1 p->2 s->4 
+After insert: 1->one 2->two 
+After erase key=1: 2->two 
+Found key 2: two
+Key 3 not found
+After merge: 1:10 2:200 3:300 
+After sum merge: a:10 b:25 c:30 
+After removing values>15: 1:10 
+After increment all values by 5: 1:15 2:25 3:35 
+Top-2 frequent elements: 1 2 
+*/
