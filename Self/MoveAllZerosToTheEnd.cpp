@@ -388,7 +388,26 @@ int main() {
     return 0;
 }
 
+//OR
 
+#include <iostream>
+#include<vector>
+using namespace std;
+
+int main() {
+    vector<int> input = {1,2,3,4,5,6,7};
+    vector<int> output;
+
+    int start = 0, end = input.size() - 1;
+    while (start <= end) {
+        output.push_back(input[end--]);
+        
+        if (start <= end) output.push_back(input[start++]);
+    }
+
+    for (int x : output) cout << x << " ";
+}
+//7 1 6 2 5 3 4 
 
 /*----------------------------------------------------------------*/
 

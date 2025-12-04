@@ -2,6 +2,30 @@
 input: {1,2,3,4,5,6,7}
 output: {7,1,6,2,5,3,4}
 (reverse-interleave: last, first, second-last...)
+
+
+
+//Method 1 — Two-Pointer Direct Construction
+#include <iostream>
+#include<vector>
+using namespace std;
+
+int main() {
+    vector<int> a = {1,2,3,4,5,6,7};
+    vector<int> res;
+
+    int l = 0, r = a.size() - 1;
+    while (l <= r) {
+        res.push_back(a[r--]);
+        if (l <= r) res.push_back(a[l++]);
+    }
+
+    for (int x : res) cout << x << " ";
+}
+//7 1 6 2 5 3 4 
+
+
+
 /* ------------------------------------- */
 
 

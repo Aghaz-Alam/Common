@@ -188,7 +188,7 @@ Hint: Prefix sum + unordered_map storing previous sums.
 Input: 1->2->3->4->2...
 Output: true
 
-Hint: Use Floyd’s Tortoise and Hare.
+Hint: Use Floyds Tortoise and Hare.
 
 15. Reverse a Linked List in Groups of K
 
