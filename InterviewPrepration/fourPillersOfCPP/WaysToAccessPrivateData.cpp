@@ -1,3 +1,60 @@
+#include <iostream>
+#include <memory>
+using namespace std;
+
+// 1. Encapsulation → hiding internal data
+class Base {
+  private:
+    int x, y;
+
+  public:
+    Base(int val1, int val2) : x(val1), y(val2) {}
+
+    int getX() const { return x; }
+    void setX(int a) { x = a; }
+    
+    int getY() const { return y; }
+    void setY(int b) { y = b; }
+
+
+    // 2. Abstraction → pure virtual function
+    virtual void Add() = 0;
+
+    virtual ~Base() = default;
+};
+
+// 3. Inheritance
+class Derived : public Base {
+  public:
+    Derived(int x, int y) : Base(x, y) {}
+
+    void Add() override {
+        cout << "Addition: " << getX() + getY() << "\n";
+    }
+};
+
+// 4. Polymorphism
+void testBase(const unique_ptr<Base>& v) {
+    v->Add();
+}
+
+int main() {
+    unique_ptr<Base> d = make_unique<Derived>(120, 50);
+    testBase(d);
+
+
+    d->setX(100);  
+    d->setY(200);
+    testBase(d);
+    return 0;
+}
+/*
+Addition: 170
+Addition: 300
+*/
+
+
+
 //Ways to access private data members in C++
 //1. Public Getter / Setter (Correct & Legal)
 #include <iostream>
@@ -28,7 +85,6 @@ using namespace std;
 class A {
   private:
     int x = 20;
-
     friend void show(const A&);
 };
 void show(const A& a) {
@@ -152,7 +208,6 @@ class A {
 };
 int main() {
     A a;
-
     int* p = (int*)((char*)&a + offsetof(A, x));
     cout << *p << endl; // 88
 
@@ -178,7 +233,6 @@ class A {
 };
 int main() {
     A a;
-
     int value;
     memcpy(&value, &a, sizeof(int)); // read private memory
     cout << value << endl; // 1234
@@ -235,7 +289,6 @@ using namespace std;
 class A {
   private:
     int x = 777;
-
     friend class boost_access; // simulate Boost
 };
 class boost_access {
@@ -431,10 +484,8 @@ class A {
 };
 int main() {
     A a;
-
     auto lambda = [a]() {};              // stores copy of a in closure
     auto addr   = reinterpret_cast<const int*>(&lambda);
-
     cout << *addr << endl; // prints private x by scanning closure memory
 }
 /*
@@ -457,7 +508,6 @@ class A {
 int main() {
     A a;
     new (&a) int(777);   // overwrite the memory with int
-
     cout << *(int*)&a << endl; 
 }
 /*
@@ -480,7 +530,6 @@ class A {
 int main() {
     A a;
     void** vptr = *(void***)&a;
-
     int* px = reinterpret_cast<int*>( ((char*)&a) + sizeof(void*) );
     cout << *px << endl;
 }
@@ -578,7 +627,6 @@ int main() {
     A a;
     void* p = mmap(NULL, sizeof(a), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     memcpy(p, &a, sizeof(a));
-
     cout << *(int*)p << endl;
 }
 /*
