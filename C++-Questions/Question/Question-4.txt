@@ -1,8 +1,0 @@
-2D Vector
-
-Question 4: Given a vector of integers, write a C++ function to find the maximum and minimum elements in the vector without using any built-in functions like std::max_element or std::min_element. This program will calculate the sum of all elements in the 2D vector and display the result, which in this example, would be 45 (1+2+3+4+5+6+7+8+9).
-
-Sample Input : nums = {23, 12, 56, 9, 45, 37};
-
-Expected output : Maximum Element: 56
-		  Minimum Element: 9
