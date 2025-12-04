@@ -278,7 +278,7 @@ class Car final {
         cout << "Car created\n";
     }
     ~Car() noexcept = default; // unique_ptr automatically cleans up Engine
-    
+
     // Prevent copying (unique_ptr cannot be copied)
     Car(const Car&) = delete;
     Car& operator=(const Car&) = delete;
@@ -329,7 +329,6 @@ class Engine final {
         cout << "Engine started\n";  // Start the engine
     }
 };
-
 class Car final {
   private:
     Engine* enginePtr;  // Non-owning pointer → aggregation
