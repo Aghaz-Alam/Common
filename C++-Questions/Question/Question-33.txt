@@ -1,0 +1,58 @@
+33 — Implement Your Own String Class (MyString)
+
+Design a custom string class that mimics some of the core features of std::string.
+
+Requirements
+Private Members
+char* data — dynamically allocated storage
+size_t length — length of the string
+
+Constructors / Destructor
+Default constructor (empty string)
+Constructor from C-string (const char*)
+Copy constructor (deep copy)
+Move constructor
+Destructor (free memory properly)
+
+Member Functions
+size() → returns the length
+c_str() → returns const char*
+substring(int start, int len) → returns a new MyString object
+toUpper() → returns a new MyString with all uppercase
+toLower() → returns a new MyString with all lowercase
+
+Operator Overloads
+operator+ → concatenate two MyString objects
+operator== → compare two strings
+operator[] → read-only access (throws exception if out of bounds)
+
+Static Member
+countInstances() → returns the number of currently alive MyString objects
+
+Exception Handling
+Throw exception on null input or out-of-bounds index
+
+Sample Input
+MyString s1("Hello");
+MyString s2("World");
+MyString s3 = s1 + MyString(" ") + s2;
+
+MyString sub = s3.substring(0, 5);
+
+MyString upper = s3.toUpper();
+MyString lower = s3.toLower();
+
+cout << s3[1] << endl;
+cout << sub.c_str() << endl;
+cout << upper.c_str() << endl;
+cout << lower.c_str() << endl;
+
+cout << "MyString instances: " << MyString::countInstances() << endl;
+
+Expected Output
+e
+Hello
+HELLO WORLD
+hello world
+MyString instances: 5
+

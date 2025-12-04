@@ -1,0 +1,18 @@
+17. Banking System (Encapsulation + Classes)
+
+Problem Statement:
+Write a program to simulate a simple banking system using classes.
+Implement an Account class with deposit(), withdraw(), and printDetails() functions.
+Implement a Customer class holding details of the customer and a list of accounts.
+The program must identify the account with the highest balance.
+Ensure proper data hiding and encapsulation.
+
+Sample Input:
+Account a1(101, "Ravi", 1000);
+Account a2(102, "Rahul", 5000);
+
+Expected Output:
+Account Number: 101, Holder: Ravi, Balance: 1000
+Account Number: 102, Holder: Rahul, Balance: 5000
+Highest Balance: 5000 (Account 102)
+

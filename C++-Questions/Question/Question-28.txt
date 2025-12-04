@@ -1,0 +1,9 @@
+28. Multi-key Sorting with Comparator Objects (STL, functors)
+
+Problem: Given a struct Employee { id, name, dept, salary }, sort a vector of Employee by dept ascending, then by salary descending, then by name ascending.
+
+Requirements / Features:
+Implement custom comparator as a functor object and as a lambda.
+Demonstrate stable sort where relevant.
+
+Sample Input: 5 employees; Sample Output: sorted listing.

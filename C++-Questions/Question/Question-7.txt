@@ -1,0 +1,13 @@
+Heap
+
+Question 7: Implement a max heap data structure in C++ with basic operations like insertion and extraction of the maximum element
+
+Sample input :  myHeap.insert(3);
+    		myHeap.insert(100);
+    		myHeap.insert(8);
+    		myHeap.insert(5);
+    		myHeap.insert(200);
+
+Expected output : 200
+		  100
+

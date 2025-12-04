@@ -1,0 +1,19 @@
+Question 15: Producer-Consumer Problem
+
+Implement the producer-consumer problem using C++ threads and condition variables.
+
+Requirements:
+Use a shared buffer with fixed size.
+Implement producer() and consumer() threads.
+Ensure thread-safe access using mutex and condition_variable.
+
+Sample Input:
+Buffer buffer(5);
+startProducerConsumer(buffer);
+
+
+Expected Output:
+Produced: 1
+Consumed: 1
+Produced: 2
+Consumed: 2

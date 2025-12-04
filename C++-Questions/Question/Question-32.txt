@@ -1,0 +1,13 @@
+32.Template-based Priority Queue
+
+Problem:
+Create a template PriorityQueue<T> using a heap internally. Support push, pop, top, size. Throw exception when popping empty queue.
+
+Sample Input:
+PriorityQueue<int> pq;
+pq.push(5); pq.push(2); pq.push(9);
+std::cout << pq.pop() << " " << pq.pop() << std::endl;
+
+
+Expected Output:
+9 5

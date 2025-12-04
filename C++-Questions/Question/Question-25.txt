@@ -1,0 +1,10 @@
+25. Balanced Parentheses with Template-based Stack (Templates, STL)
+
+Problem: Write a template Stack<T> class with basic operations, then use it to check balanced parentheses (including (), {}, []) for an input string.
+
+Requirements / Features:
+Template stack implemented from scratch (dynamic array or linked list).
+Support push, pop, top, empty.
+Use it to validate input strings; report the first mismatched position (index) if invalid.
+
+Sample Input: {[()()]} -> valid; ([)] -> mismatch at index X.

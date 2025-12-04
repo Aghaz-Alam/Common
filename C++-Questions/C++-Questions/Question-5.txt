@@ -1,0 +1,5 @@
+ShallowCopy & DeepCopy
+
+Question 5: Write a C++ program taking a class Student with dynamically allocated data members to store the student's name and marks. 
+Define and implement the class Student with appropriate constructors and destructors to manage the memory correctly 
+and to demonstrate the difference between shallow copy and deep copy operations when dealing with dynamic data in objects of the Student class.

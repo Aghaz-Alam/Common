@@ -1,0 +1,8 @@
+26. File-based Key-Value Store (Persistence, concurrency)
+
+Problem: Build a simple persistent key-value store class KVStore with methods put(key, value), get(key), remove(key) and crash-safe persistence.
+
+Requirements / Features:
+Use append-only log file. Implement compaction to shrink file.
+Support concurrency using a file lock or mutex.
+Provide a CLI to put, get, delete.

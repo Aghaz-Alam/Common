@@ -1,0 +1,18 @@
+Question 12: File Encryption & Decryption
+
+Write a C++ program to encrypt and decrypt a text file using a simple substitution cipher.
+
+Requirements:
+Create functions encrypt() and decrypt().
+Read from and write to a file.
+Demonstrate with sample text file content.
+
+Sample Input:
+Hello World
+
+Expected Output (Encrypted):
+Khoor Zruog
+
+Expected Output (Decrypted):
+Hello World
+

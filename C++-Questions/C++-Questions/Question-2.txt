@@ -1,0 +1,32 @@
+Pure virtual function and inheritance
+
+Question 2: Implement a simple media player application that can play different types of media files. The media player should support playing audio and video files. You need to design and implement the classes for this media player, incorporating various OOP concepts.
+
+Requirements:
+
+Create an abstract base class Media that represents a generic media file. It should have the following pure virtual functions:
+
+virtual void play() = 0: Play the media.
+virtual void pause() = 0: Pause the media.
+virtual void stop() = 0: Stop the media.
+virtual void displayInfo() = 0: Display information about the media (e.g., file name, duration).
+
+Implement two derived classes: Audio and Video, which represent audio and video media files, respectively. Both classes should inherit from the Media base class.
+
+Add appropriate member variables and functions to the Audio and Video classes to support their specific features.
+
+Implement a MediaPlayer class that can store and manage a collection of Media objects.
+
+The MediaPlayer class should have the following functionalities:
+
+A function to add media files to the player.
+A function to display all media files' information in the player.
+A function to play a specific media file by name.
+A function to pause and resume the currently playing media.
+A function to stop the currently playing media.
+Constraints:
+
+Assume that the media files are represented as strings containing their file names.
+For simplicity, assume that the play, pause, and stop functions in the MediaPlayer class do not handle actual media playback but simply display messages indicating the respective actions.
+
+Implement a callback mechanism using function pointers or lambdas, allowing the media player to notify the user when playback is started, paused, or stopped.

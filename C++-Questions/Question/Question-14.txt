@@ -1,0 +1,18 @@
+Question 14: Template Class for Stack
+
+Implement a generic stack class using C++ templates.
+
+Requirements:
+Implement push(), pop(), top(), and isEmpty() methods.
+Demonstrate usage with int and string data types.
+
+Sample Input:
+Stack<int> s;
+s.push(10);
+s.push(20);
+
+
+Expected Output:
+Top element: 20
+Popped element: 20
+Top element after pop: 10

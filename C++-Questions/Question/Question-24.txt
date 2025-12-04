@@ -1,0 +1,12 @@
+Question 24 : Event Dispatcher (Callbacks, function pointers, lambdas)
+
+Problem: Implement an EventDispatcher class that allows registering callbacks for named events.
+
+Requirements / Features:
+Support registering callbacks: free functions, lambdas, std::function<void(const std::string& payload)>.
+Allow multiple callbacks per event name.
+emit(eventName, payload) calls all callbacks in order. Ensure exception in one callback does not stop others (catch and continue).
+Provide unsubscribe by callback id.
+Extra: Show example using std::bind to bind member functions.
+
+Sample: Register two callbacks for "onData", emit "onData","hello". Both should run.
