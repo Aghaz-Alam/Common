@@ -1,3 +1,61 @@
+//1. encapsulation 
+#include<iostream>
+using namespace std;
+class Base{
+  //encapsulation
+  protected:
+   int x, y;  
+  public:
+    Base(int a, int b):x(a), y(b){}
+    void setX(int val){
+      x=val;
+    }
+    //Abstraction
+    virtual void Add() const=0;
+    virtual ~Base()=default;
+};
+//inheritance
+class Derived: public Base{
+    public:
+     Derived(int x, int y):Base(x, y){}
+     void Add() const override{
+         cout<<x + y<<endl;
+     }
+     
+};
+//polymorphism
+void testFun(const Base& Obj){
+   Obj.Add();   
+}
+int main(){
+   Base* b = new Derived(10,20);
+   testFun(*b);                                       //30
+   
+   //Or
+    
+   Derived d(100, 200);
+   
+   Base& ptr = d;
+   testFun(ptr);                                        //300
+   
+   Base* p=&d;
+   testFun(*p);                                          //300
+   
+  return 0;
+}
+/* 
+30
+300
+300
+*/
+
+
+
+
+
+
+
+
 #include <iostream>
 #include <memory>
 using namespace std;
