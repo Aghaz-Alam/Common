@@ -1,4 +1,0 @@
-29. Weak Pointer Circular Dependency
-
-Demonstrate a circular reference problem between Parent and Child classes using shared_ptr.
-Resolve it using weak_ptr to prevent memory leaks.
