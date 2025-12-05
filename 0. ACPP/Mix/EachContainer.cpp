@@ -37,7 +37,6 @@ Consider implementing:
 */
 
 
-// 11 separate standalone programs with main()
 // Program 1: std::array
 #include <iostream>
 #include <array>
@@ -568,9 +567,6 @@ public:
         d.clear();
     }
 };
-
-// ------------------------ MAIN ------------------------
-
 int main() {
     DequeStore<int> store;
 
@@ -1172,5 +1168,753 @@ Does key 'c' exist? YES
 Size = 2
 UMapStore content: [a:909] [c:50]
 Size after clear = 0
+*/
+
+
+
+
+
+// Program 10+: Advanced MapStore
+#include <iostream>
+#include <map>
+#include <optional>
+#include <string>
+#include <vector>
+#include <mutex>
+#include <fstream>
+using namespace std;
+
+template<typename K, typename V>
+class MapStore {
+    map<K, V> M;
+    mutable mutex mtx; // for optional thread-safety
+
+   public:
+    // insert or update
+    template<typename U>
+    bool set(const K& key, U&& value) {
+        lock_guard<mutex> lock(mtx);
+        M[key] = forward<U>(value);
+        return true;
+    }
+
+    // batch set
+    template<typename Container>
+    void set_many(const Container& items) {
+        lock_guard<mutex> lock(mtx);
+        for (auto& [k,v] : items)
+            M[k] = v;
+    }
+
+    // lookup
+    optional<V> get(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        return nullopt;
+    }
+
+    // batch get
+    vector<optional<V>> get_many(const vector<K>& keys) const {
+        vector<optional<V>> results;
+        for(const auto& k : keys)
+            results.push_back(get(k));
+        return results;
+    }
+
+    // exists
+    bool exists(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        return M.find(key) != M.end();
+    }
+
+    // remove
+    bool remove(const K& key) {
+        lock_guard<mutex> lock(mtx);
+        return M.erase(key) > 0;
+    }
+
+    // batch remove
+    void remove_many(const vector<K>& keys) {
+        lock_guard<mutex> lock(mtx);
+        for(const auto& k : keys)
+            M.erase(k);
+    }
+
+    // size
+    size_t size() const {
+        lock_guard<mutex> lock(mtx);
+        return M.size();
+    }
+
+    // clear
+    void clear() {
+        lock_guard<mutex> lock(mtx);
+        M.clear();
+    }
+
+    // save to file
+    void save(const string& filename) const {
+        lock_guard<mutex> lock(mtx);
+        ofstream out(filename);
+        for(auto& [k,v] : M)
+            out << k << " " << v << "\n";
+    }
+
+    // load from file
+    void load(const string& filename) {
+        lock_guard<mutex> lock(mtx);
+        ifstream in(filename);
+        K key; V value;
+        while(in >> key >> value)
+            M[key] = value;
+    }
+
+    // print
+    void printAll() const {
+        lock_guard<mutex> lock(mtx);
+        cout << "MapStore content: ";
+        for(auto& [k,v] : M)
+            cout << "[" << k << ":" << v << "] ";
+        cout << "\n";
+    }
+
+    // iterator support
+    auto begin() const { return M.begin(); }
+    auto end() const { return M.end(); }
+};
+
+// Demo main
+int main() {
+    MapStore<string, int> s;
+
+    // set values
+    s.set("id", 55);
+    s.set("age", 20);
+    s.set("score", 90);
+
+    // get values
+    cout << "id = " << *s.get("id") << "\n";
+    cout << "age = " << *s.get("age") << "\n";
+
+    // exists?
+    cout << "Does 'score' exist? " << (s.exists("score") ? "YES" : "NO") << "\n";
+
+    // remove
+    s.remove("age");
+    cout << "Size after removal = " << s.size() << "\n";
+
+    // batch set
+    vector<pair<string,int>> batch = {{"level", 3}, {"bonus", 100}};
+    s.set_many(batch);
+
+    // print
+    s.printAll();
+
+    // iterator support
+    cout << "Using range-based loop:\n";
+    for(auto& [k,v] : s)
+        cout << k << " => " << v << "\n";
+
+    // save/load
+    s.save("data.txt");
+    s.clear();
+    cout << "Size after clear = " << s.size() << "\n";
+    s.load("data.txt");
+    cout << "After loading from file:\n";
+    s.printAll();
+}
+/*
+Expected Output:
+id = 55
+age = 20
+Does 'score' exist? YES
+Size after removal = 2
+MapStore content: [bonus:100] [id:55] [level:3] [score:90] 
+Using range-based loop:
+bonus => 100
+id => 55
+level => 3
+score => 90
+Size after clear = 0
+After loading from file:
+MapStore content: [bonus:100] [id:55] [level:3] [score:90] 
+
+
+data.txt
+bonus 100
+id 55
+level 3
+score 90
+*/
+
+
+
+
+// Program 10+: Advanced MapStore with Exception Handling
+#include <iostream>
+#include <map>
+#include <optional>
+#include <string>
+#include <vector>
+#include <mutex>
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
+using namespace std;
+
+template<typename K, typename V>
+class MapStore {
+    map<K, V> M;
+    mutable mutex mtx; // for thread-safety
+
+public:
+    // insert or update
+    template<typename U>
+    bool set(const K& key, U&& value) {
+        lock_guard<mutex> lock(mtx);
+        M[key] = forward<U>(value);
+        return true;
+    }
+
+    // batch set
+    template<typename Container>
+    void set_many(const Container& items) {
+        lock_guard<mutex> lock(mtx);
+        for (auto& [k,v] : items)
+            M[k] = v;
+    }
+
+    // lookup
+    optional<V> get(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        return nullopt;
+    }
+
+    // strict lookup with exception
+    V get_or_throw(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        stringstream ss;
+        ss << "Key '" << key << "' not found";
+        throw runtime_error(ss.str());
+    }
+
+    // exists
+    bool exists(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        return M.find(key) != M.end();
+    }
+
+    // remove
+    bool remove(const K& key) {
+        lock_guard<mutex> lock(mtx);
+        return M.erase(key) > 0;
+    }
+
+    // batch remove
+    void remove_many(const vector<K>& keys) {
+        lock_guard<mutex> lock(mtx);
+        for(const auto& k : keys)
+            M.erase(k);
+    }
+
+    // size
+    size_t size() const {
+        lock_guard<mutex> lock(mtx);
+        return M.size();
+    }
+
+    // clear
+    void clear() {
+        lock_guard<mutex> lock(mtx);
+        M.clear();
+    }
+
+    // save to file
+    void save(const string& filename) const {
+        lock_guard<mutex> lock(mtx);
+        ofstream out(filename);
+        if(!out.is_open()) throw runtime_error("Failed to open file: " + filename);
+        for(auto& [k,v] : M)
+            out << k << " " << v << "\n";
+    }
+
+    // load from file
+    void load(const string& filename) {
+        lock_guard<mutex> lock(mtx);
+        ifstream in(filename);
+        if(!in.is_open()) throw runtime_error("Failed to open file: " + filename);
+        K key; V value;
+        while(in >> key >> value)
+            M[key] = value;
+    }
+
+    // print all
+    void printAll() const {
+        lock_guard<mutex> lock(mtx);
+        cout << "MapStore content: ";
+        for(auto& [k,v] : M)
+            cout << "[" << k << ":" << v << "] ";
+        cout << "\n";
+    }
+
+    // iterator support
+    auto begin() const { return M.begin(); }
+    auto end() const { return M.end(); }
+};
+
+// Demo main with exception handling
+int main() {
+    MapStore<string, int> s;
+
+    try {
+        // set values
+        s.set("id", 55);
+        s.set("age", 20);
+        s.set("score", 90);
+
+        // get values
+        if(auto val = s.get("id")) cout << "id = " << *val << "\n";
+        if(auto val = s.get("age")) cout << "age = " << *val << "\n";
+
+        // exists?
+        cout << "Does 'score' exist? " << (s.exists("score") ? "YES" : "NO") << "\n";
+
+        // remove
+        s.remove("age");
+        cout << "Size after removal = " << s.size() << "\n";
+
+        // batch set
+        vector<pair<string,int>> batch = {{"level", 3}, {"bonus", 100}};
+        s.set_many(batch);
+
+        // print
+        s.printAll();
+
+        // iterator support
+        cout << "Using range-based loop:\n";
+        for(auto& [k,v] : s)
+            cout << k << " => " << v << "\n";
+
+        // save/load
+        s.save("data.txt");
+        s.clear();
+        cout << "Size after clear = " << s.size() << "\n";
+        s.load("data.txt");
+        cout << "After loading from file:\n";
+        s.printAll();
+
+        // attempt to get a missing key
+        cout << "Trying to get 'missing' key...\n";
+        cout << s.get_or_throw("missing") << "\n";
+
+    } catch(const exception& e) {
+        cerr << "Exception caught: " << e.what() << "\n";
+    }
+
+    return 0;
+}
+/*
+Expected Output:
+
+id = 55
+age = 20
+Does 'score' exist? YES
+Size after removal = 2
+MapStore content: [bonus:100] [id:55] [level:3] [score:90] 
+Using range-based loop:
+bonus => 100
+id => 55
+level => 3
+score => 90
+Size after clear = 0
+After loading from file:
+MapStore content: [bonus:100] [id:55] [level:3] [score:90] 
+Trying to get 'missing' key...
+Exception caught: Key 'missing' not found
+
+
+data.txt
+bonus 100
+id 55
+level 3
+score 90
+*/
+
+
+
+// Program 11+: Advanced UMapStore
+#include <iostream>
+#include <unordered_map>
+#include <optional>
+#include <string>
+#include <vector>
+#include <mutex>
+#include <fstream>
+using namespace std;
+
+template<typename K, typename V>
+class UMapStore {
+    unordered_map<K, V> M;
+    mutable mutex mtx; // optional thread-safety
+
+  public:
+    // insert or update
+    template<typename U>
+    bool set(const K& key, U&& value) {
+        lock_guard<mutex> lock(mtx);
+        M[key] = forward<U>(value);
+        return true;
+    }
+
+    // batch set
+    template<typename Container>
+    void set_many(const Container& items) {
+        lock_guard<mutex> lock(mtx);
+        for (auto& [k,v] : items)
+            M[k] = v;
+    }
+
+    // lookup
+    optional<V> get(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        return nullopt;
+    }
+
+    // batch get
+    vector<optional<V>> get_many(const vector<K>& keys) const {
+        vector<optional<V>> results;
+        for(const auto& k : keys)
+            results.push_back(get(k));
+        return results;
+    }
+
+    // exists
+    bool exists(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        return M.find(key) != M.end();
+    }
+
+    // remove
+    bool remove(const K& key) {
+        lock_guard<mutex> lock(mtx);
+        return M.erase(key) > 0;
+    }
+
+    // batch remove
+    void remove_many(const vector<K>& keys) {
+        lock_guard<mutex> lock(mtx);
+        for(const auto& k : keys)
+            M.erase(k);
+    }
+
+    // size
+    size_t size() const {
+        lock_guard<mutex> lock(mtx);
+        return M.size();
+    }
+
+    // clear
+    void clear() {
+        lock_guard<mutex> lock(mtx);
+        M.clear();
+    }
+
+    // save to file
+    void save(const string& filename) const {
+        lock_guard<mutex> lock(mtx);
+        ofstream out(filename);
+        for(auto& [k,v] : M)
+            out << k << " " << v << "\n";
+    }
+
+    // load from file
+    void load(const string& filename) {
+        lock_guard<mutex> lock(mtx);
+        ifstream in(filename);
+        K key; V value;
+        while(in >> key >> value)
+            M[key] = value;
+    }
+
+    // print
+    void printAll() const {
+        lock_guard<mutex> lock(mtx);
+        cout << "UMapStore content: ";
+        for(auto& [k,v] : M)
+            cout << "[" << k << ":" << v << "] ";
+        cout << "\n";
+    }
+
+    // iterator support
+    auto begin() const { return M.begin(); }
+    auto end() const { return M.end(); }
+};
+
+// Demo main
+int main() {
+    UMapStore<string,int> s;
+
+    // insert
+    s.set("a", 909);
+    s.set("b", 100);
+    s.set("c", 50);
+
+    // get values
+    cout << "a = " << *s.get("a") << "\n";
+    cout << "b = " << *s.get("b") << "\n";
+
+    // exists?
+    cout << "Does key 'c' exist? " << (s.exists("c") ? "YES" : "NO") << "\n";
+
+    // remove
+    s.remove("b");
+    cout << "Size = " << s.size() << "\n";
+
+    // batch insert
+    vector<pair<string,int>> batch = {{"x", 1}, {"y", 2}};
+    s.set_many(batch);
+
+    // print
+    s.printAll();
+
+    // iterator support
+    cout << "Using range-based loop:\n";
+    for(auto& [k,v] : s)
+        cout << k << " => " << v << "\n";
+
+    // save/load
+    s.save("umap_data.txt");
+    s.clear();
+    cout << "Size after clear = " << s.size() << "\n";
+    s.load("umap_data.txt");
+    cout << "After loading from file:\n";
+    s.printAll();
+}
+/*
+Expected Output:
+
+a = 909
+b = 100
+Does key 'c' exist? YES
+Size = 2
+UMapStore content: [y:2] [x:1] [c:50] [a:909] 
+Using range-based loop:
+y => 2
+x => 1
+c => 50
+a => 909
+Size after clear = 0
+After loading from file:
+UMapStore content: [a:909] [c:50] [x:1] [y:2] 
+
+
+
+umap_data.txt
+y 2
+x 1
+c 50
+a 909
+*/
+
+
+
+
+
+
+
+// Program 11+: Advanced UMapStore with Exception Handling
+#include <iostream>
+#include <unordered_map>
+#include <optional>
+#include <string>
+#include <vector>
+#include <mutex>
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
+using namespace std;
+
+template<typename K, typename V>
+class UMapStore {
+    unordered_map<K, V> M;
+    mutable mutex mtx;
+
+public:
+    // insert or update
+    template<typename U>
+    bool set(const K& key, U&& value) {
+        lock_guard<mutex> lock(mtx);
+        M[key] = forward<U>(value);
+        return true;
+    }
+
+    // batch set
+    template<typename Container>
+    void set_many(const Container& items) {
+        lock_guard<mutex> lock(mtx);
+        for (auto& [k,v] : items)
+            M[k] = v;
+    }
+
+    // lookup
+    optional<V> get(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        return nullopt;
+    }
+
+    // lookup with exception
+    V get_or_throw(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        auto it = M.find(key);
+        if(it != M.end()) return it->second;
+        stringstream ss;
+        ss << "Key '" << key << "' not found";
+        throw runtime_error(ss.str());
+    }
+
+    // exists
+    bool exists(const K& key) const {
+        lock_guard<mutex> lock(mtx);
+        return M.find(key) != M.end();
+    }
+
+    // remove
+    bool remove(const K& key) {
+        lock_guard<mutex> lock(mtx);
+        return M.erase(key) > 0;
+    }
+
+    // batch remove
+    void remove_many(const vector<K>& keys) {
+        lock_guard<mutex> lock(mtx);
+        for(const auto& k : keys)
+            M.erase(k);
+    }
+
+    // size
+    size_t size() const {
+        lock_guard<mutex> lock(mtx);
+        return M.size();
+    }
+
+    // clear
+    void clear() {
+        lock_guard<mutex> lock(mtx);
+        M.clear();
+    }
+
+    // save to file
+    void save(const string& filename) const {
+        lock_guard<mutex> lock(mtx);
+        ofstream out(filename);
+        if(!out.is_open()) throw runtime_error("Failed to open file: " + filename);
+        for(auto& [k,v] : M)
+            out << k << " " << v << "\n";
+    }
+
+    // load from file
+    void load(const string& filename) {
+        lock_guard<mutex> lock(mtx);
+        ifstream in(filename);
+        if(!in.is_open()) throw runtime_error("Failed to open file: " + filename);
+        K key; V value;
+        while(in >> key >> value)
+            M[key] = value;
+    }
+
+    // print all
+    void printAll() const {
+        lock_guard<mutex> lock(mtx);
+        cout << "UMapStore content: ";
+        for(auto& [k,v] : M)
+            cout << "[" << k << ":" << v << "] ";
+        cout << "\n";
+    }
+
+    // iterator support
+    auto begin() const { return M.begin(); }
+    auto end() const { return M.end(); }
+};
+
+// Demo main with exception handling
+int main() {
+    UMapStore<string,int> s;
+
+    try {
+        // insert
+        s.set("a", 909);
+        s.set("b", 100);
+        s.set("c", 50);
+
+        // get values safely
+        if(auto val = s.get("a")) cout << "a = " << *val << "\n";
+        if(auto val = s.get("b")) cout << "b = " << *val << "\n";
+
+        // exists?
+        cout << "Does key 'c' exist? " << (s.exists("c") ? "YES" : "NO") << "\n";
+
+        // remove
+        s.remove("b");
+        cout << "Size = " << s.size() << "\n";
+
+        // batch insert
+        vector<pair<string,int>> batch = {{"x", 1}, {"y", 2}};
+        s.set_many(batch);
+
+        // print
+        s.printAll();
+
+        // iterator support
+        cout << "Using range-based loop:\n";
+        for(auto& [k,v] : s)
+            cout << k << " => " << v << "\n";
+
+        // save/load
+        s.save("umap_data.txt");
+        s.clear();
+        cout << "Size after clear = " << s.size() << "\n";
+        s.load("umap_data.txt");
+        cout << "After loading from file:\n";
+        s.printAll();
+
+        // attempt to get a missing key
+        cout << "Trying to get 'missing' key...\n";
+        cout << s.get_or_throw("missing") << "\n";
+
+    } catch(const exception& e) {
+        cerr << "Exception caught: " << e.what() << "\n";
+    }
+
+    return 0;
+}
+
+
+/*
+Expected Output:
+
+a = 909
+b = 100
+Does key 'c' exist? YES
+Size = 2
+UMapStore content: [y:2] [x:1] [c:50] [a:909] 
+Using range-based loop:
+y => 2
+x => 1
+c => 50
+a => 909
+Size after clear = 0
+After loading from file:
+UMapStore content: [a:909] [c:50] [x:1] [y:2] 
+Trying to get 'missing' key...
+Exception caught: Key 'missing' not found
 */
 
