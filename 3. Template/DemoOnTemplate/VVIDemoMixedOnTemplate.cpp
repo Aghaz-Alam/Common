@@ -1,6 +1,6 @@
 Normal template usage
 
-// c++11-decltype
+// Normal Template Usage (C++11 decltype return)
 #include <iostream>
 using namespace std;
 template <typename T1, typename T2>
@@ -26,7 +26,7 @@ Addition of Hello and World is: Hello World!
 */
 
 
-// c++14-auto-return-type
+//C++14 — auto Return Type Deduction
 #include <iostream>
 #include <string>
 using namespace std;
@@ -59,7 +59,7 @@ Addition of Hello and World is: Hello World!
 
 
 
-// Variadic Templates  c++11 And C++14 same
+//Variadic Templates (C++11 / C++14 Recursive)
 #include <iostream>
 using namespace std;
 // Base case
@@ -87,7 +87,7 @@ Empty Function!
 
 
 
-//C++17
+//Variadic Templates — C++17 Fold Expressions
 #include <iostream>
 using namespace std;
 template <typename... Args>
@@ -111,7 +111,7 @@ Empty Function!
 
 
 
-// Variadic Templates - C++11 / C++14
+// Variadic add() (C++11 Recursive)
 #include <iostream>
 using namespace std;
 // Base case
@@ -188,7 +188,7 @@ Mixed Sum is: 6
 
 
 
-//Mixed sum C++17
+//Mixed sum C++17: Mixed Sum (C++17 Fold Expression)
 #include <iostream>
 using namespace std;
 
@@ -214,7 +214,7 @@ Mixed Sum is: 6.5
 */
 
 
-//C++ 11/14/17
+//C++ 11/14/17: Full Template Specialization
 1. Full Template Specialization
 In full specialization, We provide an entirely separate implementation for a specific type or class template.
 #include <iostream>
@@ -243,7 +243,7 @@ Specialized template for int: 42
 */
 
 
-//C++11/14/17 same with return value
+//C++11/14/17 same with return value: Full Template Specialization (Return version)
 #include <iostream>
 using namespace std;
 
@@ -279,7 +279,7 @@ Returned (specialized int): 84
 */
 
 
-2. Partial Template Specialization
+2. Partial Template Specialization: Partial Specialization (Pointer Types)
 In partial specialization, you define a specialized version of the template that works for a subset of types. 
 For example, you might want to specialize a template for pointer types or reference types.
 
@@ -309,7 +309,7 @@ Specialized template for pointer: 10
 */
 
 
-3. Template Specialization with Multiple Parameters
+3. Template Specialization with Multiple Parameters:  Template With Multiple Parameters
 
 You can also specialize a template when it has multiple parameters. 
 For example, you can specialize a template when one of its parameters is a certain type.
@@ -345,7 +345,7 @@ Generic template: Hello, 42
 
 
 
-3. SFINAE C++11
+3. SFINAE C++11: SFINAE — C++11 enable_if
 Sometimes, you may want to specialize templates based on certain conditions like whether a type is integral or 
 floating-point. 
 This is often achieved using SFINAE (Substitution Failure Is Not An Error) along with std::enable_if or type traits.
@@ -393,7 +393,7 @@ Non-arithmetic add() called
 Hello World
 */
 
-//C++14
+//C++14: SFINAE — C++14 enable_if_t
 #include <iostream>
 #include <type_traits>
 using namespace std;
@@ -437,7 +437,7 @@ Hello World
 
 
 
-//Metaprogramming
+//Metaprogramming: Metaprogramming — C++11 constexpr recursion
 Metaprogramming (C++11)
 C++11 formalized many metaprogramming techniques and improved their syntax and usability. 
 
@@ -469,7 +469,7 @@ Factorial of 5: 120
 Metaprogramming C++14
 C++14 significantly eased the implementation of metaprograms by relaxing the constraints on constexpr functions.
 
-A. Relaxed constexpr:
+A. Relaxed constexpr: Metaprogramming — C++14 relaxed constexpr
 In C++11, constexpr functions were limited to a single return statement 
 (often using the ternary operator for logic/recursion). 
 
