@@ -306,7 +306,7 @@ You must include the GTest production header and use the FRIEND_TEST macro insid
 #define MYCLASS_H
 #include "gtest/gtest_prod.h" // Defines the FRIEND_TEST macro
 class MyClass {
- private:
+  private:
     int private_value = 10;
 
     // A private helper function we want to test
