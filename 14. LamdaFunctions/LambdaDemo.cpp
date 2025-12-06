@@ -544,3 +544,558 @@ A unique, compiler-generated closure type.
 You cannot write its type directly.
 
 /* --------------------------------------------------------------------------------------------------------- */
+
+
+
+
+
+
+
+
+
+⭐ C++11 Lambda Features
+
+C++11 introduced lambdas for the first time.
+
+1. Basic Lambda Expression
+✔ Program
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto add = [](int a, int b) {
+        return a + b;
+    };
+
+    cout << "Sum = " << add(10, 20) << endl;
+}
+
+✔ Output
+Sum = 30
+
+2. Lambda with Capture by Value
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+    auto f = [x]() { return x + 5; };
+
+    cout << f() << endl;
+}
+
+Output
+15
+
+3. Lambda with Capture by Reference
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+    auto f = [&x]() { x += 5; };
+
+    f();
+    cout << x << endl;
+}
+
+Output
+15
+
+4. Lambda with Mixed Capture
+#include <iostream>
+using namespace std;
+
+int main() {
+    int a = 10, b = 20;
+
+    auto f = [a, &b]() {
+        // a captured by value, b by reference
+        cout << a << " " << ++b;
+    };
+
+    f();
+}
+
+Output
+10 21
+
+5. Mutable Lambda (Modifies captured-by-value)
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+    auto f = [x]() mutable {
+        x += 20;
+        return x;
+    };
+
+    cout << f() << endl;  
+    cout << x << endl;    // original unchanged
+}
+
+Output
+30
+10
+
+6. Lambda with Return Type (->)
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto divide = [](int a, int b) -> double {
+        return double(a) / b;
+    };
+
+    cout << divide(10, 3);
+}
+
+Output
+3.33333
+
+7. Generic Lambda in C++11?
+
+Not available in C++11. Introduced in C++14.
+
+⭐ C++14 Lambda Features
+8. Generic Lambda (auto parameters)
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto add = [](auto a, auto b) {
+        return a + b;
+    };
+
+    cout << add(2, 3) << endl;
+    cout << add(1.5, 2.3) << endl;
+}
+
+Output
+5
+3.8
+
+9. Init-Capture (Generalized Lambda Captures)
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+    auto f = [y = x + 5]() {
+        return y;
+    };
+
+    cout << f() << endl;
+}
+
+Output
+15
+
+⭐ C++17 Lambda Features
+10. constexpr Lambda
+#include <iostream>
+using namespace std;
+
+int main() {
+    constexpr auto sq = [](int x) constexpr { return x*x; };
+
+    constexpr int value = sq(5);
+    cout << value << endl;
+}
+
+Output
+25
+
+11. Capture *this (copy of object)
+#include <iostream>
+using namespace std;
+
+struct Test {
+    int x = 5;
+
+    void show() {
+        auto f = [*this]() { return x + 10; };
+        cout << f() << endl;
+    }
+};
+
+int main() {
+    Test t;
+    t.show();
+}
+
+Output
+15
+
+⭐ C++20 Lambda Features
+12. Lambdas as Template Parameters (Template Lambdas)
+#include <iostream>
+using namespace std;
+
+template <auto Func>
+int wrapper(int x) {
+    return Func(x);
+}
+
+int main() {
+    auto sq = [](int x) { return x * x; };
+
+    cout << wrapper<sq>(5) << endl;
+}
+
+Output
+25
+
+13. constexpr lambdas improved (usable in constant expressions with allocation restrictions lifted)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+constexpr auto sum = [](auto a, auto b) {
+    return a + b;
+};
+
+int main() {
+    constexpr int s = sum(10, 20);
+    cout << s << endl;
+}
+
+Output
+30
+
+14. Default-Constructible Lambdas (C++20)
+
+Lambdas with no captures can be default-constructed.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto f = [](){ return 42; };
+
+    decltype(f) g; // default constructed (C++20)
+
+    cout << g() << endl;
+}
+
+Output
+42
+
+15. Lambdas in Unevaluated Context (Using requires)
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto lam = []() { return 10; };
+
+    if constexpr (requires { lam(); }) {
+        cout << "callable: " << lam() << endl;
+    }
+}
+
+Output
+callable: 10
+
+16. Combining Lambdas with Concepts
+#include <iostream>
+#include <concepts>
+using namespace std;
+
+auto add = [](std::integral auto a, std::integral auto b) {
+    return a + b;
+};
+
+int main() {
+    cout << add(10, 20) << endl;
+}
+
+Output
+30
+
+
+
+
+
+⭐ ADVANCED LAMBDA USE CASES (Complete Programs)
+1️⃣ Lambda with STL Algorithm (sort, for_each)
+Program
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> v = {5, 1, 4, 2};
+
+    sort(v.begin(), v.end(), [](int a, int b) { return a < b; });
+
+    for_each(v.begin(), v.end(), [](int x) {
+        cout << x << " ";
+    });
+}
+
+Output
+1 2 4 5 
+
+2️⃣ Lambda with Capture: Counter (Stateful)
+Program
+#include <iostream>
+using namespace std;
+
+int main() {
+    int count = 0;
+
+    auto counter = [&]() {
+        return ++count;
+    };
+
+    cout << counter() << endl;
+    cout << counter() << endl;
+    cout << counter() << endl;
+}
+
+Output
+1
+2
+3
+
+3️⃣ Lambda as Thread Function
+Program
+#include <iostream>
+#include <thread>
+using namespace std;
+
+int main() {
+    thread t([]() {
+        cout << "Hello from thread!" << endl;
+    });
+
+    t.join();
+}
+
+Output
+Hello from thread!
+
+4️⃣ Lambda Returning Another Lambda (Higher-order function)
+Program
+#include <iostream>
+using namespace std;
+
+auto makeAdder(int x) {
+    return [=](int y) { return x + y; };
+}
+
+int main() {
+    auto add10 = makeAdder(10);
+    cout << add10(5) << endl;
+}
+
+Output
+15
+
+5️⃣ Recursive Lambda (C++14)
+Program
+#include <iostream>
+using namespace std;
+
+int main() {
+    function<int(int)> fact = [&](int n) {
+        return (n <= 1) ? 1 : n * fact(n - 1);
+    };
+
+    cout << fact(5);
+}
+
+Output
+120
+
+6️⃣ Lambda with std::function
+Program
+#include <iostream>
+#include <functional>
+using namespace std;
+
+int main() {
+    function<int(int,int)> mul = [](int a, int b) {
+        return a * b;
+    };
+
+    cout << mul(4, 5);
+}
+
+Output
+20
+
+7️⃣ Sorting Objects Using Lambda Comparator
+Program
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Person {
+    string name;
+    int age;
+};
+
+int main() {
+    vector<Person> v = {
+        {"A", 30}, {"B", 25}, {"C", 40}
+    };
+
+    sort(v.begin(), v.end(),
+        [](const Person& p1, const Person& p2) {
+            return p1.age < p2.age;
+        });
+
+    for (auto& p : v)
+        cout << p.name << ":" << p.age << endl;
+}
+
+Output
+B:25
+A:30
+C:40
+
+8️⃣ Lambda inside a Class (Capturing member variables)
+Program
+#include <iostream>
+using namespace std;
+
+class Box {
+    int x = 10;
+public:
+    void show() {
+        auto f = [this]() { cout << x << endl; };
+        f();
+    }
+};
+
+int main() {
+    Box b;
+    b.show();
+}
+
+Output
+10
+
+9️⃣ Lambda with Ranges (C++20)
+Program
+#include <iostream>
+#include <ranges>
+using namespace std;
+
+int main() {
+    int arr[] = {1,2,3,4,5};
+
+    auto even = arr | ranges::views::filter(
+        [](int x){ return x % 2 == 0; }
+    );
+
+    for (int x : even)
+        cout << x << " ";
+}
+
+Output
+2 4 
+
+🔟 Capturing Move-Only Data Using init-capture (C++14)
+Program
+#include <iostream>
+#include <memory>
+using namespace std;
+
+int main() {
+    auto ptr = make_unique<int>(100);
+
+    auto f = [p = move(ptr)]() {
+        cout << *p << endl;
+    };
+
+    f();
+}
+
+Output
+100
+
+1️⃣1️⃣ Lambda + Concepts (C++20)
+Program
+#include <iostream>
+#include <concepts>
+using namespace std;
+
+auto add = [](integral auto a, integral auto b) {
+    return a + b;
+};
+
+int main() {
+    cout << add(5, 6) << endl;
+}
+
+Output
+11
+
+1️⃣2️⃣ Lambda Memory Size
+Program
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10, y = 20;
+
+    auto lam = [x, &y]() { return x + y; };
+
+    cout << "Size of lambda = " << sizeof(lam) << " bytes\n";
+}
+
+Output (platform-dependent, e.g.)
+Size of lambda = 8 bytes
+
+1️⃣3️⃣ Lambda in std::visit (Variant Visitor Pattern)
+Program
+#include <iostream>
+#include <variant>
+using namespace std;
+
+int main() {
+    variant<int, string> v = 10;
+
+    visit([](auto&& value) {
+        cout << value << endl;
+    }, v);
+}
+
+Output
+10
+
+1️⃣4️⃣ Lambda + Coroutines (C++20)
+
+(Using lambda as coroutine promise handler)
+
+Program
+#include <iostream>
+#include <coroutine>
+using namespace std;
+
+struct Task {
+    struct promise_type {
+        Task get_return_object() { return {}; }
+        suspend_never initial_suspend() noexcept { return {}; }
+        suspend_never final_suspend() noexcept { return {}; }
+        void return_void() {}
+        void unhandled_exception() {}
+    };
+};
+
+int main() {
+    auto coro = []() -> Task {
+        cout << "Inside coroutine\n";
+        co_return;
+    };
+
+    coro(); // runs
+}
+
+Output
+Inside coroutine
