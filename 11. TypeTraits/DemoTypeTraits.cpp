@@ -6,7 +6,6 @@ using namespace std;
 
 int main() {
     cout << boolalpha;
-
     cout << "is_integral<int>: " << is_integral<int>::value << endl;
     cout << "is_integral<double>: " << is_integral<double>::value << endl;
 
@@ -16,8 +15,7 @@ int main() {
     cout << "is_same<int, int>: " << is_same<int, int>::value << endl;
     cout << "is_same<int, double>: " << is_same<int, double>::value << endl;
 
-    cout << "remove_reference<int&>::type is int: " 
-         << is_same<remove_reference<int&>::type, int>::value << endl;
+    cout << "remove_reference<int&>::type is int: " << is_same<remove_reference<int&>::type, int>::value << endl;
 
     return 0;
 }
@@ -43,24 +41,16 @@ using namespace std;
 
 struct Base { virtual ~Base() {} };
 struct Derived : public Base {};
-
 int main() {
     cout << boolalpha;
+    cout << "is_convertible<Derived*, Base*>: " << is_convertible<Derived*, Base*>::value << endl;
+    cout << "is_convertible<Base*, Derived*>: " << is_convertible<Base*, Derived*>::value << endl;
 
-    cout << "is_convertible<Derived*, Base*>: "
-         << is_convertible<Derived*, Base*>::value << endl;
-    cout << "is_convertible<Base*, Derived*>: "
-         << is_convertible<Base*, Derived*>::value << endl;
+    cout << "is_trivially_copyable<int>: " << is_trivially_copyable<int>::value << endl;
+    cout << "is_trivially_copyable<string>: " << is_trivially_copyable<string>::value << endl;
 
-    cout << "is_trivially_copyable<int>: "
-         << is_trivially_copyable<int>::value << endl;
-    cout << "is_trivially_copyable<string>: "
-         << is_trivially_copyable<string>::value << endl;
-
-    cout << "make_signed<unsigned int>::type is int: "
-         << is_same<make_signed<unsigned int>::type, int>::value << endl;
-    cout << "make_unsigned<int>::type is unsigned int: "
-         << is_same<make_unsigned<int>::type, unsigned int>::value << endl;
+    cout << "make_signed<unsigned int>::type is int: " << is_same<make_signed<unsigned int>::type, int>::value << endl;
+    cout << "make_unsigned<int>::type is unsigned int: " << is_same<make_unsigned<int>::type, unsigned int>::value << endl;
 
     return 0;
 }
@@ -90,21 +80,12 @@ void bar() { throw runtime_error("error"); }
 int main() {
     cout << boolalpha;
 
-    cout << "is_nothrow_invocable<void()>: "
-         << is_nothrow_invocable<void()>::value << endl;
-    cout << "is_nothrow_invocable<decltype(foo)>: "
-         << is_nothrow_invocable<decltype(foo)>::value << endl;
-    cout << "is_nothrow_invocable<decltype(bar)>: "
-         << is_nothrow_invocable<decltype(bar)>::value << endl;
-
-    cout << "is_invocable<function<void()>>: "
-         << is_invocable<function<void()>>::value << endl;
-
-    cout << "is_trivially_constructible<int>: "
-         << is_trivially_constructible<int>::value << endl;
-
-    cout << "is_copy_constructible<string>: "
-         << is_copy_constructible<string>::value << endl;
+    cout << "is_nothrow_invocable<void()>: " << is_nothrow_invocable<void()>::value << endl;
+    cout << "is_nothrow_invocable<decltype(foo)>: " << is_nothrow_invocable<decltype(foo)>::value << endl;
+    cout << "is_nothrow_invocable<decltype(bar)>: " << is_nothrow_invocable<decltype(bar)>::value << endl;
+    cout << "is_invocable<function<void()>>: " << is_invocable<function<void()>>::value << endl;
+    cout << "is_trivially_constructible<int>: " << is_trivially_constructible<int>::value << endl;
+    cout << "is_copy_constructible<string>: " << is_copy_constructible<string>::value << endl;
 
     return 0;
 }
@@ -156,3 +137,5 @@ is_final<B>: true
 is_aggregate<A>: true
 remove_cvref<const volatile int&>::type is int: true
 */
+
+
