@@ -16,6 +16,8 @@ Stack Memory Example: x = 10
 */
 
 
+
+
 2. Heap Memory Example
 
 #include <iostream>
@@ -31,6 +33,7 @@ int main() {
 Output:
 Heap Memory Example: *p = 42
 */
+
 
 
 3. Dynamic Array Example
