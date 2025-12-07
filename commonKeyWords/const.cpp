@@ -117,91 +117,75 @@ ptr2 is a constant pointer, meaning the pointer cannot be changed to point to an
 
 
 4. const with Arrays
-
 When you declare an array with const, it means the elements of the array cannot be modified.
-
 C++11, C++14, and C++17 (no changes)
-
 The syntax for const arrays remains the same.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 int main() {
     const int arr[] = {1, 2, 3};  // Array of constant integers
     // arr[0] = 10;  // Error: Cannot modify a constant array element
-
     std::cout << "arr[0]: " << arr[0] << std::endl;
-    return 0;
+  return 0;
 }
 
+Explanation: The array elements are const, meaning they cannot be modified. 
+However, the array itself is not a constant pointer, so you could reassign the pointer.
 
-Explanation: The array elements are const, meaning they cannot be modified. However, the array itself is not a constant pointer, so you could reassign the pointer.
+
 
 5. const with References
-
 A const reference is a reference to a constant value, meaning you cannot modify the referenced value through the reference.
-
 C++11, C++14, and C++17 (no changes)
-
 The behavior of const references remains the same across these versions.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 int main() {
     int x = 10;
     const int& ref = x;  // Reference to const int
     // ref = 20;  // Error: Cannot modify a const reference
 
     std::cout << "ref: " << ref << std::endl;
-    return 0;
+  return 0;
 }
-
 
 Explanation: ref is a constant reference, so you cannot modify the value of x through ref.
 
+
+
+
 6. const with Templates (C++11 and later)
-
 In C++11 and later, you can use const in template arguments to ensure the argument is constant.
-
 C++11, C++14, and C++17 (no changes)
-
 The use of const in template arguments is the same across these versions.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 template <typename T>
 void printConst(const T& val) {  // Constant reference parameter
     std::cout << "Value: " << val << std::endl;
 }
-
 int main() {
     const int x = 100;
     printConst(x);  // Passed as a const reference
 
-    return 0;
+  return 0;
 }
 
+Explanation: In the template function printConst, the argument val is passed as a constant reference, 
+meaning it cannot be modified inside the function.
 
-Explanation: In the template function printConst, the argument val is passed as a constant reference, meaning it cannot be modified inside the function.
+
 
 7. const with Lambdas (C++11 and later)
-
 In C++11 and beyond, you can declare a lambda expression that does not modify its captured variables by marking it as const.
-
 C++11, C++14, and C++17 (no changes)
-
 The ability to specify const on lambda captures remains the same across C++11, C++14, and C++17.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 int main() {
     int x = 10;
     auto lambda = [x]() mutable {  // `mutable` allows modification of captured variable
@@ -211,76 +195,58 @@ int main() {
     lambda();
 
     std::cout << "x outside lambda: " << x << std::endl;  // x remains unchanged outside the lambda
-    return 0;
+  return 0;
 }
 
-
 Explanation: The mutable keyword allows the lambda to modify the captured variable, even if it is captured by value.
-
 If you capture by reference and use const, the lambda cannot modify the captured variable.
 
+
+
+
 8. const with Type Aliases (C++11 and later)
-
 In C++11 and later, const can also be applied to type aliases to specify that the alias refers to a constant type.
-
 C++11, C++14, and C++17 (no changes)
-
 The use of const in type aliases remains the same.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 int main() {
     const int* ptr;  // Pointer to constant integer
     ptr = new int(5);
     std::cout << "*ptr: " << *ptr << std::endl;
 
     delete ptr;
-    return 0;
+  return 0;
 }
 
+
+
 9. const with Default Arguments (C++11 and later)
-
 You can also use const with default function arguments to enforce immutability of the default argument.
-
 C++11, C++14, and C++17 (no changes)
-
 The usage of const with default arguments is consistent across C++11, C++14, and C++17.
 
 Example (C++11, C++14, C++17):
-
 #include <iostream>
-
 void printMessage(const std::string& message = "Default Message") {
     std::cout << message << std::endl;
 }
-
 int main() {
     printMessage();  // Uses default message
     printMessage("Hello, World!");  // Uses provided message
-    return 0;
+  return 0;
 }
-
 
 Explanation: The parameter message is a constant reference, ensuring that the argument cannot be modified within the function.
 
 Summary of const usage:
-
 const variables: Values cannot be modified after initialization (C++11, C++14, C++17).
-
 const methods: Methods that cannot modify the class's member variables (C++11, C++14, C++17).
-
 const pointers: Indicate that the data or the pointer itself is constant (C++11, C++14, C++17).
-
 const arrays: Elements of the array cannot be modified (C++11, C++14, C++17).
-
 const references: Prevent modification of the referenced value (C++11, C++14, C++17).
-
 const templates: Ensure constant arguments (C++11, C++14, C++17).
-
 const with lambdas: Lambdas can capture variables as constant (C++11 and later).
-
 const with type aliases: Ensures the alias refers to a constant type (C++11 and later).
-
 const with default arguments: Enforces immutability of default arguments (C++11 and later).

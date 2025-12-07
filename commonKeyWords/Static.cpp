@@ -272,3 +272,195 @@ Static member functions: Operate only on static member data and do not require a
 Static assertions: Used for compile-time checks (C++11 and later).
 Static class templates: In C++17, allows for static members in template classes.
 Static linkage for global functions: Restricts visibility to the current translation unit (C++11 and later).
+
+
+
+
+
+
+
+✅ 1. Static Local Variables
+✔ Retain their value between function calls
+✔ Lifetime = entire program
+✔ Scope = only inside the function
+
+//Program 1: Static Local Variable
+#include <iostream>
+void counter() {
+    static int x = 0;   // Initialized only once
+    x++;
+    std::cout << "x = " << x << "\n";
+}
+int main() {
+    counter();
+    counter();
+    counter();
+}
+/* 
+Output
+x = 1
+x = 2
+x = 3
+*/
+
+
+
+✅ 2. Static Functions (Internal Linkage)
+✔ Only accessible inside the same .cpp file
+✔ Used in multi-file projects to hide helper functions
+
+//Program 2 (Single file demonstration)
+#include <iostream>
+static void helper() {   // internal linkage
+    std::cout << "Helper function called\n";
+}
+int main() {
+    helper();   // OK
+}
+/* 
+Output
+Helper function called
+
+(In another .cpp file this function CANNOT be called.)
+*/
+
+
+
+✅ 3. Static Member Variables
+✔ Shared by ALL objects
+✔ Only one copy in memory
+✔ Must be defined outside the class
+
+
+//Program 3
+#include <iostream>
+class Test {
+  public:
+    static int count;  // declaration
+    Test() { count++; }
+};
+int Test::count = 0;   // definition
+int main() {
+    Test a, b, c;
+    std::cout << "Object count = " << Test::count << "\n";
+}
+/* 
+Output
+Object count = 3
+*/
+
+
+
+✅ 4. Static Member Functions
+✔ Do NOT require an object
+✔ Can access only static variables
+✔ Useful for utility functions inside classes
+
+
+//Program 4
+#include <iostream>
+class Math {
+  private:
+    static int value;
+  public:
+    static void setValue(int v) { value = v; }
+    static void printValue() { std::cout << "Value = " << value << "\n"; }
+};
+int Math::value = 0;
+int main() {
+    Math::setValue(42);     // No object needed
+    Math::printValue();
+}
+/* 
+Output
+Value = 42
+*/
+
+
+
+
+✅ 5. Static Assertions (static_assert) — C++11
+✔ Validates conditions at compile time
+✔ Prevents compilation if assertion fails
+
+//Program 5
+#include <iostream>
+static_assert(sizeof(int) == 4, "int must be 4 bytes");
+int main() {
+    std::cout << "Program compiled successfully\n";
+}
+/* 
+Output
+Program compiled successfully
+
+(If int was not 4 bytes → compile error)
+*/
+
+
+
+
+✅ 6. Static Members in Class Templates (C++11–C++20)
+✔ Each template specialization gets its own static variable
+✔ Very useful in generic programming
+
+
+//Program 6: Static template members (C++17)
+#include <iostream>
+template<typename T>
+class Counter {
+  public:
+    static int count;
+    Counter() { count++; }
+};
+template<typename T>
+int Counter<T>::count = 0;
+int main() {
+    Counter<int> c1, c2;
+    Counter<double> d1;
+
+    std::cout << "int count = " << Counter<int>::count << "\n";
+    std::cout << "double count = " << Counter<double>::count << "\n";
+}
+/* 
+Output
+int count = 2
+double count = 1
+*/
+
+
+
+✅ 7. Static Global Functions (Static Linkage)
+✔ Restricts function visibility to current .cpp file
+✔ Equivalent to “private global function”
+✔ Avoids name conflicts
+
+
+//Program 7
+#include <iostream>
+static void logMessage() {   // file-scope static
+    std::cout << "Logging message...\n";
+}
+int main() {
+    logMessage();
+}
+/* 
+Output
+Logging message...
+*/
+
+
+
+✅ 8. Bonus: Static Global Variables
+✔ Global lifetime
+✔ Restricted to current translation unit (internal linkage)
+
+//Program 8
+#include <iostream>
+static int globalValue = 50;   // Internal linkage
+int main() {
+    std::cout << "globalValue = " << globalValue << "\n";
+}
+/* 
+Output
+globalValue = 50 
+*/
