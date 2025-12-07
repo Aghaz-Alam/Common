@@ -12,7 +12,6 @@ Google Test (GTest)
 Purpose: Unit testing C++ code. It allows checking if individual functions behave as expected.
 
 Example: Testing a simple math function.
-
 // math_functions.h
 #pragma once
 int add(int a, int b) {
