@@ -100,6 +100,174 @@ Testing out_of_range: Error: Index is out of range
 
 
 
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+namespace myspace {
+
+ template<typename T, size_t N>
+ class array {
+    T arr[N];
+
+   public:
+    // Constructor
+    array() {
+        cout << "Hello!" << endl;
+    }
+
+    // operator[]
+    T& operator[](size_t index) {
+        return arr[index];
+    }
+    const T& operator[](size_t index) const {
+        return arr[index];
+    }
+
+    // at()
+    T& at(size_t index) {
+        if (index >= N) throw out_of_range("Index is out of range");
+        return arr[index];
+    }
+    const T& at(size_t index) const {
+        if (index >= N) throw out_of_range("Index is out of range");
+        return arr[index];
+    }
+
+    // size()
+    size_t size() const {
+        return N;
+    }
+
+    // fill()
+    void fill(const T& val) {
+        for (size_t i = 0; i < N; i++)
+            arr[i] = val;
+    }
+
+    // front() / back()
+    T& front() { return arr[0]; }
+    const T& front() const { return arr[0]; }
+
+    T& back() { return arr[N - 1]; }
+    const T& back() const { return arr[N - 1]; }
+
+    // data()
+    T* data() { return arr; }
+    const T* data() const { return arr; }
+
+    // begin() / end()
+    T* begin() { return arr; }
+    const T* begin() const { return arr; }
+
+    T* end() { return arr + N; }
+    const T* end() const { return arr + N; }
+
+    // cbegin / cend
+    const T* cbegin() const { return arr; }
+    const T* cend() const { return arr + N; }
+
+    // reverse iterators
+    T* rbegin() { return arr + N - 1; }
+    const T* rbegin() const { return arr + N - 1; }
+
+    T* rend() { return arr - 1; }
+    const T* rend() const { return arr - 1; }
+
+    // swap()
+    void swap(array& other) {
+        for (size_t i = 0; i < N; i++)
+            std::swap(arr[i], other.arr[i]);
+    }
+ };
+
+} // namespace myspace
+
+int main() {
+    try {
+        myspace::array<int, 5> arr;
+        arr.fill(10);
+
+        cout << "Size of array: " << arr.size() << endl;
+
+        cout << "Array Elements: ";
+        for (size_t i = 0; i < arr.size(); i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+
+        cout << "front(): " << arr.front() << endl;
+        cout << "back(): " << arr.back() << endl;
+
+        cout << "Using data(): ";
+        const int* p = arr.data();
+        for (size_t i = 0; i < arr.size(); i++) {
+            cout << *(p + i) << " ";
+        }
+        cout << endl;
+
+        arr[2] = 20;
+
+        cout << "Array Elements after modification: ";
+        for (auto x : arr) {
+            cout << x << " ";
+        }
+        cout << endl;
+
+        cout << "Using begin()/end(): ";
+        for (auto it = arr.begin(); it != arr.end(); it++) {
+            cout << *it << " ";
+        }
+        cout << endl;
+
+        cout << "Using rbegin()/rend(): ";
+        for (auto it = arr.rbegin(); it != arr.rend(); it--) {
+            cout << *it << " ";
+        }
+        cout << endl;
+
+        // Test swap
+        myspace::array<int, 5> arr1;
+        arr1.fill(1);
+        arr.swap(arr1);
+
+        cout << "After swap arr: ";
+        for (auto x : arr) cout << x << " ";
+        cout << endl;
+
+        cout << "After swap arr2: ";
+        for (auto x : arr1) cout << x << " ";
+        cout << endl;
+
+        // Testing out_of_range
+        cout << "Testing out_of_range: ";
+        cout << arr.at(10) << endl;  // will throw error
+    }
+    catch (const out_of_range& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
+/*
+Output:
+Hello!
+Size of array: 5
+Array Elements: 10 10 10 10 10 
+front(): 10
+back(): 10
+Using data(): 10 10 10 10 10 
+Array Elements after modification: 10 10 20 10 10 
+Using begin()/end(): 10 10 20 10 10 
+Using rbegin()/rend(): 10 10 20 10 10 
+Hello!
+After swap arr: 1 1 1 1 1 
+After swap arr2: 10 10 20 10 10 
+Testing out_of_range: Error: Index is out of range
+*/
+
+
+
 
 
 
