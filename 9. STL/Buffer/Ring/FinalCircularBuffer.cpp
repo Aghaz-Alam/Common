@@ -1,3 +1,170 @@
+//Fixed Size Circular QUeue 
+// Fixed-size Circular Queue 
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+template <typename T, size_t N>
+class queue {
+  private:
+    T arr[N];
+    size_t frontIndex;
+    size_t rearIndex;
+    size_t count;
+
+  public:
+    // Constructor
+    queue() : frontIndex(0), rearIndex(0), count(0) {}
+
+    // Push---elements entered in the back
+    void push(const T& value) {
+        if (count == N) throw overflow_error("Queue is full!");
+
+        arr[rearIndex] = value;
+        rearIndex = (rearIndex + 1) % N;
+        ++count;
+    }
+
+    // Pop  --elements removed from front
+    void pop() {
+        if (count == 0) throw underflow_error("Queue is empty!");
+
+        frontIndex = (frontIndex + 1) % N;
+        --count;
+    }
+
+    // Front
+    T front() const {
+        if (count == 0) throw underflow_error("Queue is empty!");
+        
+        return arr[frontIndex];
+    }
+
+    // Back --to check if the latest inserted element at end
+    T back() const {
+        if (count == 0) throw underflow_error("Queue is empty!");
+        
+        return arr[(rearIndex - 1 + N) % N];
+    }
+
+    // Aliases
+    T peekFront() const {
+        return front();
+    }
+
+    
+    T peekBack() const {
+        return back();
+    }
+
+    // Clear queue
+    void clear() {
+        frontIndex = rearIndex = count = 0; 
+    }
+
+    // Check full
+    bool full() const {
+        return count == N;
+    }
+
+    // empty, size, capacity
+    bool empty() const { 
+        return count == 0; 
+    }
+
+    size_t size() const { 
+        return count; 
+    }
+    
+    size_t capacity() const { 
+        return N;
+    }
+
+    // Display
+    void Display() const {
+        if (count == 0) {
+            cout << "Queue is empty!" << endl;
+            
+            return;
+        }
+        for (size_t i = 0; i < count; i++)
+            cout << arr[(frontIndex + i) % N] << " ";
+        cout << endl;
+    }
+
+};
+
+int main() {
+    try {
+        queue<int, 5> q;
+
+        q.push(10);
+        q.push(20);
+        q.push(30);
+        q.push(40);
+        q.push(50);
+
+        cout << "Queue elements: ";
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back: " << q.back() << endl;
+
+
+        // Testing new alias functions
+        cout << "PeekFront: " << q.peekFront() << endl;
+        cout << "PeekBack: " << q.peekBack() << endl;
+        
+        cout << "Size: " << q.size() << endl;
+        cout << "capacity: " <<q.capacity()<<endl;
+
+        // Test full()
+        cout << "Is full? " << (q.full() ? "Yes" : "No") << endl;
+
+        // Pop and re-push → wrap-around test
+        q.pop(); // remove 10
+        q.pop(); // remove 20
+
+        q.push(60);
+        q.push(70);   // wrap-around inserts at beginning
+
+        cout << "\nAfter wrap-around insert: ";
+        q.Display();
+
+        // Test clear()
+        cout << "\nClearing queue...\n";
+        q.clear();
+        cout << "Size after clear: " << q.size() << endl;
+        cout << "Empty? " << (q.empty() ? "Yes" : "No") << endl;
+    
+    }
+    catch (const underflow_error& e) {
+        cout << "String Queue Underflow: " << e.what() << endl;
+    }
+
+    return 0;
+}
+/*
+Queue elements: 10 20 30 40 50 
+Front: 10
+Back: 50
+PeekFront: 10
+PeekBack: 50
+Size: 5
+capacity: 5
+Is full? Yes
+
+After wrap-around insert: 30 40 50 60 70 
+
+Clearing queue...
+Size after clear: 0
+Empty? Yes
+*/
+
+
+
+
+
 // Fixed-size Circular Queue 
 #include <iostream>
 #include <stdexcept>
