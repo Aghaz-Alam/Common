@@ -1,180 +1,349 @@
-//Queue
-#include<iostream>
+//Fixed Size Queue
+#include <iostream>
+#include <stdexcept>
 using namespace std;
-template<typename T>
-class MyCQueue{
-    T* arr;
-    size_t fIndex;
-    size_t rIndex;
-    size_t count;
-    size_t cap;
+
+template<typename T, size_t N>
+class queue {
+    T arr[N];
+    size_t frontInd;
+    size_t rearInd;
+    
   public:
-    MyCQueue(size_t capacity);
-    ~MyCQueue();
-    void push(const T& val);
-    void pop();
-    T front() const;
-    T back() const;
-    void Display() const;
+    queue() : frontInd(0), rearInd(0) {}
+
+    void push(const T& val) {
+        if (rearInd == N)
+            throw overflow_error("Queue is full!");
+
+        arr[rearInd++] = val;
+    }
+
+    void pop() {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        frontInd++;
+    }
+
+    T front() {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[frontInd];
+    }
+
+    T back() {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[rearInd - 1];
+    }
+
+    void Display() {
+        cout << "Elements: ";
+        for (size_t i = frontInd; i < rearInd; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
 };
-template<typename T>
-MyCQueue<T>::MyCQueue(size_t capacity): arr(new T[capacity]), fIndex(0), rIndex(0), count(0), cap(capacity){}
 
-template<typename T>
-MyCQueue<T>::~MyCQueue(){ delete[] arr;}
+int main() {
+    try {
+        queue<int, 5> q;
 
-template<typename T>
-void MyCQueue<T>::push(const T& val){
-    if(count==cap){
-      throw overflow_error("Queue is full!"); // Stop insertion
+        q.push(10);
+        q.push(20);
+        q.push(30);
+        q.push(40);
+        q.push(50);
+
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back: " << q.back() << endl;
+
+        cout << "pop: ";
+        q.pop();
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back: " << q.back() << endl;
+
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
     }
-    arr[rIndex] = val;
-    rIndex = (rIndex+1)%cap;
+
+    return 0;
 }
-
-template<typename T>
-void MyCQueue<T>::pop(){
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    fIndex = (fIndex + 1) % cap;
-    count --;
-} 
-
-template<typename T>
-T MyCQueue<T>::front() const{
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    return arr[fIndex];
-}
-
-template<typename T>
-T MyCQueue<T>::back() const{
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    return arr[(rIndex - 1 + cap) % cap];
-}
-
-template<typename T>
-void MyCQueue<T>::Display() const{
-    for(size_t i=0; i<count; i++){
-        cout<<arr[(fIndex + i)%cap]<<" ";
-    }
-    cout<<endl;
-}
-
-int main(){
-    MyCQueue<int>cq(4);
-    cq.push(10);
-    cq.push(20);
-    cq.push(30); 
-    cq.push(40);
-    
-    cout<<"Elements: ";
-    cq.Display();
-    
-    cq.pop();
-    cout<<"Elements after pop: ";
-    cq.Display();
-    
-    cout<<"front: "<<cq.front()<<endl;
-    cout<<"back: "<<cq.back()<<endl;
-    
-  return 0;
-    
-}
-//Elements: 10 20 30 40 
+/* 
+Elements: 10 20 30 40 50
+Front: 10
+Back: 50
+pop: Elements: 20 30 40 50
+Front: 20
+Back: 50
+*/
 
 
 
 
-//Circular Queue
-#include<iostream>
+
+
+
+// Dynamic  Queue 
+#include <iostream>
+#include <stdexcept>
 using namespace std;
+
 template<typename T>
-class MyCQueue{
-    T* arr;
-    size_t fIndex;
-    size_t rIndex;
-    size_t count;
-    size_t cap;
-  public:
-    MyCQueue(size_t capacity);
-    ~MyCQueue();
-    void push(const T& val);
-    void pop();
-    T front() const;
-    T back() const;
-    void Display() const;
+class queue {
+    T* arr;          // dynamic array
+    size_t N;        // capacity
+    size_t frontInd;
+    size_t rearInd;
+
+public:
+    queue(size_t capacity)
+        : N(capacity), frontInd(0), rearInd(0) {
+        arr = new T[N];
+    }
+
+    ~queue() {
+        delete[] arr;
+    }
+
+    void push(const T& val) {
+        if (rearInd == N)
+            throw overflow_error("Queue is full!");
+
+        arr[rearInd++] = val;
+    }
+
+    void pop() {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        frontInd++;
+    }
+
+    T front() const {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[frontInd];
+    }
+
+    T back() const {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[rearInd - 1];
+    }
+
+    void Display() const {
+        cout << "Elements: ";
+        for (size_t i = frontInd; i < rearInd; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
 };
-template<typename T>
-MyCQueue<T>::MyCQueue(size_t capacity): arr(new T[capacity]), fIndex(0), rIndex(0), count(0), cap(capacity){}
 
-template<typename T>
-MyCQueue<T>::~MyCQueue(){ delete[] arr;}
+int main() {
+    try {
+        queue<int> q(5);   // dynamic capacity
 
-template<typename T>
-void MyCQueue<T>::push(const T& val){
-    if(count==cap){
-        fIndex = (fIndex+1)%cap;    // overwrite oldest element
+        q.push(10);
+        q.push(20);
+        q.push(30);
+        q.push(40);
+        q.push(50);
+
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back: " << q.back() << endl;
+
+        cout << "pop: ";
+        q.pop();
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back: " << q.back() << endl;
+
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
     }
-    else{
-        count++;
+
+    return 0;
+}
+/*
+Elements: 10 20 30 40 50 
+Front: 10
+Back: 50
+pop: Elements: 20 30 40 50 
+Front: 20
+Back: 50
+*/
+
+
+
+
+
+// Dynamic  Queue 
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+template<typename T>
+class queue {
+    T* arr;          // dynamic array
+    size_t N;        // capacity
+    size_t frontInd;
+    size_t rearInd;
+
+public:
+    queue(size_t capacity)
+        : N(capacity), frontInd(0), rearInd(0) {
+        arr = new T[N];
     }
-    arr[rIndex] = val;
-    rIndex = (rIndex+1)%cap;
-}
 
-template<typename T>
-void MyCQueue<T>::pop(){
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    fIndex = (fIndex + 1) % cap;
-    count --;
-} 
-
-template<typename T>
-T MyCQueue<T>::front() const{
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    return arr[fIndex];
-}
-
-template<typename T>
-T MyCQueue<T>::back() const{
-    if(count == 0) throw underflow_error("CQueue is empty!");
-    
-    return arr[(rIndex - 1 + cap) % cap];
-}
-
-template<typename T>
-void MyCQueue<T>::Display() const{
-    for(size_t i=0; i<count; i++){
-        cout<<arr[(fIndex + i)%cap]<<" ";
+    ~queue() {
+        delete[] arr;
     }
-    cout<<endl;
-}
 
-int main(){
-    MyCQueue<int>cq(4);
-    cq.push(10);
-    cq.push(20);
-    cq.push(30); 
-    cq.push(40);
-    
-    cout<<"Elements: ";
-    cq.Display();
-    
-    cq.pop();
-    cout<<"Elements after pop: ";
-    cq.Display();
-    
-    cout<<"front: "<<cq.front()<<endl;
-    cout<<"back: "<<cq.back()<<endl;
-    
-  return 0;
-    
+    void push(const T& val) {
+        if (rearInd == N)
+            throw overflow_error("Queue is full!");
+
+        arr[rearInd++] = val;
+    }
+
+    void pop() {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        frontInd++;
+    }
+
+    T front() const {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[frontInd];
+    }
+
+    T back() const {
+        if (frontInd == rearInd)
+            throw underflow_error("Queue is empty!");
+
+        return arr[rearInd - 1];
+    }
+
+    void Display() const {
+        cout << "Elements: ";
+        for (size_t i = frontInd; i < rearInd; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    queue<int> q(5);
+
+    try {
+        cout << "\n--- Normal Operations ---\n";
+        q.push(10);
+        q.push(20);
+        q.push(30);
+        q.push(40);
+        q.push(50);
+
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back : " << q.back() << endl;
+
+        cout << "pop: ";
+        q.pop();
+        q.Display();
+
+        cout << "Front: " << q.front() << endl;
+        cout << "Back : " << q.back() << endl;
+    }
+    catch (const exception& e) {
+        cout << "Caught Exception: " << e.what() << endl;
+    }
+
+
+    cout << "\n--- Testing Overflow ---\n";
+    try {
+        q.push(60);   // Queue is already full → overflow error
+    }
+    catch (const exception& e) {
+        cout << "Caught Exception: " << e.what() << endl;
+    }
+
+
+    cout << "\n--- Testing Underflow ---\n";
+    try {
+        queue<int> q2(3);
+        q2.pop();     // pop from empty queue
+    }
+    catch (const exception& e) {
+        cout << "Caught Exception: " << e.what() << endl;
+    }
+
+
+    cout << "\n--- Testing front() on Empty Queue ---\n";
+    try {
+        queue<int> q3(2);
+        cout << q3.front();    // error
+    }
+    catch (const exception& e) {
+        cout << "Caught Exception: " << e.what() << endl;
+    }
+
+
+    cout << "\n--- Testing back() on Empty Queue ---\n";
+    try {
+        queue<int> q4(2);
+        cout << q4.back();     // error
+    }
+    catch (const exception& e) {
+        cout << "Caught Exception: " << e.what() << endl;
+    }
+
+    return 0;
 }
-//Elements: 10 20 30 40 
+/*
+--- Normal Operations ---
+Elements: 10 20 30 40 50 
+Front: 10
+Back : 50
+pop: Elements: 20 30 40 50 
+Front: 20
+Back : 50
+
+--- Testing Overflow ---
+Caught Exception: Queue is full!
+
+--- Testing Underflow ---
+Caught Exception: Queue is empty!
+
+--- Testing front() on Empty Queue ---
+Caught Exception: Queue is empty!
+
+--- Testing back() on Empty Queue ---
+Caught Exception: Queue is empty!
+*/
+
+
+
+
 
 
 

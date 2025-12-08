@@ -67,7 +67,7 @@ class vector {
 
     // pop_back
     void pop_back() {
-        if (n == 0) throw runtime_error("pop_back on empty vector");
+        if (n == 0) throw underflow_error("pop_back on empty vector");
 
         n--; // Destroy element count
 
