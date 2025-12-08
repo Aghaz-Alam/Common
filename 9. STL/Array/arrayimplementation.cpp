@@ -15,11 +15,11 @@ class array {
 
     // operator[]
     constexpr T& operator[](size_t index) noexcept;
-    constexpr const T& operator[](size_t index) const noexcept;
+    //constexpr const T& operator[](size_t index) const noexcept;
 
     // at()
     T& at(size_t index);
-    const T& at(size_t index) const;
+    //const T& at(size_t index) const;
 
     // size()
     constexpr size_t size() const noexcept;
@@ -29,13 +29,13 @@ class array {
 
     // data()
     constexpr T* data() noexcept;
-    constexpr const T* data() const noexcept;
+    //constexpr const T* data() const noexcept;
 
     // begin/end
     constexpr T* begin() noexcept;
-    constexpr const T* begin() const noexcept;
+    //constexpr const T* begin() const noexcept;
     constexpr T* end() noexcept;
-    constexpr const T* end() const noexcept;
+    //constexpr const T* end() const noexcept;
 };
 
 // ---------------- MEMBER DEFINITIONS OUTSIDE CLASS ----------------
@@ -45,11 +45,12 @@ template <typename T, size_t N>
 constexpr T& array<T, N>::operator[](size_t index) noexcept {
     return arr[index];
 }
-
+/* 
 template <typename T, size_t N>
 constexpr const T& array<T, N>::operator[](size_t index) const noexcept {
     return arr[index];
 }
+ */
 
 // at()
 template <typename T, size_t N>
@@ -57,13 +58,13 @@ T& array<T, N>::at(size_t index) {
     if (index >= N) throw std::out_of_range("Index out of range");
     return arr[index];
 }
-
+/* 
 template <typename T, size_t N>
 const T& array<T, N>::at(size_t index) const {
     if (index >= N) throw std::out_of_range("Index out of range");
     return arr[index];
 }
-
+ */
 // size()
 template <typename T, size_t N>
 constexpr size_t array<T, N>::size() const noexcept {
@@ -82,33 +83,203 @@ template <typename T, size_t N>
 constexpr T* array<T, N>::data() noexcept {
     return arr;
 }
-
+/* 
 template <typename T, size_t N>
 constexpr const T* array<T, N>::data() const noexcept {
     return arr;
 }
-
+ */
 // begin/end
 template <typename T, size_t N>
 constexpr T* array<T, N>::begin() noexcept {
     return arr;
 }
-
+/* 
 template <typename T, size_t N>
 constexpr const T* array<T, N>::begin() const noexcept {
     return arr;
 }
-
+ */
 template <typename T, size_t N>
 constexpr T* array<T, N>::end() noexcept {
     return arr + N;
 }
-
+/* 
 template <typename T, size_t N>
 constexpr const T* array<T, N>::end() const noexcept {
     return arr + N;
 }
+ */
+// -------------------------- MAIN ------------------------------
 
+int main() {
+    try {
+        array<int, 5> arr;
+        arr.fill(10);
+
+        cout << "Array size: " << arr.size() << endl;
+        cout << "Array elements: ";
+        for (size_t i = 0; i < arr.size(); ++i)
+            cout << arr[i] << " ";
+        cout << endl;
+
+        int* ptr = arr.data();
+        cout << "Using data(): ";
+        for (size_t i = 0; i < arr.size(); i++) {
+            cout << *(ptr + i) << " ";
+        }
+        cout << endl;
+
+        arr[2] = 20;
+        cout << "Modified Array elements: ";
+        for (auto v : arr)
+            cout << v << " ";
+        cout << endl;
+
+        cout << "Using begin()/end(): ";
+        for (int* it = arr.begin(); it != arr.end(); ++it) {
+            cout << *it << " ";
+        }
+        cout << endl;
+
+        // testing out_of_range
+        cout << "\nTesting at(): ";
+        cout << arr.at(10);   // will throw
+    }
+    catch (const std::out_of_range& e) {
+        cout << "Out_of_range exception caught: " << e.what() << endl;
+    }
+
+    return 0;
+}
+/*
+Array size: 5
+Array elements: 10 10 10 10 10 
+Using data(): 10 10 10 10 10 
+Modified Array elements: 10 10 20 10 10 
+Using begin()/end(): 10 10 20 10 10 
+
+Testing at(): Out_of_range exception caught: Index out of range
+
+*/
+
+
+
+
+
+
+//std::array internal implementation with template
+#include <iostream>
+#include <stdexcept>
+#include <string>
+using namespace std;
+
+// std::array internal implementation with template
+template <typename T, size_t N>
+class array {
+  private:
+    T arr[N];
+
+  public:
+    array() = default;
+
+    // operator[]
+    constexpr T& operator[](size_t index) noexcept;
+    //constexpr const T& operator[](size_t index) const noexcept;
+
+    // at()
+    T& at(size_t index);
+    //const T& at(size_t index) const;
+
+    // size()
+    constexpr size_t size() const noexcept;
+
+    // fill()
+    void fill(const T& value);
+
+    // data()
+    constexpr T* data() noexcept;
+    //constexpr const T* data() const noexcept;
+
+    // begin/end
+    constexpr T* begin() noexcept;
+    //constexpr const T* begin() const noexcept;
+    constexpr T* end() noexcept;
+    //constexpr const T* end() const noexcept;
+};
+
+// ---------------- MEMBER DEFINITIONS OUTSIDE CLASS ----------------
+
+// operator[]
+template <typename T, size_t N>
+constexpr T& array<T, N>::operator[](size_t index) noexcept {
+    return arr[index];
+}
+/* 
+template <typename T, size_t N>
+constexpr const T& array<T, N>::operator[](size_t index) const noexcept {
+    return arr[index];
+}
+ */
+
+// at()
+template <typename T, size_t N>
+T& array<T, N>::at(size_t index) {
+    if (index >= N) throw std::out_of_range("Index out of range");
+    return arr[index];
+}
+/* 
+template <typename T, size_t N>
+const T& array<T, N>::at(size_t index) const {
+    if (index >= N) throw std::out_of_range("Index out of range");
+    return arr[index];
+}
+ */
+// size()
+template <typename T, size_t N>
+constexpr size_t array<T, N>::size() const noexcept {
+    return N;
+}
+
+// fill()
+template <typename T, size_t N>
+void array<T, N>::fill(const T& value) {
+    for (size_t i = 0; i < N; ++i)
+        arr[i] = value;
+}
+
+// data()
+template <typename T, size_t N>
+constexpr T* array<T, N>::data() noexcept {
+    return arr;
+}
+/* 
+template <typename T, size_t N>
+constexpr const T* array<T, N>::data() const noexcept {
+    return arr;
+}
+ */
+// begin/end
+template <typename T, size_t N>
+constexpr T* array<T, N>::begin() noexcept {
+    return arr;
+}
+/* 
+template <typename T, size_t N>
+constexpr const T* array<T, N>::begin() const noexcept {
+    return arr;
+}
+ */
+template <typename T, size_t N>
+constexpr T* array<T, N>::end() noexcept {
+    return arr + N;
+}
+/* 
+template <typename T, size_t N>
+constexpr const T* array<T, N>::end() const noexcept {
+    return arr + N;
+}
+ */
 // -------------------------- MAIN ------------------------------
 
 int main() {
