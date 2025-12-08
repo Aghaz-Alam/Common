@@ -1,3 +1,270 @@
+#include<iostream>
+#include<stdexcept>
+using namespace std;
+
+namespace myspace{
+ template<typename T, size_t N>
+ class array{
+    T arr[N];
+  public:
+      array(){
+          cout<<"Hello!"<<endl;
+      }
+     
+      T& operator[](size_t index){
+         return arr[index];
+      }
+
+      T& at(size_t index){
+          if(index>=N) throw out_of_range("Index is out of range");
+    
+         return arr[index];
+       }
+       
+      size_t size() const  {
+         return N;
+      }
+
+      void fill(const T& val){
+         for(size_t i=0; i<N; i++){
+             arr[i] = val;
+         }
+       }
+
+      T* data(){
+        return arr;
+      }
+
+      T* begin(){
+         return arr;
+      }
+
+      T* end(){
+         return arr+N;
+      }
+  };
+}
+int main(){
+    try{
+      myspace::array<int, 5> arr;
+      arr.fill(10);
+      
+      cout<<"Size of array: "<<arr.size()<<endl;
+      cout<<"Array Elements: ";
+      for(size_t i=0; i<arr.size(); i++){
+          cout<<arr[i]<<" ";
+      }
+      cout<<endl;
+      
+      int *p = arr.data();
+      cout<<"Using data() ";
+      for(size_t i=0; i<arr.size(); i++){
+          cout<<*(p+i)<<" ";
+      }
+      cout<<endl;
+      
+      arr[2] = 20;
+      cout<<"Array Elements after modification: ";
+      for( auto x: arr){
+          cout<<x<<" ";
+      }
+      cout<<endl;
+      
+      cout<<"Using begin()/end(): ";
+      for(auto it=arr.begin(); it<arr.end(); it++){
+          cout<<*it<<" ";
+      }
+      cout<<endl;
+      
+      cout<<"Testing out_of_range: ";
+      cout<<arr.at(10)<<endl;  //will throw error
+        
+    }
+    catch(const out_of_range& e){
+        cout<<"Error: "<<e.what()<<endl;
+    }
+  return 0;
+}
+
+
+/*
+Output:
+Size of array: 5
+Array Elements: 10 10 10 10 10 
+Using data() 10 10 10 10 10 
+Array Elements after modification: 10 10 20 10 10 
+Using begin()/end(): 10 10 20 10 10 
+Testing out_of_range: Error: Index is out of range
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include<iostream>
+#include<stdexcept>
+//using namespace std;
+
+template<typename T, size_t N>
+class array{
+    T arr[N];
+  public:
+      array(){
+          cout<<"Hello!"<<endl;
+      }
+      
+     //operator[]
+    constexpr T& operator[](size_t index) noexcept;
+     
+     //at()
+    T& at(size_t index);
+     
+     //size()
+    constexpr size_t size() const noexcept;
+     
+     //fill()
+     void fill(const T& val);
+     
+     //data()
+    constexpr T* data() noexcept;
+     
+     //begin()
+    constexpr T* begin() noexcept;
+     
+     //end()
+    constexpr T* end() noexcept;
+    
+};
+template<typename T, size_t N>
+constexpr T& array<T, N>::operator[](size_t index) noexcept{
+    return arr[index];
+}
+
+template<typename T, size_t N>
+T& array<T, N>::at(size_t index){
+    if(index>=N) throw out_of_range("Index is out of range");
+    
+    return arr[index];
+}
+
+template<typename T, size_t N>
+constexpr size_t array<T, N>::size() const noexcept {
+    return N;
+}
+
+template<typename T, size_t N>
+void array<T, N>::fill(const T& val){
+    for(size_t i=0; i<N; i++){
+        arr[i] = val;
+    }
+}
+
+
+
+template<typename T, size_t N>
+constexpr T* array<T, N>::data() noexcept{
+    return arr;
+}
+
+
+template<typename T, size_t N>
+constexpr T* array<T, N>::begin() noexcept{
+    return arr;
+}
+
+template<typename T, size_t N>
+constexpr T* array<T, N>::end() noexcept{
+    return arr+N;
+}
+
+int main(){
+    try{
+      array<int, 5> arr;
+      arr.fill(10);
+      
+      cout<<"Size of array: "<<arr.size()<<endl;
+      cout<<"Array Elements: ";
+      for(size_t i=0; i<arr.size(); i++){
+          cout<<arr[i]<<" ";
+      }
+      cout<<endl;
+      
+      int *p = arr.data();
+      cout<<"Using data() ";
+      for(size_t i=0; i<arr.size(); i++){
+          cout<<*(p+i)<<" ";
+      }
+      cout<<endl;
+      
+      arr[2] = 20;
+      cout<<"Array Elements after modification: ";
+      for( auto x: arr){
+          cout<<x<<" ";
+      }
+      cout<<endl;
+      
+      cout<<"Using begin()/end(): ";
+      for(auto it=arr.begin(); it<arr.end(); it++){
+          cout<<*it<<" ";
+      }
+      cout<<endl;
+      
+      cout<<"Testing out_of_range: ";
+      cout<<arr.at(10)<<endl;  //will throw error
+        
+    }
+    catch(const out_of_range& e){
+        cout<<"Error: "<<e.what()<<endl;
+    }
+  return 0;
+}
+
+
+/*
+Output:
+Size of array: 5
+Array Elements: 10 10 10 10 10 
+Using data() 10 10 10 10 10 
+Array Elements after modification: 10 10 20 10 10 
+Using begin()/end(): 10 10 20 10 10 
+Testing out_of_range: Error: Index is out of range
+
+
+✔ constexpr:
+Allows compile-time evaluation → faster and supports constexpr objects.
+
+✔ const:
+Guarantees this function will not modify the object → can call on const arrays.
+
+✔ noexcept:
+The function will never throw exceptions → safer and better optimized.
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //std::array internal implementation with template
 #include <iostream>
 #include <stdexcept>

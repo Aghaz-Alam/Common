@@ -1,3 +1,279 @@
+//Vector implementation with template shrink and grow dynamically
+#include <iostream>
+#include <stdexcept>
+#include <utility>   // for std::move, std::forward
+using namespace std;
+template <typename T>
+class vector {
+  private:
+    T* arr;
+    size_t n;
+    size_t cap;
+    
+      // resize()
+    void resize(size_t newCap) {
+      if (newCap < n) newCap = n;
+      
+      if (newCap == 0) newCap = 1;
+
+      T* newArr = new T[newCap];
+      for (size_t i = 0; i < n; ++i){
+          newArr[i] = std::move(arr[i]);
+      }
+      delete[] arr;
+      arr = newArr;
+      cap = newCap;
+    }
+
+  public:
+    // Constructor
+    vector() : arr(nullptr), n(0), cap(0) {}
+
+
+    // Destructor
+    ~vector() {
+        delete[] arr;
+    }
+
+
+    // push_back lvalue
+    void push_back(const T& value) {
+        if (n == cap)
+            resize(cap == 0 ? 1 : cap * 2);
+
+        arr[n++] = value;
+    }
+
+
+    // push_back rvalue
+    void push_back(T&& value) {
+        if (n == cap)
+            resize(cap == 0 ? 1 : cap * 2);
+
+        arr[n++] = std::move(value);
+    }
+
+
+    // emplace_back
+    template <typename... Args>
+    void emplace_back(Args&&... args) {
+        if (n == cap)
+            resize(cap == 0 ? 1 : cap * 2);
+
+        new (&arr[n]) T(std::forward<Args>(args)...);
+        n++;
+    }
+
+
+    // pop_back
+    void pop_back() {
+        if (n == 0) throw runtime_error("pop_back on empty vector");
+
+        n--; // Destroy element count
+
+        if (cap > 1 && n <= cap / 4)
+            resize(cap / 2);
+    }
+
+
+    // operator[]
+    T& operator[](size_t index) {
+        if (index >= n) throw out_of_range("operator[] index out of range");
+        
+        return arr[index];
+    }
+
+
+    // at()
+    T& at(size_t index) {
+        if (index >= n) throw out_of_range("at index out of range");
+        
+        return arr[index];
+    }
+
+    size_t size(){
+        return n;
+    }
+    size_t capacity(){
+        return cap;
+    }
+
+    // clear()
+    void clear() {
+        n = 0;
+        
+        resize(1);
+    }
+
+
+    // Display
+    void Display() const {
+        for (size_t i = 0; i < n; ++i)
+            cout << arr[i] << " ";
+        cout << "\n";
+    }
+  
+};
+int main() {
+    try {
+        vector<int> v;
+
+        cout << "--push_back (lvalue)--" << endl;
+        int a = 100;
+        v.push_back(a);
+        cout << "Vector Elements lvalue: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        cout << "\n--After adding one element using push_back (rvalue)--" << endl;
+        int x = 200;
+        v.push_back(std::move(x));
+        cout << "Vector Elements rvalue: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        cout << "\n--emplace_back--";
+        v.emplace_back(300);
+        v.emplace_back(400);
+        v.emplace_back(500);
+
+        cout << "\nVector Elements: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+        cout << "\n--Using operator[]--" << endl;
+        cout << "Element at index 2:" << v[2];
+
+        cout << "\n--Using at()--" << endl;
+        cout << "Element at index 2:" << v.at(2) << endl;
+
+
+        v.pop_back();
+        v.pop_back();
+        v.pop_back();
+        cout << "\nVector Elements after pop_back: ";
+        v.Display();
+
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+        v.clear();
+        cout << "\n--After clear--";
+        cout << "Size: " << v.size() << endl;
+        cout << "Capacity: " << v.capacity() << endl;
+
+
+
+
+        // FIXED crashing print
+        cout << "\n--Trying to pop from empty vector--" << endl;
+        cout.flush();   // ensure print happens BEFORE exception
+        v.pop_back();   // throws
+
+    } 
+    catch (const exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
+    }
+}
+/*
+--push_back (lvalue)--
+Vector Elements lvalue: 100 
+Size: 1
+Capacity: 1
+
+--After adding one element using push_back (rvalue)--
+Vector Elements rvalue: 100 200 
+Size: 2
+Capacity: 2
+
+--emplace_back--
+Vector Elements: 100 200 300 400 500 
+Size: 5
+Capacity: 8
+
+--Using operator[]--
+Element at index 2:300
+--Using at()--
+Element at index 2:300
+
+Vector Elements after pop_back: 100 200 
+Size: 2
+Capacity: 4
+
+--After clear--Size: 0
+Capacity: 1
+
+--Trying to pop from empty vector--
+Exception: pop_back on empty vector
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for emaplace_back
+template <typename... Args>
+void emplace_back(Args&&... args) {
+    if (n == cap)
+        resize(cap == 0 ? 1 : cap * 2);
+
+    new (&arr[n]) T(std::forward<Args>(args)...);
+    n++;
+}
+
+
+
+(1) template <typename... Args>
+Allows any number of arguments (variadic templates)
+
+(2) Args&&... args
+This is universal / forwarding reference, meaning:
+If you pass lvalues → they stay lvalues
+If you pass rvalues → they stay rvalues
+This preserves original types.
+
+(3) std::forward<Args>(args)...
+This is the secret.
+It perfectly forwards arguments the same way you passed them.
+If argument was temporary → forwarded as temporary
+If argument was lvalue → forwarded as lvalue
+
+(4) new (&arr[n]) T(...)
+This is placement new:
+▶ "Call the constructor of T at the address arr[n]"
+Meaning:
+➡ No temporary object
+➡ No copy
+➡ No move
+➡ Construct directly in vector memory
+*/
+
+
+
+
+
 //fixed sized vector
 #include <iostream>
 #include <stdexcept>
