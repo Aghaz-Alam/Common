@@ -274,6 +274,192 @@ Meaning:
 
 
 
+
+
+
+
+
+#include <iostream>
+#include <stdexcept>
+#include <utility>           //std::move
+using namespace std;
+
+template <typename T>
+class Vector {
+  private:
+    T* arr;
+    size_t n;
+    size_t cap;
+
+    void resize(size_t newCap) {
+        if (newCap < n) newCap = n;
+
+        if (newCap == 0) newCap = 1;
+
+        T* newArr = new T[newCap];
+
+        for (size_t i = 0; i < n; ++i)
+            newArr[i] = std::move(arr[i]);
+
+        delete[] arr;
+        arr = newArr;
+        cap = newCap;
+    }
+
+   public:
+    Vector() : arr(nullptr), n(0), cap(0) {}
+
+    ~Vector() { delete[] arr; }
+
+    void push_back(const T& val) {
+        if (n == cap)
+            resize(cap == 0 ? 1 : cap * 2);
+
+        cout << "(l-value push) ";
+        arr[n++] = val;
+    }
+
+    void push_back(T&& val) {
+        if (n == cap)
+            resize(cap == 0 ? 1 : cap * 2);
+
+        cout << "(r-value push) ";
+        arr[n++] = std::move(val);
+    }
+
+    void pop_back() {
+        if (n == 0)
+            throw underflow_error("Vector is empty!");
+
+        n--;
+
+        if (n > 0 && n == cap / 4)
+            resize(cap / 2);
+    }
+
+    T& operator[](size_t i) {
+        if (i >= n) throw out_of_range("Index out of range!");
+
+        return arr[i];
+    }
+
+    // const T& operator[](size_t i) const {
+    //     if (i >= n) throw out_of_range("Index out of range!");
+
+    //     return arr[i];
+    // }
+
+    size_t size() const { return n; }
+    size_t capacity() const { return cap; }
+
+    void print() const {
+        for (size_t i = 0; i < n; i++)
+            cout << arr[i] << " ";
+        cout << endl;
+    }
+};
+
+int main() {
+    try {
+        Vector<int> vec;
+
+        cout << "===== R-VALUE PUSH TESTS =====" << endl;
+        vec.push_back(10);
+        vec.push_back(20);
+        vec.push_back(30);
+        vec.push_back(40);
+
+        cout << "\nVector Elements: ";
+        vec.print();
+
+        cout << "Size = " << vec.size() << ", Capacity = " << vec.capacity() << endl;
+
+        cout << "\n===== L-VALUE PUSH TESTS =====" << endl;
+        int a = 50, b = 60;
+        vec.push_back(a);
+        vec.push_back(b);
+
+        cout << "\nVector Elements: ";
+        vec.print();
+
+        cout << "Size = " << vec.size() << ", Capacity = " << vec.capacity() << endl;
+
+        cout << "\n===== PUSH USING std::move (Force R-value) =====" << endl;
+        vec.push_back(std::move(a));  // a becomes moved-from
+
+        cout << "\nVector Elements: ";
+        vec.print();
+
+        cout << "Size = " << vec.size() << ", Capacity = " << vec.capacity() << endl;
+
+        cout << "\n===== ACCESS USING operator[] =====" << endl;
+        cout << "vec[0] = " << vec[0] << endl;
+        cout << "vec[3] = " << vec[3] << endl;
+
+        cout << "\n===== POP TEST =====" << endl;
+        vec.pop_back();
+
+        cout << "After one pop: ";
+        vec.print();
+
+        cout << "Size = " << vec.size() << ", Capacity = " << vec.capacity() << endl;
+
+        cout << "\n===== POP ALL ELEMENTS =====" << endl;
+        while (vec.size() > 0)
+            vec.pop_back();
+
+        cout << "Vector empty now.\n";
+
+        cout << "\nTrying pop on empty vector...\n";
+        vec.pop_back();  // should throw exception
+
+    }
+    catch (const underflow_error& e) {
+        cout << "Underflow Error: " << e.what() << endl;
+    }
+    catch (const out_of_range& e) {
+        cout << "Out-of-range Error: " << e.what() << endl;
+    }
+    catch (const exception& e) {
+        cout << "General Exception: " << e.what() << endl;
+    }
+
+    return 0;
+}
+/*
+===== R-VALUE PUSH TESTS =====
+(r-value push) (r-value push) (r-value push) (r-value push) 
+Vector Elements: 10 20 30 40 
+Size = 4, Capacity = 4
+
+===== L-VALUE PUSH TESTS =====
+(l-value push) (l-value push) 
+Vector Elements: 10 20 30 40 50 60 
+Size = 6, Capacity = 8
+
+===== PUSH USING std::move (Force R-value) =====
+(r-value push) 
+Vector Elements: 10 20 30 40 50 60 50 
+Size = 7, Capacity = 8
+
+===== ACCESS USING operator[] =====
+vec[0] = 10
+vec[3] = 40
+
+===== POP TEST =====
+After one pop: 10 20 30 40 50 60 
+Size = 6, Capacity = 8
+
+===== POP ALL ELEMENTS =====
+Vector empty now.
+
+Trying pop on empty vector...
+ERROR!
+Underflow Error: Vector is empty!
+*/
+
+
+
 //fixed sized vector
 #include <iostream>
 #include <stdexcept>

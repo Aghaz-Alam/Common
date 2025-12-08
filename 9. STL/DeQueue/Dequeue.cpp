@@ -1,3 +1,118 @@
+// Fixed Size DEQUE (Double Ended Queue)
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+template<typename T, size_t N>
+class deque_fixed {
+    T arr[N];
+    size_t frontInd;
+    size_t rearInd;
+
+  public:
+    deque_fixed() : frontInd(0), rearInd(0) {}
+
+    bool empty() const {
+        return frontInd == rearInd;
+    }
+
+    bool full() const {
+        return (rearInd - frontInd) == N;
+    }
+
+    // ---------------- push_back ----------------
+    void push_back(const T& val) {
+        if (full())
+            throw overflow_error("Deque is full!");
+
+        arr[rearInd++] = val;
+    }
+
+    // ---------------- push_front ----------------
+    void push_front(const T& val) {
+        if (full())
+            throw overflow_error("Deque is full!");
+
+        // Shift right
+        for (size_t i = rearInd; i > frontInd; --i) {
+            arr[i] = arr[i - 1];
+        }
+        arr[frontInd] = val;
+        rearInd++;
+    }
+
+    // ---------------- pop_front ----------------
+    void pop_front() {
+        if (empty())
+            throw underflow_error("Deque is empty!");
+        frontInd++;
+    }
+
+    // ---------------- pop_back ----------------
+    void pop_back() {
+        if (empty())
+            throw underflow_error("Deque is empty!");
+        rearInd--;
+    }
+
+    // ---------------- front ----------------
+    T front() const {
+        if (empty())
+            throw underflow_error("Deque is empty!");
+        return arr[frontInd];
+    }
+
+    // ---------------- back ----------------
+    T back() const {
+        if (empty())
+            throw underflow_error("Deque is empty!");
+        return arr[rearInd - 1];
+    }
+
+    // ---------------- Display ----------------
+    void Display() const {
+        cout << "Elements: ";
+        for (size_t i = frontInd; i < rearInd; ++i)
+            cout << arr[i] << " ";
+        cout << endl;
+    }
+};
+
+int main() {
+    try {
+        deque_fixed<int, 5> dq;
+
+        dq.push_back(20);
+        dq.push_back(30);
+        dq.push_back(40);
+        dq.push_front(10);
+        dq.push_back(50);
+
+        dq.Display();
+
+        dq.pop_front();
+        dq.Display();
+
+        dq.pop_back();
+        dq.Display();
+
+        cout << "Front: " << dq.front() << endl;
+        cout << "Back: " << dq.back() << endl;
+
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+}
+/*
+Elements: 10 20 30 40 50 
+Elements: 20 30 40 50 
+Elements: 20 30 40 
+Front: 20
+Back: 40
+*/
+
+
+
 //Internal Implementation of Dequeue
 #include <iostream>
 #include <stdexcept>
@@ -113,9 +228,6 @@ private:
         cap = newCap;
     }
 };
-
-
-// ====================== MAIN =========================
 
 int main() {
     DeQueue dq;
