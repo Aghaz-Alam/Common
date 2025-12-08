@@ -1,7 +1,6 @@
 //std::array internal implementation with template
 #include <iostream>
 #include <stdexcept>
-#include <string>
 using namespace std;
 
 // std::array internal implementation with template
