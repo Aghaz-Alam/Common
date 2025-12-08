@@ -31,8 +31,10 @@ class Box {
 };
 int main() {
     Box<int> b{5};
+    b.show();
+    
     Box<const char*> s{"hello"};
-    b.show(); s.show();
+    s.show();
 }
 /* 
 Output
