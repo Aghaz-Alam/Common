@@ -3,113 +3,117 @@
 #include <stdexcept>
 #include <string>
 using namespace std;
-//std::array internal implementation with template
+
+// std::array internal implementation with template
 template <typename T, size_t N>
-class MyArray {
+class array {
   private:
     T arr[N];
+
   public:
-    MyArray() = default;
+    array() = default;
+
+    // operator[]
     constexpr T& operator[](size_t index) noexcept;
-    //constexpr const T& operator[](size_t index) const noexcept;
+    constexpr const T& operator[](size_t index) const noexcept;
 
+    // at()
     T& at(size_t index);
-    //const T& at(size_t index) const;
+    const T& at(size_t index) const;
 
+    // size()
     constexpr size_t size() const noexcept;
 
+    // fill()
     void fill(const T& value);
 
+    // data()
     constexpr T* data() noexcept;
-    //constexpr const T* data() const noexcept;
+    constexpr const T* data() const noexcept;
 
+    // begin/end
     constexpr T* begin() noexcept;
-    //constexpr const T* begin() const noexcept;
-
+    constexpr const T* begin() const noexcept;
     constexpr T* end() noexcept;
-    //constexpr const T* end() const noexcept;
+    constexpr const T* end() const noexcept;
 };
-
 
 // ---------------- MEMBER DEFINITIONS OUTSIDE CLASS ----------------
 
 // operator[]
 template <typename T, size_t N>
-constexpr T& MyArray<T, N>::operator[](size_t index) noexcept {
+constexpr T& array<T, N>::operator[](size_t index) noexcept {
     return arr[index];
 }
 
-// template <typename T, size_t N>
-// constexpr const T& MyArray<T, N>::operator[](size_t index) const noexcept {
-//     return arr[index];
-// }
+template <typename T, size_t N>
+constexpr const T& array<T, N>::operator[](size_t index) const noexcept {
+    return arr[index];
+}
 
 // at()
 template <typename T, size_t N>
-T& MyArray<T, N>::at(size_t index) {
+T& array<T, N>::at(size_t index) {
     if (index >= N) throw std::out_of_range("Index out of range");
     return arr[index];
 }
 
-// template <typename T, size_t N>
-// const T& MyArray<T, N>::at(size_t index) const {
-//     if (index >= N) throw std::out_of_range("Index out of range");
-//     return arr[index];
-// }
+template <typename T, size_t N>
+const T& array<T, N>::at(size_t index) const {
+    if (index >= N) throw std::out_of_range("Index out of range");
+    return arr[index];
+}
 
 // size()
 template <typename T, size_t N>
-constexpr size_t MyArray<T, N>::size() const noexcept {
+constexpr size_t array<T, N>::size() const noexcept {
     return N;
 }
 
 // fill()
 template <typename T, size_t N>
-void MyArray<T, N>::fill(const T& value) {
+void array<T, N>::fill(const T& value) {
     for (size_t i = 0; i < N; ++i)
         arr[i] = value;
 }
 
 // data()
 template <typename T, size_t N>
-constexpr T* MyArray<T, N>::data() noexcept {
+constexpr T* array<T, N>::data() noexcept {
     return arr;
 }
 
-// template <typename T, size_t N>
-// constexpr const T* MyArray<T, N>::data() const noexcept {
-//     return arr;
-// }
-
-// iterators
 template <typename T, size_t N>
-constexpr T* MyArray<T, N>::begin() noexcept {
+constexpr const T* array<T, N>::data() const noexcept {
     return arr;
 }
 
-// template <typename T, size_t N>
-// constexpr const T* MyArray<T, N>::begin() const noexcept {
-//     return arr;
-// }
+// begin/end
+template <typename T, size_t N>
+constexpr T* array<T, N>::begin() noexcept {
+    return arr;
+}
 
 template <typename T, size_t N>
-constexpr T* MyArray<T, N>::end() noexcept {
+constexpr const T* array<T, N>::begin() const noexcept {
+    return arr;
+}
+
+template <typename T, size_t N>
+constexpr T* array<T, N>::end() noexcept {
     return arr + N;
 }
 
-// template <typename T, size_t N>
-// constexpr const T* MyArray<T, N>::end() const noexcept {
-//     return arr + N;
-// }
-
+template <typename T, size_t N>
+constexpr const T* array<T, N>::end() const noexcept {
+    return arr + N;
+}
 
 // -------------------------- MAIN ------------------------------
 
 int main() {
-
     try {
-        // Test with int
-        MyArray<int, 5> arr;
+        array<int, 5> arr;
         arr.fill(10);
 
         cout << "Array size: " << arr.size() << endl;
@@ -118,10 +122,9 @@ int main() {
             cout << arr[i] << " ";
         cout << endl;
 
-
-        int* ptr = arr.data();   // raw pointer to first element
+        int* ptr = arr.data();
         cout << "Using data(): ";
-        for (size_t i = 0; i < arr.size(); i++){
+        for (size_t i = 0; i < arr.size(); i++) {
             cout << *(ptr + i) << " ";
         }
         cout << endl;
@@ -132,39 +135,18 @@ int main() {
             cout << v << " ";
         cout << endl;
 
-
         cout << "Using begin()/end(): ";
-        for (int* it = arr.begin(); it != arr.end(); ++it){
+        for (int* it = arr.begin(); it != arr.end(); ++it) {
             cout << *it << " ";
         }
         cout << endl;
 
-
-        // Test with std::string
-        MyArray<string, 5> arrStr;
-        arrStr.fill("Apple");
-
-        cout << "Array size: " << arrStr.size() << endl;
-        cout << "Array elements: ";
-        for (auto& s : arrStr)
-            cout << s << " ";
-        cout << endl;
-
-        arrStr[2] = "Mango";
-        cout << "Modified Array elements: ";
-        for (auto& s : arrStr)
-            cout << s << " ";
-        cout << endl;
-
-        // Test at() exception
-        cout << arrStr.at(10) << endl;   // out-of-range → will throw
-
+        // testing out_of_range
+        cout << "\nTesting at(): ";
+        cout << arr.at(10);   // will throw
     }
     catch (const std::out_of_range& e) {
         cout << "Out_of_range exception caught: " << e.what() << endl;
-    }
-    catch (const std::exception& e) {
-        cout << "General exception caught: " << e.what() << endl;
     }
 
     return 0;
@@ -172,11 +154,12 @@ int main() {
 /*
 Array size: 5
 Array elements: 10 10 10 10 10 
+Using data(): 10 10 10 10 10 
 Modified Array elements: 10 10 20 10 10 
-Array size: 5
-Array elements: Apple Apple Apple Apple Apple 
-Modified Array elements: Apple Apple Mango Apple Apple 
-Out_of_range exception caught: Index out of range
+Using begin()/end(): 10 10 20 10 10 
+
+Testing at(): Out_of_range exception caught: Index out of range
+
 */
 
 /* 
