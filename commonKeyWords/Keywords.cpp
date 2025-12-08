@@ -63,7 +63,9 @@ Functions/variables that can be evaluated at compile-time.
 
 //Program
 #include <iostream>
-constexpr int square(int x) { return x * x; }
+constexpr int square(int x) { 
+    return x * x; 
+}
 int main() {
     constexpr int v = square(5);  // compile-time
     std::cout << v << "\n";
