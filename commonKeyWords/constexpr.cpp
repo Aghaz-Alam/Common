@@ -102,13 +102,13 @@ meaning that the function was effectively "const" in nature.
 Example (C++11):
 #include <iostream>
 class Rectangle {
+  private:
+    int width, height;
   public:
     constexpr Rectangle(int w, int h) : width(w), height(h) {}
     constexpr int area() const {  // Constexpr method
         return width * height;
     }
-  private:
-    int width, height;
 };
 int main() {
     constexpr Rectangle rect(5, 10);
@@ -128,15 +128,14 @@ as long as the expression is evaluable at compile time.
 Example (C++14 and later):
 #include <iostream>
 class Factorial {
-  public:
-    constexpr Factorial(int n) : value(factorial(n)) {}
-    constexpr int getValue() const { return value; }
-
   private:
     int value;
     constexpr int factorial(int n) const {
         return (n <= 1) ? 1 : n * factorial(n - 1);
     }
+  public:
+    constexpr Factorial(int n) : value(factorial(n)) {}
+    constexpr int getValue() const { return value; }
 };
 int main() {
     constexpr Factorial fact(5);

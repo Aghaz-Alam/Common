@@ -32,7 +32,8 @@ class Car final{
       }
 };
 int main(){
-    Engine e("V6");{
+    Engine e("V6");
+    {
         Car c("Sedan", &e);
         c.drive();
     }
@@ -101,7 +102,7 @@ Engine V6 destroyed!
 
 
 //Compostion
-/*
+//*
 #include<iostream>
 #include<string>
 #include<memory>
@@ -109,7 +110,7 @@ using namespace std;
 class Engine final{
      string type;
     public: 
-      explicit Engine(string t):type(t){
+      explicit Engine(string t):type(move(t)){
            cout<<"Engine "<<type<<" created!"<<endl;
       }
       ~Engine(){
