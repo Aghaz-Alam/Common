@@ -1,234 +1,229 @@
 //Vector implementation with template shrink and grow dynamically
-#include <iostream>
-#include <stdexcept>
-#include <utility>   // for std::move, std::forward
+#include<iostream>
+#include<utility>     //std::move and std::forward
 using namespace std;
-template <typename T>
-class vector {
-  private:
-    T* arr;
-    size_t n;
-    size_t cap;
-    
-      // resize()
-    void resize(size_t newCap) {
-      if (newCap < n) newCap = n;
+template<typename T>
+class vector{
+  T* arr;
+  size_t n;
+  size_t cap;
+  
+  void resize(size_t newCap){
+      if(newCap < n) newCap =n;
+      if(newCap == 0) newCap =1;
       
-      if (newCap == 0) newCap = 1;
-
       T* newArr = new T[newCap];
-      for (size_t i = 0; i < n; ++i){
+      for(size_t i=0; i<n; i++){
           newArr[i] = std::move(arr[i]);
       }
       delete[] arr;
       arr = newArr;
       cap = newCap;
+  }
+ public:
+   vector(): arr(nullptr), n(0), cap(0){}
+   
+   void push_back(const T& val){
+       if(n==cap){
+           resize(cap==0 ? 1: cap*2);
+       }
+       
+       arr[n++] = val;
+   }
+   
+   template<typename... Args>
+   void emplace_back(Args&&... args){
+       if(n==cap){
+           resize(cap==0 ? 1: cap*2);
+       }
+       
+       new (&arr[n]) T(std::forward<Args>(args)...);
+       n++;
+   }
+   
+   void pop_back(){
+       if(n==0) throw underflow_error("vector is empty!");
+       
+       n--;
+       
+       if(cap>1 && n<=cap/4){
+           resize(cap/2);
+       }
+   }
+   
+   T& operator[](size_t index){
+       if(index >= n) throw out_of_range("index is out_of_range!");
+       
+       return arr[index];
+   }
+   
+   T& at(size_t index){
+       if(index >= n) throw out_of_range("index is out_of_range!");
+       
+       return arr[index];
+   }
+   
+   T& front(){
+       return arr[0];
+   }
+   
+   T& back(){
+       return arr[n-1];
+   }
+   
+   size_t size() const{
+       return n;
+   }
+   
+   size_t capacity() const{
+       return cap; 
+   }
+   
+   void clear(){
+       if(arr) delete []arr;
+       
+       n=0;
+       cap=0;
+   }
+   
+   void display() const{
+       for(size_t i=0; i<n; i++){
+           cout<<arr[i]<<" ";
+       }
+       cout<<endl;
+   }
+   
+};
+
+int main(){
+    vector<int> v;
+    cout<<"rvlaue test:";
+    v.push_back(10);
+    v.push_back(20);
+    v.display();
+    
+    
+    
+    cout<<"lvalue test:";
+    int a=30, b=40;
+    v.push_back(a);
+    v.push_back(b);
+    v.display();
+    
+    
+    
+    cout<<"emplace_back test:";
+    v.emplace_back(50);
+    v.emplace_back(60);
+    v.display();
+    
+    
+    
+    cout<<"vector elements: ";
+    v.display();
+    
+    cout<<"Size: "<<v.size()<<endl;
+    cout<<"capacity: "<<v.capacity()<<endl;
+    
+    cout<<"Front: "<<v.front()<<endl;
+    cout<<"back: "<<v.back()<<endl;
+    
+    
+    v.pop_back();
+    cout<<"vector elements after pop_back: ";
+    v.display();
+    
+    cout<<"Size: "<<v.size()<<endl;
+    cout<<"capacity: "<<v.capacity()<<endl;
+    
+    cout<<"Front: "<<v.front()<<endl;
+    cout<<"back: "<<v.back()<<endl;
+    
+    v.pop_back();
+    v.pop_back();
+    v.pop_back();
+    cout<<"vector elements after pop_back: ";
+    v.display();
+    
+    cout<<"Size: "<<v.size()<<endl;
+    cout<<"capacity: "<<v.capacity()<<endl;
+    
+    cout<<"Front: "<<v.front()<<endl;
+    cout<<"back: "<<v.back()<<endl;
+    
+   v.clear(); 
+    
+   v.push_back(100);
+   v.push_back(200);
+   v.emplace_back(300);
+   cout<<"After pushing elemnts: ";
+   v.display();
+   cout<<"Size: "<<v.size()<<endl;
+   cout<<"capacity: "<<v.capacity()<<endl;
+   
+   
+   //pop_back all the elements at once 
+    while(v.size()>0){
+        v.pop_back();
     }
-
-  public:
-    // Constructor
-    vector() : arr(nullptr), n(0), cap(0) {}
-
-
-    // Destructor
-    ~vector() {
-        delete[] arr;
+    cout<<"Trying to pop_back from empty vector."<<endl;
+    try{
+        v.pop_back();
     }
-
-
-    // push_back lvalue
-    void push_back(const T& value) {
-        if (n == cap)
-            resize(cap == 0 ? 1 : cap * 2);
-
-        arr[n++] = value;
-    }
-
-
-    // push_back rvalue
-    void push_back(T&& value) {
-        if (n == cap)
-            resize(cap == 0 ? 1 : cap * 2);
-
-        arr[n++] = std::move(value);
-    }
-
-
-    // emplace_back
-    template <typename... Args>
-    void emplace_back(Args&&... args) {
-        if (n == cap)
-            resize(cap == 0 ? 1 : cap * 2);
-
-        new (&arr[n]) T(std::forward<Args>(args)...);
-        n++;
-    }
-
-
-    // pop_back
-    void pop_back() {
-        if (n == 0) throw underflow_error("pop_back on empty vector");
-
-        n--; // Destroy element count
-
-        if (cap > 1 && n <= cap / 4)
-            resize(cap / 2);
-    }
-
-
-    // operator[]
-    T& operator[](size_t index) {
-        if (index >= n) throw out_of_range("operator[] index out of range");
-        
-        return arr[index];
-    }
-
-
-    // at()
-    T& at(size_t index) {
-        if (index >= n) throw out_of_range("at index out of range");
-        
-        return arr[index];
-    }
-
-    size_t size(){
-        return n;
-    }
-    size_t capacity(){
-        return cap;
-    }
-
-    // clear()
-    void clear() {
-        n = 0;
-        
-        resize(1);
-    }
-
-    // front()
-    T& front() {
-        if (n == 0) throw out_of_range("front() on empty vector");
-        
-        return arr[0];
-    }
-
-    // back()
-    T& back() {
-        if (n == 0) throw out_of_range("back() on empty vector");
-        
-        return arr[n - 1];
+    catch(const exception& e){
+         cout<<"Error: "<<e.what()<<endl;        
     }
     
-    // Display
-    void Display() const {
-        for (size_t i = 0; i < n; ++i)
-            cout << arr[i] << " ";
-        cout << "\n";
-    }
-  
-};
-int main() {
-    try {
-        vector<int> v;
-
-        cout << "--push_back (lvalue)--" << endl;
-        int a = 100;
-        v.push_back(a);
-        cout << "Vector Elements lvalue: ";
-        v.Display();
-
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
-
-
-        cout << "\n--After adding one element using push_back (rvalue)--" << endl;
-        int x = 200;
-        v.push_back(std::move(x));
-        cout << "Vector Elements rvalue: ";
-        v.Display();
-
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
-
-
-        cout << "\n--emplace_back--";
-        v.emplace_back(300);
-        v.emplace_back(400);
-        v.emplace_back(500);
-
-        cout << "\nVector Elements: ";
-        v.Display();
-
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
+    
+    cout<<"Trying to update value operator[]:";
+    try{
+        v[10] =100;
         
-        cout << "\n--Using operator[]--" << endl;
-        cout << "Element at index 2:" << v[2];
-
-        cout << "\n--Using at()--" << endl;
-        cout << "Element at index 2:" << v.at(2) << endl;
-        
-        cout<<"Front: "<<v.front()<<endl;
-        cout<<"Back: "<<v.back()<<endl;
-
-        v.pop_back();
-        v.pop_back();
-        v.pop_back();
-        cout << "\nVector Elements after pop_back: ";
-        v.Display();
-
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
-
-
-        v.clear();
-        cout << "\n--After clear--";
-        cout << "Size: " << v.size() << endl;
-        cout << "Capacity: " << v.capacity() << endl;
-
-
-
-
-        // FIXED crashing print
-        cout << "\n--Trying to pop from empty vector--" << endl;
-        cout.flush();   // ensure print happens BEFORE exception
-        v.pop_back();   // throws
-
-    } 
-    catch (const exception& e) {
-        cerr << "Exception: " << e.what() << "\n";
     }
+    catch(const exception& e){
+        cout<<"Error: "<<e.what()<<endl;
+    }
+    
+    
+    cout<<"Trying to access element using at():";
+    try{
+        cout<<v.at(10)<<endl;
+        
+    }
+    catch(const exception& e){
+        cout<<"Error: "<<e.what()<<endl;
+    }
+    
+   return 0;
 }
 /*
---push_back (lvalue)--
-Vector Elements lvalue: 100 
-Size: 1
-Capacity: 1
-
---After adding one element using push_back (rvalue)--
-Vector Elements rvalue: 100 200 
-Size: 2
-Capacity: 2
-
---emplace_back--
-Vector Elements: 100 200 300 400 500 
+rvlaue test:10 20 
+lvalue test:10 20 30 40 
+emplace_back test:10 20 30 40 50 60 
+vector elements: 10 20 30 40 50 60 
+Size: 6
+capacity: 8
+Front: 10
+back: 60
+vector elements after pop_back: 10 20 30 40 50 
 Size: 5
-Capacity: 8
-
---Using operator[]--
-Element at index 2:300
---Using at()--
-Element at index 2:300
-
-Vector Elements after pop_back: 100 200 
+capacity: 8
+Front: 10
+back: 50
+vector elements after pop_back: 10 20 
 Size: 2
-Capacity: 4
+capacity: 4
+Front: 10
+back: 20
+After pushing elemnts: 100 200 300 
+Size: 3
+capacity: 4
+Trying to pop_back from empty vector.
+Error: vector is empty!
+Trying to update value operator[]:Error: index is out_of_range!
+Trying to access element using at():Error: index is out_of_range!
 
---After clear--Size: 0
-Capacity: 1
 
---Trying to pop from empty vector--
-Exception: pop_back on empty vector
 
 
 
