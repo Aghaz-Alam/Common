@@ -1,3 +1,5 @@
+//Fixed Sized Array
+
 #include<iostream>
 #include<stdexcept>
 using namespace std;
@@ -42,13 +44,21 @@ namespace myspace{
       T* end(){
          return arr+N;
       }
+      void display() const{
+        cout<<"Array Elements: ";
+        for(size_t i=0;i<N;i++){
+            cout<<arr[i]<<" ";
+        }
+        cout<<endl;
+      }
   };
 }
 int main(){
     try{
       myspace::array<int, 5> arr;
       arr.fill(10);
-      
+      arr.display();
+
       cout<<"Size of array: "<<arr.size()<<endl;
       cout<<"Array Elements: ";
       for(size_t i=0; i<arr.size(); i++){

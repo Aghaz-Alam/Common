@@ -105,7 +105,20 @@ class vector {
         resize(1);
     }
 
+    // front()
+    T& front() {
+        if (n == 0) throw out_of_range("front() on empty vector");
+        
+        return arr[0];
+    }
 
+    // back()
+    T& back() {
+        if (n == 0) throw out_of_range("back() on empty vector");
+        
+        return arr[n - 1];
+    }
+    
     // Display
     void Display() const {
         for (size_t i = 0; i < n; ++i)
@@ -148,13 +161,15 @@ int main() {
 
         cout << "Size: " << v.size() << endl;
         cout << "Capacity: " << v.capacity() << endl;
-
+        
         cout << "\n--Using operator[]--" << endl;
         cout << "Element at index 2:" << v[2];
 
         cout << "\n--Using at()--" << endl;
         cout << "Element at index 2:" << v.at(2) << endl;
-
+        
+        cout<<"Front: "<<v.front()<<endl;
+        cout<<"Back: "<<v.back()<<endl;
 
         v.pop_back();
         v.pop_back();

@@ -27,11 +27,11 @@ class queue{
         count--;
     }
 
-    T front(){
+    T& front(){
         return arr[frontInd];
     }
 
-    T back(){
+    T& back(){
         return arr[(rearInd-1+N)%N];
     }
 
@@ -118,26 +118,26 @@ class queue {
     }
 
     // Front
-    T front() const {
+    T& front() {
         if (count == 0) throw underflow_error("Queue is empty!");
         
         return arr[frontIndex];
     }
 
     // Back --to check if the latest inserted element at end
-    T back() const {
+    T& back() {
         if (count == 0) throw underflow_error("Queue is empty!");
         
         return arr[(rearIndex - 1 + N) % N];
     }
 
     // Aliases
-    T peekFront() const {
+    T& peekFront() const {
         return front();
     }
 
     
-    T peekBack() const {
+    T& peekBack() const {
         return back();
     }
 

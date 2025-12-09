@@ -26,14 +26,14 @@ class queue {
         frontInd++;
     }
 
-    T front() {
+    T& front() {
         if (frontInd == rearInd)
             throw underflow_error("Queue is empty!");
 
         return arr[frontInd];
     }
 
-    T back() {
+    T& back() {
         if (frontInd == rearInd)
             throw underflow_error("Queue is empty!");
 
@@ -145,104 +145,6 @@ Caught: Queue is empty!
 
 
 
-
-
-
-// Dynamic  Queue 
-#include <iostream>
-#include <stdexcept>
-using namespace std;
-
-template<typename T>
-class queue {
-    T* arr;          // dynamic array
-    size_t N;        // capacity
-    size_t frontInd;
-    size_t rearInd;
-
-public:
-    queue(size_t capacity)
-        : N(capacity), frontInd(0), rearInd(0) {
-        arr = new T[N];
-    }
-
-    ~queue() {
-        delete[] arr;
-    }
-
-    void push(const T& val) {
-        if (rearInd == N)
-            throw overflow_error("Queue is full!");
-
-        arr[rearInd++] = val;
-    }
-
-    void pop() {
-        if (frontInd == rearInd)
-            throw underflow_error("Queue is empty!");
-
-        frontInd++;
-    }
-
-    T front() const {
-        if (frontInd == rearInd)
-            throw underflow_error("Queue is empty!");
-
-        return arr[frontInd];
-    }
-
-    T back() const {
-        if (frontInd == rearInd)
-            throw underflow_error("Queue is empty!");
-
-        return arr[rearInd - 1];
-    }
-
-    void Display() const {
-        cout << "Elements: ";
-        for (size_t i = frontInd; i < rearInd; i++) {
-            cout << arr[i] << " ";
-        }
-        cout << endl;
-    }
-};
-
-int main() {
-    try {
-        queue<int> q(5);   // dynamic capacity
-
-        q.push(10);
-        q.push(20);
-        q.push(30);
-        q.push(40);
-        q.push(50);
-
-        q.Display();
-
-        cout << "Front: " << q.front() << endl;
-        cout << "Back: " << q.back() << endl;
-
-        cout << "pop: ";
-        q.pop();
-        q.Display();
-
-        cout << "Front: " << q.front() << endl;
-        cout << "Back: " << q.back() << endl;
-
-    } catch (const exception& e) {
-        cout << "Error: " << e.what() << endl;
-    }
-
-    return 0;
-}
-/*
-Elements: 10 20 30 40 50 
-Front: 10
-Back: 50
-pop: Elements: 20 30 40 50 
-Front: 20
-Back: 50
-*/
 
 
 

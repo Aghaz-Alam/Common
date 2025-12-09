@@ -163,7 +163,6 @@ After reversing the list: 50 40 25 20 10
 
 #include <iostream>
 using namespace std;
-
 template <typename T>
 struct Node {
     T data;
