@@ -1,3 +1,160 @@
+//Aggregation
+#include<iostream>
+#include<string>
+#include<memory>
+using namespace std;    
+class Engine final{
+     string type;
+    public: 
+      explicit Engine(string t):type(t){
+           cout<<"Engine "<<type<<" created!"<<endl;
+      }
+      ~Engine(){
+          cout<<"Engine "<<type<< " destroyed!"<<endl;
+      };
+      void start(){
+          cout<<"Engine "<< type<<" started!"<<endl;
+      }
+};
+class Car final{
+      Engine* engine; 
+      string name;
+    public:
+      explicit Car(string n, Engine* engType): name(n), engine(engType){
+          cout<<"Car "<<name<<" started!"<<endl;
+      }
+      ~Car(){
+          cout<<"Car "<<name<<" destroyed!"<<endl;
+      }
+      void drive(){
+          engine->start();
+          cout<<"Car "<<name<< " is driving!"<<endl;
+      }
+};
+int main(){
+    Engine e("V6");{
+        Car c("Sedan", &e);
+        c.drive();
+    }
+}
+/*
+Engine V6 created!
+Car Sedan started!
+Engine V6 started!
+Car Sedan is driving!
+Car Sedan destroyed!
+Engine V6 destroyed!
+*/
+
+
+
+//Aggregation
+#include<iostream>
+#include<string>
+#include<memory>
+using namespace std;    
+class Engine final{
+     string type;
+    public: 
+      explicit Engine(string t):type(t){
+           cout<<"Engine "<<type<<" created!"<<endl;
+      }
+      ~Engine(){
+          cout<<"Engine "<<type<< " destroyed!"<<endl;
+      };
+      void start(){
+          cout<<"Engine "<< type<<" started!"<<endl;
+      }
+};
+class Car final{
+      shared_ptr<Engine> engine; 
+      string name;
+    public:
+      explicit Car(string n, shared_ptr<Engine> engType): name(n), engine(engType){
+          cout<<"Car "<<name<<" started!"<<endl;
+      }
+      ~Car(){
+          cout<<"Car "<<name<<" destroyed!"<<endl;
+      }
+      void drive(){
+          engine->start();
+          cout<<"Car "<<name<< " is driving!"<<endl;
+      }
+};
+int main(){
+    shared_ptr<Engine> e = make_shared<Engine>("V6");
+    Car c("Sedan", e);
+    c.drive();
+    
+}
+/*
+Engine V6 created!
+Car Sedan started!
+Engine V6 started!
+Car Sedan is driving!
+Car Sedan destroyed!
+Engine V6 destroyed!
+*/
+
+
+
+
+
+//Compostion
+/*
+#include<iostream>
+#include<string>
+#include<memory>
+using namespace std;    
+class Engine final{
+     string type;
+    public: 
+      explicit Engine(string t):type(t){
+           cout<<"Engine "<<type<<" created!"<<endl;
+      }
+      ~Engine(){
+          cout<<"Engine "<<type<< " destroyed!"<<endl;
+      };
+      void start(){
+          cout<<"Engine "<< type<<" started!"<<endl;
+      }
+};
+class Car final{
+      unique_ptr<Engine> engine; 
+      string name;
+    public:
+      explicit Car(string n, string engType ):name(n), engine(make_unique<Engine>(engType)){
+          cout<<"Car "<<name<<" started!"<<endl;
+      }
+      ~Car(){
+          cout<<"Car "<<name<<" destroyed!"<<endl;
+      }
+      void drive(){
+          engine->start();
+          cout<<"Car "<<name<< " is driving!"<<endl;
+      }
+};
+int main(){
+    Car c("Sedan", "V6");
+    c.drive();
+    
+}
+/*
+Engine V6 created!
+Car Sedan started!
+Engine V6 started!
+Car Sedan is driving!
+Car Sedan destroyed!
+Engine V6 destroyed!
+*/
+
+
+
+
+
+
+
+
 | Relationship Type | Description    | Lifetime / Ownership            | Example                                  |
 | ----------------- | -------------- | ------------------------------- | ---------------------------------------- |
 | **Composition**   | Strong “has-a” | Part cannot exist without whole | Car has an Engine (`unique_ptr`)         |
