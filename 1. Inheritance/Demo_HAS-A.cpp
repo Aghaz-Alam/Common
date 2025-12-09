@@ -205,13 +205,13 @@ Engine (V6) Destroyed
 
 
 Cars
-Name: Sedan, Type: V6
+Name: Sedan, SUVs, Type: V6
 Name: Hatchback, Type: Inline-4
 Name: SportsCar, Type: V8
 Name: HyperCar, Type: W16
 Name: MuscleCar, Type: V8 Supercharged
 Name: CompactCar, Type: Inline-3 Turbo
-Name: LuxuryCar, Type: V12
+Name: LuxuryCar, supercars, Type: V12
 Name: FamilySUV, Type: V6 Turbo
 Name: ElectricSedan, Type: Dual Electric Motors
 Name: HybridSUV, Type: Inline-4 Hybrid
