@@ -1,3 +1,4 @@
+//https://godbolt.org/       runtime check compiler link
 //Vector implementation with template shrink and grow dynamically
 #include<iostream>
 #include<utility>     //std::move and std::forward

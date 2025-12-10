@@ -2,6 +2,7 @@
 Problems
 
 <br> 
+//https://godbolt.org/       runtime check compiler link
 
 git add .                                                                 //add
 git commit -m "Initial commit"                                            //commit

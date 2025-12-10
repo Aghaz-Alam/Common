@@ -1,3 +1,5 @@
+//https://godbolt.org/       runtime check compiler link
+
 //4 pillars of OOPS
 #include<iostream>
 using namespace std;
@@ -540,7 +542,7 @@ class Derived2 : public Base {
 };
 
 // 4. Polymorphisms → Same interface, different behavior
-void tetBase(const unique_ptr<Base>& v) {
+void Test(const unique_ptr<Base>& v) {
     v->Add();
 }
 
@@ -549,8 +551,8 @@ int main() {
     unique_ptr<Base> d1  = make_unique<Derived1>(120, 50);
     unique_ptr<Base> d2 = make_unique<Derived2>(80, 10);
 
-    tetBase(d1);
-    tetBase(d2);
+    Test(d1);
+    Test(d2);
 
     return 0;
 }

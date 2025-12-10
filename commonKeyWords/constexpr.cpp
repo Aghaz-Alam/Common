@@ -1,3 +1,5 @@
+//https://godbolt.org/       runtime check compiler link
+
 The constexpr keyword in C++ is used to indicate that a variable, function, or expression can be evaluated at compile time. 
 It allows certain computations to be performed during compilation rather than at runtime, improving performance in some cases. 
 The behavior and usage of constexpr have evolved slightly between C++11, C++14, and C++17, 
