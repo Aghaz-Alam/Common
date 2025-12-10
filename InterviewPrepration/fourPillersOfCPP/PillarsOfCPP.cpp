@@ -1,4 +1,4 @@
-//1. encapsulation 
+//4 pillars of OOPS
 #include<iostream>
 using namespace std;
 class Base{
