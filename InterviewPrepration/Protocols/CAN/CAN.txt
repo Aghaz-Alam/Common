@@ -1,0 +1,52 @@
+CAN (Controller Area Network)
+--------------------------------------------------------
+What is it?
+CAN is a real-time automotive communication protocol used between ECUs (Engine, ABS, Airbag, Steering, etc.).
+
+How is it used?
+->C++ programs in ECUs send & receive CAN frames:
+->ID (11 or 29 bits) + Data (8 bytes)
+
+Where to use?
+✔ Engine control
+✔ ABS/ESP
+✔ Power steering
+✔ Battery Management System
+✔ Vehicle sensors
+
+Why needed?
+->Real-time
+->Reliable even with EMI
+->Supports multiple ECUs on same bus
+
+Pros
+->Fast
+->Robust error detection
+->Multi-master
+
+Cons
+->Limited data (8 bytes per frame)
+->Not suitable for high-bandwidth video/ADAS
+
+//✅ C++ CAN Example (Simulation)
+#include <iostream>
+#include <vector>
+using namespace std;
+struct CANFrame {
+    int id;                 // Identifier
+    vector<uint8_t> data;   // Up to 8 bytes
+};
+void sendCAN(const CANFrame& frame) {
+    cout << "Sending CAN Frame: ID=" << frame.id << " Data=";
+    for (auto b : frame.data) cout << (int)b << " ";
+    cout << endl;
+}
+int main() {
+    CANFrame engineRPM = {0x100, {0x0F, 0xA0}}; // Example RPM data
+    sendCAN(engineRPM);
+  return 0;
+}
+/*
+Output
+Sending CAN Frame: ID=256 Data=15 160
+*/

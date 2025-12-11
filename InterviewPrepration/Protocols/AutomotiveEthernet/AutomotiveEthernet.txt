@@ -1,0 +1,40 @@
+Automotive Ethernet / DoIP
+--------------------------------------------------------
+What is it?
+->Ethernet adapted for automotive, used for high-bandwidth communication.
+->DoIP = Diagnostics over IP.
+
+Where used?
+✔ ADAS cameras
+✔ Radar
+✔ Infotainment
+✔ Firmware update (OTA)
+
+Why needed?
+->High bandwidth
+->Supports TCP/UDP
+->Diagnostic tools use DoIP
+
+Pros
+->Supports Gigabit speeds
+->Works with IP tools (Wireshark, etc.)
+
+Cons
+->Expensive wiring
+->Requires gateway to interact with CAN
+->DoIP Example (Simulation)
+
+
+#include <iostream>
+using namespace std;
+void diagnosticRequest(string cmd) {
+    cout << "[DoIP] Sending Diagnostic Command: " << cmd << endl;
+}
+int main() {
+    diagnosticRequest("ECU_RESET");
+  return 0;
+}
+/*
+Output
+[DoIP] Sending Diagnostic Command: ECU_RESET
+*/

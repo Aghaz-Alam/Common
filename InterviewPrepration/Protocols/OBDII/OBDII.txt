@@ -1,0 +1,26 @@
+OBD-II
+--------------------------------------------------------
+What is it?
+->On-board diagnostics protocol used for pollution and vehicle health.
+
+Where used?
+✔ Scan tools
+✔ Pollution testing centers
+✔ Vehicle health monitors
+
+//OBD-II Example
+#include <iostream>
+using namespace std;
+string obd_request(string pid) {
+    if (pid == "010C")
+        return "RPM: 3000";
+    return "INVALID PID";
+}
+int main() {
+    cout << obd_request("010C");
+  return 0;
+}
+/*
+Output
+RPM: 3000
+*/

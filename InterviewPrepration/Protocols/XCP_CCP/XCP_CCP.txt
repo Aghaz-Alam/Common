@@ -1,0 +1,26 @@
+XCP / CCP
+--------------------------------------------------------
+What is it?
+Protocols used for measurement & calibration during ECU development.
+
+Where used?
+✔ ECU tuning
+✔ Runtime variable modification
+✔ Real-time logging
+
+//Example
+#include <iostream>
+using namespace std;
+int engineTorque = 120;
+void xcp_set(int value) {
+    engineTorque = value;
+    cout << "Torque updated to: " << engineTorque << endl;
+}
+int main() {
+    xcp_set(150);
+  return 0;
+}
+/*
+Output
+Torque updated to: 150
+*/

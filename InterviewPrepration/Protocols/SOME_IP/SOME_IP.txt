@@ -1,0 +1,25 @@
+SOME/IP (Scalable Service-Oriented Middleware over IP)
+--------------------------------------------------------
+What is it?
+->Service-based communication in AUTOSAR Adaptive.
+
+Used in high-end systems:
+✔ ADAS
+✔ Infotainment
+✔ Car-to-car services
+
+
+//Example SOME/IP Simulation
+#include <iostream>
+using namespace std;
+void someip_call(string service) {
+    cout << "[SOME/IP] Service Call = " << service << endl;
+}
+int main() {
+    someip_call("GetCameraStream");
+  return 0;
+}
+/*
+Output
+[SOME/IP] Service Call = GetCameraStream
+*/

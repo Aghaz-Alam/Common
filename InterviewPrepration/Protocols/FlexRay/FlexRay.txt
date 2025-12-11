@@ -1,0 +1,37 @@
+FlexRay
+--------------------------------------------------------
+What is it?
+->High-speed deterministic protocol for safety-critical systems.
+
+Where used?
+✔ Brake-by-wire
+✔ Steering systems
+✔ Advanced driver-assist
+
+Why needed?
+->Faster than CAN (10 Mbps)
+->Time-triggered → perfect for safety
+
+Pros
+->High speed
+->Deterministic timing
+
+Cons
+->Expensive
+->Complex to configure
+->Used only in premium systems
+->FlexRay Example (Simulation)
+
+#include <iostream>
+using namespace std;
+void flexray_send(string slot, int data) {
+    cout << "[Time Slot " << slot << "] Data=" << data << endl;
+}
+int main() {
+    flexray_send("1A", 120); // Steering angle data
+  return 0;
+}
+/*
+Output
+[Time Slot 1A] Data=120
+*/

@@ -1,0 +1,24 @@
+✅ MASTER LIST of Automotive Protocols in C++ Projects
+| Category                   | Protocols                                                  |
+| -------------------------- | ---------------------------------------------------------- |
+| **In-Vehicle Networking**  | **CAN, CAN-FD, LIN, FlexRay, MOST, Ethernet (DoIP), PSI5** |
+| **Diagnostics**            | **UDS, OBD-II, KWP2000, DoIP**                             |
+| **Safety / Automotive OS** | **AUTOSAR COM, SOME/IP, XCP, CCP**                         |
+| **Sensor/Low-Level**       | **SPI, I2C, UART (used inside ECUs)**                      |
+
+
+
+FINAL SUMMARY TABLE
+| Protocol     | Speed        | Where Used            | Purpose                     |
+| ------------ | ------------ | --------------------- | --------------------------- |
+| **CAN**      | 1 Mbps       | Engine, ABS, Steering | Main vehicle network        |
+| **CAN-FD**   | 8 Mbps       | EV, ADAS              | More data than CAN          |
+| **LIN**      | 20 Kbps      | Body electronics      | Cheap alternatives          |
+| **FlexRay**  | 10 Mbps      | Safety systems        | Deterministic control       |
+| **Ethernet** | 100M–1G      | Cameras, ADAS         | High bandwidth              |
+| **DoIP**     | Ethernet     | Diagnostics           | High-speed ECU flashing     |
+| **UDS**      | CAN/DoIP     | All ECUs              | Diagnostics & flashing      |
+| **OBD-II**   | CAN          | Restricted PIDs       | Health monitoring           |
+| **SOME/IP**  | Ethernet     | AUTOSAR Adaptive      | Service-based communication |
+| **XCP/CCP**  | CAN/Ethernet | Development only      | Calibration                 |
+| **SPI/I2C**  | Chip level   | Sensors               | Low-level data transfer     |

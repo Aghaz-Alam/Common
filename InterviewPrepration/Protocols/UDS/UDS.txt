@@ -1,0 +1,41 @@
+UDS (Unified Diagnostic Services — ISO 14229)
+--------------------------------------------------------
+What is it?
+->The diagnostic protocol used by all OEMs.
+
+How used?
+->C++ programs inside ECUs receive diagnostic commands via
+->CAN / CAN-FD / DoIP.
+
+Where used?
+✔ OBD scanners
+✔ Service centers
+✔ ECU flashing / reprogramming
+
+Why needed?
+->To read/clear DTCs, reset ECU, perform security access.
+
+Pros
+->Standard across OEMs
+->Supports flashing and diagnostics
+
+Cons
+->Needs security unlocking
+->Requires handling many subfunctions
+->UDS Example: Read ECU Version
+
+
+#include <iostream>
+using namespace std;
+string uds_request(int sid) {
+    if (sid == 0x22) return "ECU Version: 1.2.5";
+    return "Negative Response";
+}
+int main() {
+    cout << uds_request(0x22) << endl;
+  return 0;
+}
+/*
+Output
+ECU Version: 1.2.5
+*/

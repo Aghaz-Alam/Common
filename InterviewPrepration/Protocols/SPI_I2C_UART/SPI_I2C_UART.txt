@@ -1,0 +1,27 @@
+SPI / I2C / UART (Internal ECU Communication)
+--------------------------------------------------------
+These are electronics-level protocols, often used inside ECUs.
+
+
+Where used?
+✔ Sensors
+✔ EEPROM
+✔ Accelerometers
+✔ IMU
+✔ Memory chips
+
+
+//Example SPI Simulation
+#include <iostream>
+using namespace std;
+int spi_read() {
+    return 55; // mock sensor
+}
+int main() {
+    cout << "SPI Sensor Value=" << spi_read();
+  return 0;
+}
+/*
+Output
+SPI Sensor Value=55
+*/
