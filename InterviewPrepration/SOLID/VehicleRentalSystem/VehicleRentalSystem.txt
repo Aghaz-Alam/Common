@@ -1,0 +1,94 @@
+//✅ SOLID Example #10 — Vehicle Rental System
+
+//Vehicle.h
+#pragma once
+#include <string>
+class Vehicle {
+  public:
+    virtual std::string type() const = 0;
+    virtual double rentalRate() const = 0;
+    virtual ~Vehicle() = default;
+};
+class Car : public Vehicle {
+  public:
+    std::string type() const override { return "Car"; }
+    double rentalRate() const override { return 50.0; }
+};
+class Bike : public Vehicle {
+  public:
+    std::string type() const override { return "Bike"; }
+    double rentalRate() const override { return 15.0; }
+};
+
+
+
+
+//IPayment.h
+#pragma once
+class IPayment {
+  public:
+    virtual bool pay(double amount) = 0;
+    virtual ~IPayment() = default;
+};
+
+
+
+
+
+//UPIPayment.h
+#pragma once
+#include "IPayment.h"
+#include <iostream>
+class UPIPayment : public IPayment {
+  public:
+    bool pay(double amt) override {
+        std::cout << "Paid $" << amt << " via UPI\n";
+        return true;
+    }
+};
+
+
+
+//RentalService.h
+#pragma once
+#include "Vehicle.h"
+#include "IPayment.h"
+#include <iostream>
+class RentalService {
+  private:
+    IPayment& payment;
+  public:
+    RentalService(IPayment& p) : payment(p) {}
+
+    void rent(const Vehicle& v, int hours) {
+        double total = v.rentalRate() * hours;
+        std::cout << "Renting " << v.type() << " for " << hours << " hours\n";
+        payment.pay(total);
+    }
+};
+
+
+
+//main.cpp
+#include "RentalService.h"
+#include "UPIPayment.h"
+#include "Vehicle.h"
+int main() {
+    UPIPayment upi;
+
+    RentalService rental(upi);
+
+    Car car;
+    Bike bike;
+
+    rental.rent(car, 3);
+    rental.rent(bike, 5);
+  return 0;
+}
+/*
+Output
+Renting Car for 3 hours
+Paid $150 via UPI
+Renting Bike for 5 hours
+Paid $75 via UPI
+*/

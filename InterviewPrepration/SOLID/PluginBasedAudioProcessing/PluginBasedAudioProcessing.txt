@@ -1,0 +1,74 @@
+//✅ SOLID Example #8 — Plugin-Based Audio Processing
+
+//IAudioPlugin.h
+#pragma once
+#include <string>
+class IAudioPlugin {
+  public:
+    virtual std::string process(const std::string& input) = 0;
+    virtual ~IAudioPlugin() = default;
+};
+
+
+
+//EchoPlugin.h
+#pragma once
+#include "IAudioPlugin.h"
+class EchoPlugin : public IAudioPlugin {
+  public:
+    std::string process(const std::string& input) override {
+        return input + " ...echo";
+    }
+};
+
+
+
+//ReverbPlugin.h
+#pragma once
+#include "IAudioPlugin.h"
+class ReverbPlugin : public IAudioPlugin {
+  public:
+    std::string process(const std::string& input) override {
+        return input + " [reverb]";
+    }
+};
+
+
+
+
+//AudioEngine.h
+#pragma once
+#include "IAudioPlugin.h"
+#include <iostream>
+class AudioEngine {
+  private:
+    IAudioPlugin& plugin;
+  public:
+    AudioEngine(IAudioPlugin& p) : plugin(p) {}
+
+    void play(const std::string& sound) {
+        std::cout << "Processed Sound: " << plugin.process(sound) << "\n";
+    }
+};
+
+
+
+//main.cpp
+#include "AudioEngine.h"
+#include "EchoPlugin.h"
+#include "ReverbPlugin.h"
+int main() {
+    EchoPlugin echo;
+    ReverbPlugin reverb;
+
+    AudioEngine eng1(echo);
+    AudioEngine eng2(reverb);
+
+    eng1.play("Kick");
+    eng2.play("Snare");
+}
+/*
+Output
+Processed Sound: Kick ...echo
+Processed Sound: Snare [reverb]
+*/

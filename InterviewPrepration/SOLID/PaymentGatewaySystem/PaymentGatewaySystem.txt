@@ -1,0 +1,100 @@
+//SOLID Example #14 — Payment Gateway System
+//What it shows: SRP for payment processors, OCP for new gateways, ISP small payment interface, DIP for checkout service.
+
+//Files
+
+
+
+
+//IPaymentProcessor.h
+#pragma once
+class IPaymentProcessor {
+  public:
+    virtual bool process(double amount) = 0;
+    virtual ~IPaymentProcessor() = default;
+};
+
+
+
+
+
+
+//StripeProcessor.h
+#pragma once
+#include "IPaymentProcessor.h"
+#include <iostream>
+class StripeProcessor : public IPaymentProcessor {
+  public:
+    bool process(double amount) override {
+        std::cout << "Stripe processed $" << amount << "\n";
+        return true;
+    }
+};
+
+
+
+
+
+
+
+//PayPalProcessor.h
+#pragma once
+#include "IPaymentProcessor.h"
+#include <iostream>
+class PayPalProcessor : public IPaymentProcessor {
+  public:
+    bool process(double amount) override {
+        std::cout << "PayPal processed $" << amount << "\n";
+        return true;
+    }
+};
+
+
+
+
+
+
+//CheckoutService.h
+#pragma once
+#include "IPaymentProcessor.h"
+#include <iostream>
+class CheckoutService {
+    IPaymentProcessor& processor_;
+  public:
+    explicit CheckoutService(IPaymentProcessor& p) : processor_(p) {}
+    void checkout(double amount) {
+        std::cout << "Checkout: amount $" << amount << "\n";
+        if (processor_.process(amount)) std::cout << "Payment success\n";
+        else std::cout << "Payment failed\n";
+    }
+};
+
+
+
+
+
+
+//main.cpp
+#include "StripeProcessor.h"
+#include "PayPalProcessor.h"
+#include "CheckoutService.h"
+int main() {
+    StripeProcessor stripe;
+    PayPalProcessor paypal;
+
+    CheckoutService s1(stripe);
+    CheckoutService s2(paypal);
+
+    s1.checkout(49.99);
+    s2.checkout(79.50);
+  return 0;
+}
+/*
+Expected output
+Checkout: amount $49.99
+Stripe processed $49.99
+Payment success
+Checkout: amount $79.5
+PayPal processed $79.5
+Payment success
+*/

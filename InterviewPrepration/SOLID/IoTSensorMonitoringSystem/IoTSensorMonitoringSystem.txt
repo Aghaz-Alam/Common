@@ -1,0 +1,125 @@
+//SOLID Example #15 — IoT Sensor Monitoring System
+//What it shows: SRP for sensor reading and alerting, OCP for adding new sensors, 
+//ISP for small sensor interface, DIP for monitor depending on abstractions.
+
+//Files
+
+//ISensor.h
+#pragma once
+class ISensor {
+  public:
+    virtual double read() = 0;
+    virtual ~ISensor() = default;
+};
+
+
+
+
+
+//TemperatureSensor.h
+#pragma once
+#include "ISensor.h"
+#include <iostream>
+class TemperatureSensor : public ISensor {
+  public:
+    double read() override {
+        double v = 25.3; // pretend reading
+        std::cout << "Temp sensor reads " << v << " C\n";
+        return v;
+    }
+};
+
+
+
+
+
+//HumiditySensor.h
+#pragma once
+#include "ISensor.h"
+#include <iostream>
+class HumiditySensor : public ISensor {
+  public:
+    double read() override {
+        double v = 60.0;
+        std::cout << "Humidity sensor reads " << v << " %\n";
+        return v;
+    }
+};
+
+
+
+
+
+
+//IAlert.h
+#pragma once
+#include <string>
+class IAlert {
+  public:
+    virtual void sendAlert(const std::string& msg) = 0;
+    virtual ~IAlert() = default;
+};
+
+
+
+
+
+//ConsoleAlert.h
+#pragma once
+#include "IAlert.h"
+#include <iostream>
+class ConsoleAlert : public IAlert {
+  public:
+    void sendAlert(const std::string& msg) override {
+        std::cout << "[ALERT] " << msg << "\n";
+    }
+};
+
+
+
+
+
+//Monitor.h
+#pragma once
+#include "ISensor.h"
+#include "IAlert.h"
+#include <vector>
+#include <memory>
+class Monitor {
+    IAlert& alert_;
+  public:
+    explicit Monitor(IAlert& a) : alert_(a) {}
+
+    void check(ISensor& sensor, double threshold) {
+        double v = sensor.read();
+        if (v > threshold) alert_.sendAlert("Value " + std::to_string(v) + " exceeded " + std::to_string(threshold));
+    }
+};
+
+
+
+
+
+//main.cpp
+#include "TemperatureSensor.h"
+#include "HumiditySensor.h"
+#include "ConsoleAlert.h"
+#include "Monitor.h"
+int main() {
+    ConsoleAlert alert;
+    Monitor monitor(alert);
+
+    TemperatureSensor temp;
+    HumiditySensor hum;
+
+    monitor.check(temp, 30.0);
+    monitor.check(hum, 50.0);
+
+  return 0;
+}
+/*
+Expected output
+Temp sensor reads 25.3 C
+Humidity sensor reads 60 % 
+[ALERT] Value 60.000000 exceeded 50.000000
+*/

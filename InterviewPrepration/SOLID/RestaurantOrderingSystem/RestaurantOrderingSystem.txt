@@ -1,0 +1,131 @@
+//✅ SOLID Example #6 — Restaurant Ordering System (C++)
+//Files
+
+//Dish.h
+#pragma once
+#include <string>
+class Dish {
+  public:
+    virtual std::string name() const = 0;
+    virtual double cost() const = 0;
+    virtual ~Dish() = default;
+};
+class Pizza : public Dish {
+  public:
+    std::string name() const override { return "Pizza"; }
+    double cost() const override { return 12.0; }
+};
+class Pasta : public Dish {
+  public:
+    std::string name() const override { return "Pasta"; }
+    double cost() const override { return 9.5; }
+};
+
+
+
+
+
+//IPayment.h
+#pragma once
+class IPayment {
+  public:
+    virtual bool pay(double amount) = 0;
+    virtual ~IPayment() = default;
+};
+
+
+
+
+//CashPayment.h
+#pragma once
+#include "IPayment.h"
+#include <iostream>
+class CashPayment : public IPayment {
+  public:
+    bool pay(double amount) override {
+        std::cout << "Paid $" << amount << " in Cash\n";
+        return true;
+    }
+};
+
+
+
+
+//ILogger.h
+#pragma once
+#include <string>
+class ILogger {
+  public:
+    virtual void log(const std::string&) = 0;
+    virtual ~ILogger() = default;
+};
+
+
+
+
+//ConsoleLogger.h
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[Restaurant] " << msg << "\n";
+    }
+};
+
+
+
+
+
+//OrderProcessor.h
+#pragma once
+#include "Dish.h"
+#include "IPayment.h"
+#include "ILogger.h"
+class OrderProcessor {
+  private:
+    ILogger& logger;
+    IPayment& payment;
+
+  public:
+    OrderProcessor(ILogger& log, IPayment& pay)
+        : logger(log), payment(pay) {}
+
+    void processOrder(const Dish& d) {
+        logger.log("Ordering " + d.name());
+        payment.pay(d.cost());
+        logger.log(d.name() + " served!");
+    }
+};
+
+
+
+
+//main.cpp
+#include "OrderProcessor.h"
+#include "ConsoleLogger.h"
+#include "CashPayment.h"
+#include "Dish.h"
+int main() {
+    ConsoleLogger logger;
+    CashPayment cashPay;
+
+    OrderProcessor processor(logger, cashPay);
+
+    Pizza pizza;
+    Pasta pasta;
+
+    processor.processOrder(pizza);
+    processor.processOrder(pasta);
+  return 0;
+}
+/*
+Output
+[Restaurant] Ordering Pizza
+Paid $12 in Cash
+[Restaurant] Pizza served!
+[Restaurant] Ordering Pasta
+Paid $9.5 in Cash
+[Restaurant] Pasta served!
+*/

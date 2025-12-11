@@ -1,0 +1,138 @@
+//SOLID Example #11 — Hospital Management System
+//What it shows: patient/accountability (SRP), extensible staff roles (OCP), substitutable staff types (LSP), 
+//small interfaces (ISP), service depends on abstractions (DIP).
+
+//Files
+
+//Patient.h
+#pragma once
+#include <string>
+class Patient {
+    std::string name_;
+  public:
+    explicit Patient(std::string name) : name_(std::move(name)) {}
+    const std::string& name() const { return name_; }
+};
+
+
+
+
+
+
+//IStaff.h
+#pragma once
+#include <string>
+class IStaff {
+  public:
+    virtual void performDuty(const Patient& p) = 0;
+    virtual ~IStaff() = default;
+};
+
+
+
+
+
+//Doctor.h
+#pragma once
+#include "IStaff.h"
+#include "Patient.h"
+#include <iostream>
+class Doctor : public IStaff {
+  public:
+    void performDuty(const Patient& p) override {
+        std::cout << "Doctor examines " << p.name() << "\n";
+    }
+};
+
+
+
+
+//Nurse.h
+#pragma once
+#include "IStaff.h"
+#include "Patient.h"
+#include <iostream>
+class Nurse : public IStaff {
+  public:
+    void performDuty(const Patient& p) override {
+        std::cout << "Nurse gives medication to " << p.name() << "\n";
+    }
+};
+
+
+
+
+//ILogger.h
+#pragma once
+#include <string>
+class ILogger {
+  public:
+    virtual void log(const std::string& msg) = 0;
+    virtual ~ILogger() = default;
+};
+
+
+
+
+
+//ConsoleLogger.h
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[Hospital] " << msg << "\n";
+    }
+};
+
+
+
+
+//HospitalService.h
+#pragma once
+#include "IStaff.h"
+#include "ILogger.h"
+#include "Patient.h"
+class HospitalService {
+    ILogger& logger_;
+  public:
+    explicit HospitalService(ILogger& logger) : logger_(logger) {}
+
+    void assignAndExecute(IStaff& staff, const Patient& p) {
+        logger_.log("Assigning staff to " + p.name());
+        staff.performDuty(p);
+        logger_.log("Task completed for " + p.name());
+    }
+};
+
+
+
+
+//main.cpp
+#include "Doctor.h"
+#include "Nurse.h"
+#include "ConsoleLogger.h"
+#include "HospitalService.h"
+int main(){
+    ConsoleLogger logger;
+    HospitalService hs(logger);
+
+    Patient p("John Doe");
+    Doctor doc;
+    Nurse nurse;
+
+    hs.assignAndExecute(doc, p);
+    hs.assignAndExecute(nurse, p);
+
+    return 0;
+}
+/*
+Expected output
+[Hospital] Assigning staff to John Doe
+Doctor examines John Doe
+[Hospital] Task completed for John Doe
+[Hospital] Assigning staff to John Doe
+Nurse gives medication to John Doe
+[Hospital] Task completed for John Doe
+*/

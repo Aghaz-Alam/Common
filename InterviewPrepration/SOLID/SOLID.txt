@@ -1,0 +1,540 @@
+SOLID Principles in C++ (Explained with Examples)
+SOLID is a set of five object-oriented design principles that help you write clean, maintainable, flexible code.
+
+SOLID stands for:
+S — Single Responsibility Principle (SRP)
+O — Open/Closed Principle (OCP)
+L — Liskov Substitution Principle (LSP)
+I — Interface Segregation Principle (ISP)
+D — Dependency Inversion Principle (DIP)
+
+
+
+1️⃣ Single Responsibility Principle (SRP)
+A class should have ONE and ONLY ONE reason to change.
+❌ Bad: One class does too many things
+class Report {
+public:
+    string generate() { return "data"; }
+    void saveToFile(const string& data) {
+        // file handling
+    }
+};
+
+This class:
+-->Generates data
+-->Saves data to file
+   = Two responsibilities → SRP violated
+
+✔ Good: Split responsibilities
+class ReportGenerator {
+  public:
+    string generate() { return "data"; }
+};
+class FileSaver {
+  public:
+    void save(const string& data) {
+        // save to file
+    }
+};
+
+2️⃣ Open/Closed Principle (OCP)
+Software should be open for extension, but closed for modification.
+This means:
+You should add new behavior without editing existing code
+
+❌ Bad: Modify code every time new type is added
+class AreaCalculator {
+public:
+    double area(int shapeType) {
+        if (shapeType == 1) return 10;
+        if (shapeType == 2) return 20;
+        return 0;
+    }
+};
+If new shape → modify function → OCP violated.
+
+✔ Good: Use polymorphism
+class Shape {
+  public:
+    virtual double area() const = 0;
+    virtual ~Shape() = default;
+};
+class Circle : public Shape {
+  public:
+    double area() const override { return 3.14 * 5 * 5; }
+};
+class Square : public Shape {
+  public:
+    double area() const override { return 10 * 10; }
+};
+Now adding a new shape does not modify existing code.
+
+3️⃣ Liskov Substitution Principle (LSP)
+Derived classes must be substitutable for their base classes without breaking behavior.
+If B is derived from A, you should be able to replace A with B, and nothing breaks.
+
+❌ Bad: Violates expected behavior
+class Bird {
+  public:
+    virtual void fly() {}
+};
+class Ostrich : public Bird {
+  public:
+    void fly() override {
+        throw runtime_error("Cannot fly!");
+    }
+};
+Clients expect all birds to fly → Ostrich breaks LSP.
+
+✔ Good: Separate interfaces
+class FlyingBird {
+  public:
+    virtual void fly() = 0;
+};
+class Sparrow : public FlyingBird {
+  public:
+    void fly() override {}
+};
+class Ostrich {
+    // no flying interface implemented
+};
+
+4️⃣ Interface Segregation Principle (ISP)
+Clients should not be forced to depend on methods they do not use.
+❌ Bad: Big interface with unrelated functions
+class Worker {
+  public:
+    virtual void work() = 0;
+    virtual void eat() = 0; // Robots don't eat!
+};
+Robots must implement eat() unnecessarily.
+
+✔ Good: Split interfaces
+class Workable {
+  public:
+    virtual void work() = 0;
+};
+class Eatable {
+  public:
+    virtual void eat() = 0;
+};
+
+
+5️⃣ Dependency Inversion Principle (DIP)
+**High-level modules should not depend on low-level modules.
+Both should depend on abstractions.**
+
+❌ Bad: High-level depends on low-level class
+class MySQLDatabase {
+  public:
+    void connect() {}
+};
+class UserService {
+    MySQLDatabase db;   // tightly coupled → bad
+  public:
+    void login() { db.connect(); }
+};
+Change DB → must modify UserService.
+
+✔ Good: Depend on abstraction (interface)
+class IDatabase {
+  public:
+    virtual void connect() = 0;
+    virtual ~IDatabase() = default;
+};
+class MySQLDatabase : public IDatabase {
+  public:
+    void connect() override {}
+};
+class UserService {
+    IDatabase& db;   // dependency injected
+  public:
+    UserService(IDatabase& database) : db(database) {}
+    void login() { db.connect(); }
+};
+
+Now you can plug in:
+MySQLDatabase
+PostgresDB
+MockDatabase (for unit testing)
+
+
+Summary Table
+| Principle | Meaning                     | Benefit                              |
+| --------- | --------------------------- | ------------------------------------ |
+| **S**     | One responsibility          | Clean, maintainable classes          |
+| **O**     | Extend without modifying    | Flexible design                      |
+| **L**     | Derived must behave as base | Reliable inheritance & polymorphism  |
+| **I**     | Small, specific interfaces  | No unnecessary methods               |
+| **D**     | Depend on abstractions      | Easier testing & swapping components |
+
+
+
+
+
+
+
+/*
+Complete C++ Example Demonstrating All SOLID Principles
+We will build a small system:
+-->Coffee Machine Application (SOLID Compliant)
+-->Each principle demonstrated clearly
+-->Separation of responsibilities
+-->Interfaces (OCP, ISP, DIP)
+-->Polymorphism (LSP)
+
+Easily extensible (Adding new coffee types, new loggers, new payments, etc.)
+*/
+//📁 File 1: Coffee.h
+//Demonstrates SRP, OCP, LSP
+#pragma once
+#include <string>
+// Abstract base class (OCP, LSP)
+class Coffee {
+  public:
+    virtual std::string name() const = 0;
+    virtual double price() const = 0;
+    virtual ~Coffee() = default;
+};
+// Concrete coffee types (Open for extension)
+class Espresso : public Coffee {
+  public:
+    std::string name() const override { return "Espresso"; }
+    double price() const override { return 2.50; }
+};
+class Cappuccino : public Coffee {
+  public:
+    std::string name() const override { return "Cappuccino"; }
+    double price() const override { return 3.50; }
+};
+/*
+✔ SRP: Coffee classes only define coffee data
+✔ OCP: Add new coffee by creating a new class
+✔ LSP: All coffees substitute Coffee safely
+*/
+
+
+//📁 File 2: ILogger.h
+//Demonstrates ISP
+#pragma once
+#include <string>
+// Small, focused interface (ISP)
+class ILogger {
+  public:
+    virtual void log(const std::string& msg) = 0;
+    virtual ~ILogger() = default;
+};
+/*
+✔ Interface is small → no unused functions
+✔ Robots or servers can use same interface without unnecessary features
+*/
+
+
+//📁 File 3: ConsoleLogger.h
+//Demonstrates OCP (extend loggers without changing code)
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[Console] " << msg << "\n";
+    }
+};
+
+//File 4: FileLogger.h
+#pragma once
+#include "ILogger.h"
+#include <fstream>
+class FileLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::ofstream file("log.txt", std::ios::app);
+        file << "[File] " << msg << "\n";
+    }
+};
+
+
+
+//📁 File 5: IPayment.h
+//Demonstrates ISP + DIP
+#pragma once
+class IPayment {
+  public:
+    virtual bool pay(double amount) = 0;
+    virtual ~IPayment() = default;
+};
+
+
+
+//File 6: CreditCardPayment.h
+#pragma once
+#include "IPayment.h"
+#include <iostream>
+class CreditCardPayment : public IPayment {
+  public:
+    bool pay(double amount) override {
+        std::cout << "Paid $" << amount << " with Credit Card\n";
+        return true;
+    }
+};
+
+
+
+//📁 File 7: CoffeeMachine.h
+//Demonstrates SRP, OCP, DIP
+#pragma once
+#include "Coffee.h"
+#include "ILogger.h"
+#include "IPayment.h"
+class CoffeeMachine {
+  private:
+    ILogger& logger;        // DIP
+    IPayment& payment;      // DIP
+
+  public:
+    CoffeeMachine(ILogger& log, IPayment& pay)
+        : logger(log), payment(pay) {}
+
+    void prepareCoffee(const Coffee& c) {  // Uses polymorphism
+        logger.log("Preparing " + c.name());
+
+        if (payment.pay(c.price()))
+            logger.log(c.name() + " is ready!");
+        else
+            logger.log("Payment failed!");
+    }
+};
+/*
+✔ DIP: Depends on abstractions (ILogger, IPayment)
+✔ OCP: Add new loggers, payments, or coffee types
+✔ LSP: Any Coffee subclass works
+*/
+
+
+//📁 File 8: main.cpp
+//Clean usage of the entire SOLID system
+#include <memory>
+#include "CoffeeMachine.h"
+#include "ConsoleLogger.h"
+#include "FileLogger.h"
+#include "CreditCardPayment.h"
+#include "Coffee.h"
+int main() {
+    ConsoleLogger logger;
+    CreditCardPayment payment;
+
+    CoffeeMachine machine(logger, payment);
+
+    Espresso espresso;
+    Cappuccino cappuccino;
+
+    machine.prepareCoffee(espresso);
+    machine.prepareCoffee(cappuccino);
+
+   return 0;
+}
+/*
+Output:
+[Console] Preparing Espresso
+Paid $2.5 with Credit Card
+[Console] Espresso is ready!
+[Console] Preparing Cappuccino
+Paid $3.5 with Credit Card
+[Console] Cappuccino is ready!
+*/
+
+
+
+
+
+
+/*
+SOLID Example #2 — NotificationSystem
+System Features:
+Multiple notification types (Email, SMS, Push)
+Logging
+Message validation
+Dependency injection
+Open for extension (new notification types, new loggers)
+Using interfaces for clean separation
+*/
+//📦 Project Files
+//📁 File 1: INotification.h
+//🎯 Demonstrates OCP, LSP
+#pragma once
+#include <string>
+class INotification {
+ public:
+    virtual void send(const std::string& message) = 0;
+    virtual ~INotification() = default;
+};
+/*
+✔ Base interface
+✔ Derived types must behave correctly (LSP)
+✔ Open for extension
+*/
+
+
+//📁 File 2: EmailNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class EmailNotification : public INotification {
+ public:
+    void send(const std::string& message) override {
+        std::cout << "Sending Email: " << message << "\n";
+    }
+};
+
+
+//📁 File 3: SMSNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class SMSNotification : public INotification {
+  public:
+    void send(const std::string& message) override {
+        std::cout << "Sending SMS: " << message << "\n";
+    }
+};
+
+
+//📁 File 4: PushNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class PushNotification : public INotification {
+  public:
+    void send(const std::string& message) override {
+        std::cout << "Sending Push: " << message << "\n";
+    }
+};
+
+
+//📁 File 5: ILogger.h
+//🎯 Demonstrates ISP
+#pragma once
+#include <string>
+class ILogger {
+ public:
+    virtual void log(const std::string& msg) = 0;
+    virtual ~ILogger() = default;
+};
+/*
+✔ Small and focused
+✔ Only log()
+*/
+
+
+//📁 File 6: ConsoleLogger.h
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[Log] " << msg << "\n";
+    }
+};
+
+
+
+//📁 File 7: IMessageValidator.h
+//🎯 Demonstrates SRP
+#pragma once
+#include <string>
+class IMessageValidator {
+  public:
+    virtual bool validate(const std::string &msg) = 0;
+    virtual ~IMessageValidator() = default;
+};
+
+
+//📁 File 8: SimpleValidator.h
+#pragma once
+#include "IMessageValidator.h"
+class SimpleValidator : public IMessageValidator {
+  public:
+    bool validate(const std::string& msg) override {
+        return !msg.empty();  // only checks non-empty
+    }
+};
+//✔ This class ONLY validates → SRP
+
+
+
+//📁 File 9: NotificationService.h
+//🎯 Demonstrates DIP + SRP
+#pragma once
+#include "INotification.h"
+#include "ILogger.h"
+#include "IMessageValidator.h"
+#include <string>
+class NotificationService {
+ private:
+    INotification& notifier;      // DIP
+    ILogger& logger;              // DIP
+    IMessageValidator& validator; // DIP
+
+ public:
+    NotificationService(INotification& n,
+                        ILogger& l,
+                        IMessageValidator& v)
+        : notifier(n), logger(l), validator(v) {}
+
+    void notify(const std::string& msg) {
+        if (!validator.validate(msg)) {
+            logger.log("Invalid message!");
+            return;
+        }
+
+        logger.log("Sending notification...");
+        notifier.send(msg);
+        logger.log("Notification sent successfully!");
+    }
+};
+/*
+✔ Depends on abstractions (DIP)
+✔ Performs one job — sending notification (SRP)
+*/
+
+//📁 File 10: main.cpp
+#include "EmailNotification.h"
+#include "SMSNotification.h"
+#include "PushNotification.h"
+#include "ConsoleLogger.h"
+#include "SimpleValidator.h"
+#include "NotificationService.h"
+
+int main() {
+    ConsoleLogger logger;
+    SimpleValidator validator;
+
+    EmailNotification email;
+    SMSNotification sms;
+    PushNotification push;
+
+    NotificationService service1(email, logger, validator);
+    NotificationService service2(sms, logger, validator);
+    NotificationService service3(push, logger, validator);
+
+    service1.notify("Hello from Email!");
+    service2.notify("Hello from SMS!");
+    service3.notify("Hello from Push!");
+
+    return 0;
+}
+/*
+🖥️ Program Output
+[Log] Sending notification...
+Sending Email: Hello from Email!
+[Log] Notification sent successfully!
+[Log] Sending notification...
+Sending SMS: Hello from SMS!
+[Log] Notification sent successfully!
+[Log] Sending notification...
+Sending Push: Hello from Push!
+[Log] Notification sent successfully!
+*/

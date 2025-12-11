@@ -1,0 +1,78 @@
+//✅ SOLID Example #7 — Notification System
+
+//INotifier.h
+#pragma once
+#include <string>
+class INotifier {
+  public:
+    virtual void send(const std::string& message) = 0;
+    virtual ~INotifier() = default;
+};
+
+
+
+
+//EmailNotifier.h
+#pragma once
+#include "INotifier.h"
+#include <iostream>
+class EmailNotifier : public INotifier {
+  public:
+    void send(const std::string& msg) override {
+        std::cout << "[Email] " << msg << "\n";
+    }
+};
+
+
+
+
+//SMSNotifier.h
+#pragma once
+#include "INotifier.h"
+#include <iostream>
+class SMSNotifier : public INotifier {
+  public:
+    void send(const std::string& msg) override {
+        std::cout << "[SMS] " << msg << "\n";
+    }
+};
+
+
+
+//AlertService.h
+#pragma once
+#include "INotifier.h"
+#include <string>
+class AlertService {
+  private:
+    INotifier& notifier;
+
+  public:
+    AlertService(INotifier& n) : notifier(n) {}
+
+    void alert(const std::string& msg) {
+        notifier.send("ALERT: " + msg);
+    }
+};
+
+
+
+//main.cpp
+#include "AlertService.h"
+#include "EmailNotifier.h"
+#include "SMSNotifier.h"
+int main() {
+    EmailNotifier email;
+    SMSNotifier sms;
+
+    AlertService alertEmail(email);
+    AlertService alertSMS(sms);
+
+    alertEmail.alert("Server down!");
+    alertSMS.alert("High CPU usage!");
+}
+/*
+Output
+[Email] ALERT: Server down!
+[SMS] ALERT: High CPU usage!
+*/

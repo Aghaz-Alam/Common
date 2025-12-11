@@ -1,0 +1,96 @@
+//SOLID Example #13 — Game Engine Entities
+//What it shows: Entities with interchangeable behaviors (LSP), small interfaces for systems (ISP), 
+//engine depends on abstractions (DIP), SRP for movement/render components, OCP for new behaviors.
+
+//Files
+
+//IComponent.h
+#pragma once
+class IComponent {
+  public:
+    virtual void update() = 0;
+    virtual ~IComponent() = default;
+};
+
+
+
+
+
+
+//RenderComponent.h
+#pragma once
+#include "IComponent.h"
+#include <iostream>
+class RenderComponent : public IComponent {
+    std::string sprite_;
+  public:
+    explicit RenderComponent(std::string s) : sprite_(std::move(s)) {}
+    void update() override { std::cout << "Render: " << sprite_ << "\n"; }
+};
+
+
+
+
+
+
+//MovementComponent.h
+#pragma once
+#include "IComponent.h"
+#include <iostream>
+class MovementComponent : public IComponent {
+    std::string name_;
+  public:
+    explicit MovementComponent(std::string n) : name_(std::move(n)) {}
+    void update() override { std::cout << name_ << " moves\n"; }
+};
+
+
+
+
+
+
+
+//Entity.h
+#pragma once
+#include <vector>
+#include <memory>
+#include "IComponent.h"
+class Entity {
+    std::vector<std::unique_ptr<IComponent>> comps_;
+ public:
+    void addComponent(std::unique_ptr<IComponent> c) { comps_.push_back(std::move(c)); }
+    void update() {
+        for (auto& c : comps_) c->update();
+    }
+};
+
+
+
+
+
+
+//main.cpp
+#include "Entity.h"
+#include "RenderComponent.h"
+#include "MovementComponent.h"
+#include <memory>
+int main() {
+    Entity player;
+    player.addComponent(std::make_unique<RenderComponent>("PlayerSprite"));
+    player.addComponent(std::make_unique<MovementComponent>("Player"));
+
+    Entity enemy;
+    enemy.addComponent(std::make_unique<RenderComponent>("EnemySprite"));
+    enemy.addComponent(std::make_unique<MovementComponent>("Enemy"));
+
+    player.update();
+    enemy.update();
+    return 0;
+}
+/*
+Expected output
+Render: PlayerSprite
+Player moves
+Render: EnemySprite
+Enemy moves
+*/

@@ -1,0 +1,72 @@
+//✅ SOLID Example #5 — Shape Drawing Engine
+//📁 IShape.h
+#pragma once
+#include <string>
+class IShape {
+ public:
+    virtual std::string draw() const = 0;
+    virtual ~IShape() = default;
+};
+
+
+
+//📁 Circle.h
+#pragma once
+#include "IShape.h"
+class Circle : public IShape {
+  public:
+    std::string draw() const override {
+        return "Drawing Circle";
+    }
+};
+
+
+
+
+//📁 Square.h
+#pragma once
+#include "IShape.h"
+class Square : public IShape {
+  public:
+    std::string draw() const override {
+        return "Drawing Square";
+    }
+};
+
+
+
+
+//📁 Renderer.h
+#pragma once
+#include <iostream>
+#include "IShape.h"
+class Renderer {
+  public:
+    void render(const IShape& shape) {
+        std::cout << shape.draw() << "\n";
+    }
+};
+
+
+
+
+
+//📁 main.cpp
+#include "Circle.h"
+#include "Square.h"
+#include "Renderer.h"
+int main() {
+    Renderer renderer;
+
+    Circle c;
+    Square s;
+
+    renderer.render(c);
+    renderer.render(s);
+  return 0;
+}
+/*
+OUTPUT
+Drawing Circle
+Drawing Square
+*/

@@ -1,0 +1,81 @@
+//✅ SOLID Example #9 — Chat Application
+
+//IMessageSender.h
+#pragma once
+#include <string>
+class IMessageSender {
+  public:
+    virtual void send(const std::string& user, const std::string& msg) = 0;
+    virtual ~IMessageSender() = default;
+};
+
+
+
+
+//TextMessageSender.h
+#pragma once
+#include "IMessageSender.h"
+#include <iostream>
+class TextMessageSender : public IMessageSender {
+  public:
+    void send(const std::string& user, const std::string& msg) override {
+        std::cout << user << " (text): " << msg << "\n";
+    }
+};
+
+
+
+
+//ImageMessageSender.h
+#pragma once
+#include "IMessageSender.h"
+#include <iostream>
+class ImageMessageSender : public IMessageSender {
+  public:
+    void send(const std::string& user, const std::string& msg) override {
+        std::cout << user << " (image): [Image: " << msg << "]\n";
+    }
+};
+
+
+
+
+
+//ChatClient.h
+#pragma once
+#include "IMessageSender.h"
+class ChatClient {
+  private:
+    IMessageSender& sender;
+  public:
+    ChatClient(IMessageSender& s) : sender(s) {}
+
+    void sendMessage(const std::string& user, const std::string& msg) {
+        sender.send(user, msg);
+    }
+};
+
+
+
+
+
+//main.cpp
+#include "ChatClient.h"
+#include "TextMessageSender.h"
+#include "ImageMessageSender.h"
+int main() {
+    TextMessageSender text;
+    ImageMessageSender img;
+
+    ChatClient client1(text);
+    ChatClient client2(img);
+
+    client1.sendMessage("Alice", "Hello!");
+    client2.sendMessage("Bob", "photo.png");
+  return 0;
+}
+/*
+Output
+Alice (text): Hello!
+Bob (image): [Image: photo.png]
+*/

@@ -1,0 +1,189 @@
+
+/*
+SOLID Example #2 — NotificationSystem
+System Features:
+Multiple notification types (Email, SMS, Push)
+Logging
+Message validation
+Dependency injection
+Open for extension (new notification types, new loggers)
+Using interfaces for clean separation
+*/
+//📦 Project Files
+//📁 File 1: INotification.h
+//🎯 Demonstrates OCP, LSP
+#pragma once
+#include <string>
+class INotification {
+ public:
+    virtual void send(const std::string& message) = 0;
+    virtual ~INotification() = default;
+};
+/*
+✔ Base interface
+✔ Derived types must behave correctly (LSP)
+✔ Open for extension
+*/
+
+
+//📁 File 2: EmailNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class EmailNotification : public INotification {
+ public:
+    void send(const std::string& message) override {
+        std::cout << "Sending Email: " << message << "\n";
+    }
+};
+
+
+//📁 File 3: SMSNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class SMSNotification : public INotification {
+  public:
+    void send(const std::string& message) override {
+        std::cout << "Sending SMS: " << message << "\n";
+    }
+};
+
+
+//📁 File 4: PushNotification.h
+#pragma once
+#include "INotification.h"
+#include <iostream>
+class PushNotification : public INotification {
+  public:
+    void send(const std::string& message) override {
+        std::cout << "Sending Push: " << message << "\n";
+    }
+};
+
+
+//📁 File 5: ILogger.h
+//🎯 Demonstrates ISP
+#pragma once
+#include <string>
+class ILogger {
+ public:
+    virtual void log(const std::string& msg) = 0;
+    virtual ~ILogger() = default;
+};
+/*
+✔ Small and focused
+✔ Only log()
+*/
+
+
+//📁 File 6: ConsoleLogger.h
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[Log] " << msg << "\n";
+    }
+};
+
+
+
+//📁 File 7: IMessageValidator.h
+//🎯 Demonstrates SRP
+#pragma once
+#include <string>
+class IMessageValidator {
+  public:
+    virtual bool validate(const std::string &msg) = 0;
+    virtual ~IMessageValidator() = default;
+};
+
+
+//📁 File 8: SimpleValidator.h
+#pragma once
+#include "IMessageValidator.h"
+class SimpleValidator : public IMessageValidator {
+  public:
+    bool validate(const std::string& msg) override {
+        return !msg.empty();  // only checks non-empty
+    }
+};
+//✔ This class ONLY validates → SRP
+
+
+
+//📁 File 9: NotificationService.h
+//🎯 Demonstrates DIP + SRP
+#pragma once
+#include "INotification.h"
+#include "ILogger.h"
+#include "IMessageValidator.h"
+#include <string>
+class NotificationService {
+ private:
+    INotification& notifier;      // DIP
+    ILogger& logger;              // DIP
+    IMessageValidator& validator; // DIP
+
+ public:
+    NotificationService(INotification& n,
+                        ILogger& l,
+                        IMessageValidator& v)
+        : notifier(n), logger(l), validator(v) {}
+
+    void notify(const std::string& msg) {
+        if (!validator.validate(msg)) {
+            logger.log("Invalid message!");
+            return;
+        }
+
+        logger.log("Sending notification...");
+        notifier.send(msg);
+        logger.log("Notification sent successfully!");
+    }
+};
+/*
+✔ Depends on abstractions (DIP)
+✔ Performs one job — sending notification (SRP)
+*/
+
+//📁 File 10: main.cpp
+#include "EmailNotification.h"
+#include "SMSNotification.h"
+#include "PushNotification.h"
+#include "ConsoleLogger.h"
+#include "SimpleValidator.h"
+#include "NotificationService.h"
+
+int main() {
+    ConsoleLogger logger;
+    SimpleValidator validator;
+
+    EmailNotification email;
+    SMSNotification sms;
+    PushNotification push;
+
+    NotificationService service1(email, logger, validator);
+    NotificationService service2(sms, logger, validator);
+    NotificationService service3(push, logger, validator);
+
+    service1.notify("Hello from Email!");
+    service2.notify("Hello from SMS!");
+    service3.notify("Hello from Push!");
+
+    return 0;
+}
+/*
+🖥️ Program Output
+[Log] Sending notification...
+Sending Email: Hello from Email!
+[Log] Notification sent successfully!
+[Log] Sending notification...
+Sending SMS: Hello from SMS!
+[Log] Notification sent successfully!
+[Log] Sending notification...
+Sending Push: Hello from Push!
+[Log] Notification sent successfully!
+*/

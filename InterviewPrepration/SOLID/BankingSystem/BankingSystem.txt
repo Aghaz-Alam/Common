@@ -1,0 +1,141 @@
+/*
+✅ SOLID Example #3 — Banking System
+A simple banking system using SOLID:
+SRP: Each class has one job
+OCP: New account types can be added
+LSP: SavingsAccount / CheckingAccount can replace Account
+ISP: Small focused interfaces
+DIP: BankService depends on abstractions
+*/
+
+
+//📁 Account.h
+#pragma once
+class Account {
+  public:
+    virtual double getBalance() const = 0;
+    virtual void deposit(double amt) = 0;
+    virtual bool withdraw(double amt) = 0;
+    virtual ~Account() = default;
+};
+
+
+
+//📁 SavingsAccount.h
+#pragma once
+#include "Account.h"
+class SavingsAccount : public Account {
+  private:
+    double balance{};
+  public:
+    explicit SavingsAccount(double initial = 0) : balance(initial) {}
+
+    double getBalance() const override { return balance; }
+    void deposit(double amt) override { balance += amt; }
+
+    bool withdraw(double amt) override {
+        if (balance >= amt) {
+            balance -= amt;
+            return true;
+        }
+        return false;
+    }
+};
+
+
+
+//📁 CheckingAccount.h
+#pragma once
+#include "Account.h"
+class CheckingAccount : public Account {
+  private:
+    double balance{};
+  public:
+    explicit CheckingAccount(double initial = 0) : balance(initial) {}
+
+    double getBalance() const override { return balance; }
+    void deposit(double amt) override { balance += amt; }
+
+    bool withdraw(double amt) override {
+        balance -= amt; // overdraft allowed
+        return true;
+    }
+};
+
+
+
+//📁 ILogger.h
+#pragma once
+#include <string>
+class ILogger {
+  public:
+    virtual void log(const std::string& msg) = 0;
+    virtual ~ILogger() = default;
+};
+
+
+
+//📁 ConsoleLogger.h
+#pragma once
+#include "ILogger.h"
+#include <iostream>
+class ConsoleLogger : public ILogger {
+  public:
+    void log(const std::string& msg) override {
+        std::cout << "[LOG] " << msg << "\n";
+    }
+};
+
+
+//📁 BankService.h
+#pragma once
+#include "Account.h"
+#include "ILogger.h"
+class BankService {
+  private:
+    ILogger& logger;
+  public:
+    BankService(ILogger& log) : logger(log) {}
+
+    void transfer(Account& from, Account& to, double amt) {
+        logger.log("Attempting transfer of $" + std::to_string(amt));
+
+        if (from.withdraw(amt)) {
+            to.deposit(amt);
+            logger.log("Transfer successful.");
+        } else {
+            logger.log("Transfer FAILED. Insufficient funds.");
+        }
+    }
+};
+
+
+
+//📁 main.cpp
+#include <iostream>
+#include "SavingsAccount.h"
+#include "CheckingAccount.h"
+#include "ConsoleLogger.h"
+#include "BankService.h"
+int main() {
+    ConsoleLogger logger;
+    BankService bank(logger);
+
+    SavingsAccount savings(100);
+    CheckingAccount checking(20);
+
+    bank.transfer(savings, checking, 50);
+    bank.transfer(savings, checking, 100);
+
+    std::cout << "Savings balance: " << savings.getBalance() << "\n";
+    std::cout << "Checking balance: " << checking.getBalance() << "\n";
+}
+/*
+OUTPUT
+[LOG] Attempting transfer of $50.000000
+[LOG] Transfer successful.
+[LOG] Attempting transfer of $100.000000
+[LOG] Transfer FAILED. Insufficient funds.
+Savings balance: 50
+Checking balance: 70
+*/

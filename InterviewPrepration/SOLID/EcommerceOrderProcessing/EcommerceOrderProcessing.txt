@@ -1,0 +1,107 @@
+✅ SOLID Example #4 — E-commerce Order Processing
+📁 IShipping.h
+#pragma once
+class IShipping {
+public:
+    virtual double cost() const = 0;
+    virtual ~IShipping() = default;
+};
+
+📁 StandardShipping.h
+#pragma once
+#include "IShipping.h"
+
+class StandardShipping : public IShipping {
+public:
+    double cost() const override { return 5.0; }
+};
+
+📁 ExpressShipping.h
+#pragma once
+#include "IShipping.h"
+
+class ExpressShipping : public IShipping {
+public:
+    double cost() const override { return 15.0; }
+};
+
+📁 IPayment.h
+#pragma once
+class IPayment {
+public:
+    virtual bool pay(double amount) = 0;
+    virtual ~IPayment() = default;
+};
+
+📁 PaypalPayment.h
+#pragma once
+#include "IPayment.h"
+#include <iostream>
+
+class PaypalPayment : public IPayment {
+public:
+    bool pay(double amount) override {
+        std::cout << "Paid $" << amount << " using PayPal\n";
+        return true;
+    }
+};
+
+📁 Order.h
+#pragma once
+#include <string>
+
+class Order {
+private:
+    double subtotal;
+public:
+    explicit Order(double sub) : subtotal(sub) {}
+    double getSubtotal() const { return subtotal; }
+};
+
+📁 OrderProcessor.h
+#pragma once
+#include "Order.h"
+#include "IShipping.h"
+#include "IPayment.h"
+#include <iostream>
+
+class OrderProcessor {
+private:
+    IShipping& shipping;
+    IPayment& payment;
+public:
+    OrderProcessor(IShipping& ship, IPayment& pay)
+        : shipping(ship), payment(pay) {}
+
+    void process(const Order& order) {
+        double total = order.getSubtotal() + shipping.cost();
+        std::cout << "Total amount: $" << total << "\n";
+
+        if (payment.pay(total))
+            std::cout << "Order completed!\n";
+        else
+            std::cout << "Payment failed.\n";
+    }
+};
+
+📁 main.cpp
+#include "StandardShipping.h"
+#include "ExpressShipping.h"
+#include "PaypalPayment.h"
+#include "OrderProcessor.h"
+#include "Order.h"
+
+int main() {
+    Order order(100.0);
+
+    StandardShipping shipping;
+    PaypalPayment payment;
+
+    OrderProcessor processor(shipping, payment);
+    processor.process(order);
+}
+
+OUTPUT
+Total amount: $105
+Paid $105 using PayPal
+Order completed!

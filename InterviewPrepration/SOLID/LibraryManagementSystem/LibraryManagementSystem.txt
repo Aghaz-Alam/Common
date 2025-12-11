@@ -1,0 +1,128 @@
+//SOLID Example #12 — Library Management System
+//What it shows: single responsibility for catalog & borrowing, open for new media types, 
+//interface segregation for borrower actions, DIP for storage/logger.
+
+//Files
+
+//Media.h
+#pragma once
+#include <string>
+class Media {
+  public:
+    virtual std::string title() const = 0;
+    virtual ~Media() = default;
+};
+
+
+
+
+
+
+
+//Book.h
+#pragma once
+#include "Media.h"
+class Book : public Media {
+    std::string t_;
+  public:
+    explicit Book(std::string t) : t_(std::move(t)) {}
+    std::string title() const override { return t_; }
+};
+
+
+
+
+
+
+
+//IMediaRepository.h
+#pragma once
+#include "Media.h"
+#include <memory>
+class IMediaRepository {
+  public:
+    virtual void add(std::unique_ptr<Media> m) = 0;
+    virtual ~IMediaRepository() = default;
+};
+
+
+
+
+
+
+//InMemoryRepo.h
+#pragma once
+#include "IMediaRepository.h"
+#include <vector>
+#include <memory>
+#include <iostream>
+class InMemoryRepo : public IMediaRepository {
+    std::vector<std::unique_ptr<Media>> items_;
+  public:
+    void add(std::unique_ptr<Media> m) override {
+        std::cout << "Adding: " << m->title() << "\n";
+        items_.push_back(std::move(m));
+    }
+};
+
+
+
+
+
+
+//Borrower.h
+#pragma once
+#include <string>
+#include <iostream>
+class Borrower {
+    std::string name_;
+  public:
+    explicit Borrower(std::string n) : name_(std::move(n)) {}
+    void borrowItem(const std::string& title) {
+        std::cout << name_ << " borrowed " << title << "\n";
+    }
+};
+
+
+
+
+
+//LibraryService.h
+#pragma once
+#include "IMediaRepository.h"
+#include "Borrower.h"
+#include <memory>
+class LibraryService {
+    IMediaRepository& repo_;
+  public:
+    explicit LibraryService(IMediaRepository& r) : repo_(r) {}
+    void addMedia(std::unique_ptr<Media> m) { repo_.add(std::move(m)); }
+    void borrow(Borrower& b, const std::string& title) { b.borrowItem(title); }
+};
+
+
+
+
+
+
+//main.cpp
+#include "Book.h"
+#include "InMemoryRepo.h"
+#include "LibraryService.h"
+#include "Borrower.h"
+#include <memory>
+int main() {
+    InMemoryRepo repo;
+    LibraryService lib(repo);
+
+    lib.addMedia(std::make_unique<Book>("The C++ Programming Language"));
+    Borrower alice("Alice");
+    lib.borrow(alice, "The C++ Programming Language");
+
+    return 0;
+}
+/*
+Expected output
+Adding: The C++ Programming Language
+Alice borrowed The C++ Programming Language
+*/
