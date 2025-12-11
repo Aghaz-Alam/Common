@@ -1,0 +1,36 @@
+//AUTOSAR-Style – Simple RTE Port Reader (C++14)
+
+//rte_sensor.hpp
+#ifndef RTE_SENSOR_HPP
+#define RTE_SENSOR_HPP
+#include <cstdint>
+class RteSensor {
+  private:
+    std::uint16_t value;
+  public:
+    RteSensor() : value(0U) {}
+    void write(std::uint16_t v) {
+        value = v;
+    }
+    std::uint16_t read() const {
+        return value;
+    }
+};
+#endif
+
+
+
+//main.cpp
+#include <iostream>
+#include "rte_sensor.hpp"
+int main() {
+    RteSensor port;
+    port.write(42U);
+    std::uint16_t v = port.read();
+    std::cout << "RTE Port Value: " << v << "\n";
+  return 0;
+}
+/*
+Output
+RTE Port Value: 42
+*/

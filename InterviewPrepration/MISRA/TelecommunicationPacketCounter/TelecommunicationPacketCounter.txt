@@ -1,0 +1,42 @@
+//Telecommunication – Packet Counter
+
+
+//packet_counter.hpp
+#ifndef PACKET_COUNTER_HPP
+#define PACKET_COUNTER_HPP
+#include <cstdint>
+class PacketCounter {
+  private:
+    std::uint32_t count;
+  public:
+    PacketCounter() : count(0U) {}
+
+    void increment() {
+        if (count < 1000000000UL) {
+            count++;
+        }
+    }
+
+    std::uint32_t get() const {
+        return count;
+    }
+};
+#endif
+
+
+
+
+//main.cpp
+#include <iostream>
+#include "packet_counter.hpp"
+int main() {
+    PacketCounter p;
+    p.increment();
+    p.increment();
+    std::cout << "Packets: " << p.get() << "\n";
+  return 0;
+}
+/*
+Output
+Packets: 2
+*/

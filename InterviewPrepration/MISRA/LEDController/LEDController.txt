@@ -1,0 +1,49 @@
+//✅ PROJECT 3 — LED Controller (MISRA-Compliant)
+//(No bool conversions, fixed-width types, no dynamic memory)
+
+//📁 led_controller.hpp
+#ifndef LED_CONTROLLER_HPP
+#define LED_CONTROLLER_HPP
+#include <cstdint>
+class LEDController{
+  private:
+    std::uint8_t state; /* 0 = OFF, 1 = ON */
+  public:
+    LEDController() : state(0U){
+    }
+
+    void turnOn(){
+        state = 1U;
+    }
+
+    void turnOff(){
+        state = 0U;
+    }
+
+    std::uint8_t getState() const{
+        return state;
+    }
+};
+#endif /* LED_CONTROLLER_HPP */
+
+
+
+//📁 led_controller.cpp
+#include "led_controller.hpp"
+
+
+
+//📁 main.cpp
+#include <iostream>
+#include "led_controller.hpp"
+int main(){
+    LEDController led;
+    led.turnOn();
+    std::uint8_t s = led.getState();
+    std::cout << "LED State: " << static_cast<int>(s) << '\n';
+  return 0;
+}
+/*
+✔ Expected Output
+LED State: 1
+*/

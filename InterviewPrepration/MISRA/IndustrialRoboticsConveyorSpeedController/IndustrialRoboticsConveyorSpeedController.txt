@@ -1,0 +1,45 @@
+//Industrial Robotics – Conveyor Speed Controller
+
+//conveyor_speed.hpp
+#ifndef CONVEYOR_SPEED_HPP
+#define CONVEYOR_SPEED_HPP
+#include <cstdint>
+class ConveyorSpeed {
+  private:
+    std::uint8_t speed; /* 0–255 */
+  public:
+    ConveyorSpeed() : speed(0U) {}
+
+    void set(std::uint8_t v) {
+        speed = v; /* always valid */
+    }
+
+    std::uint8_t get() const {
+        return speed;
+    }
+};
+#endif
+
+
+
+
+//conveyor_speed.cpp
+#include "conveyor_speed.hpp"
+
+
+
+
+//main.cpp
+#include <iostream>
+#include <cstdint>
+#include "conveyor_speed.hpp"
+int main() {
+    ConveyorSpeed c;
+    c.set(120U);
+    std::cout << "Conveyor speed: " << static_cast<int>(c.get()) << "\n";
+  return 0;
+}
+/*
+Output
+Conveyor speed: 120
+*/

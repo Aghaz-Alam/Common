@@ -1,0 +1,59 @@
+//✅ FULL MISRA-COMPLIANT C++ PROGRAM
+//Example: A Motor Speed Controller (fully compliant & explainable)
+
+//📁 motor_controller.hpp
+#ifndef MOTOR_CONTROLLER_HPP
+#define MOTOR_CONTROLLER_HPP
+#include <cstdint>
+class MotorController{
+  private:
+    std::uint16_t speed; /* valid range: 0–100 */
+
+  public:
+    MotorController() : speed(0U){
+        /* Constructor initializes all members */
+    }
+
+    void setSpeed(std::uint16_t value){
+        /* MISRA requires range checks */
+        if (value <= 100U){
+            speed = value;
+        }
+        else{
+            /* else must exist (MISRA rule) */
+        }
+    }
+    std::uint16_t getSpeed() const{
+        return speed;
+    }
+};
+#endif /* MOTOR_CONTROLLER_HPP */
+
+
+
+
+
+//📁 motor_controller.cpp
+#include "motor_controller.hpp"
+/* No logic here—header implements everything */
+
+
+
+
+//📁 main.cpp
+#include <cstdint>
+#include <iostream>
+#include "motor_controller.hpp"
+int main(){
+    MotorController motor;    /* MISRA: no dynamic allocation */
+
+    std::uint16_t inputSpeed = 50U;  
+    motor.setSpeed(inputSpeed);
+
+    std::uint16_t current = motor.getSpeed();
+
+    /* MISRA: only use std::cout if allowed in your project policy */
+    std::cout << "Motor speed is: " << current << '\n';
+
+  return 0;
+}

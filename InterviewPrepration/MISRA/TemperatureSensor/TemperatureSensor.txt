@@ -1,0 +1,50 @@
+//PROJECT 1 — Temperature Sensor (MISRA-Compliant)
+
+//📁 temperature_sensor.hpp
+#ifndef TEMPERATURE_SENSOR_HPP
+#define TEMPERATURE_SENSOR_HPP
+#include <cstdint>
+class TemperatureSensor{
+  private:
+    std::int16_t temperature; /* range: -40 to 125 */
+  public:
+    TemperatureSensor() : temperature(0){
+        /* init */
+    }
+    void setTemperature(std::int16_t value){
+        if ((value >= -40) && (value <= 125)){
+            temperature = value;
+        }
+        else{
+            /* MISRA requires else branch */
+        }
+    }
+    std::int16_t getTemperature() const {
+        return temperature;
+    }
+};
+#endif /* TEMPERATURE_SENSOR_HPP */
+
+
+
+//📁 temperature_sensor.cpp
+#include "temperature_sensor.hpp"
+/* All logic in header */
+
+
+
+//📁 main.cpp
+#include <iostream>
+#include <cstdint>
+#include "temperature_sensor.hpp"
+int main(){
+    TemperatureSensor sensor;
+    sensor.setTemperature(22);
+    std::int16_t t = sensor.getTemperature();
+    std::cout << "Temperature: " << t << " C\n";
+  return 0;
+}
+/*
+✔ Expected Output
+Temperature: 22 C
+*/

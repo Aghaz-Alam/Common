@@ -1,0 +1,37 @@
+//Home Appliance – Washing Machine Water Level
+
+//water_level.hpp
+#ifndef WATER_LEVEL_HPP
+#define WATER_LEVEL_HPP
+#include <cstdint>
+class WaterLevel {
+  private:
+    std::uint8_t level; /* 0–10 steps */
+  public:
+    WaterLevel() : level(0U) {}
+    void set(std::uint8_t v) {
+        if (v <= 10U) {
+            level = v;
+        }
+    }
+    std::uint8_t get() const {
+        return level;
+    }
+};
+#endif
+
+
+
+//main.cpp
+#include <iostream>
+#include "water_level.hpp"
+int main() {
+    WaterLevel w;
+    w.set(7U);
+    std::cout << "Water Level: " << static_cast<int>(w.get()) << "\n";
+  return 0;
+}
+/*
+Output
+Water Level: 7
+*/

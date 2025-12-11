@@ -1,0 +1,46 @@
+//Automotive ECU – Engine Temperature Monitor
+
+//engine_temp.hpp
+#ifndef ENGINE_TEMP_HPP
+#define ENGINE_TEMP_HPP
+#include <cstdint>
+class EngineTemp {
+  private:
+    std::uint16_t tempC;  /* Range: 0–150 °C */
+
+  public:
+    EngineTemp() : tempC(0U) {}
+    void setTemp(std::uint16_t value) {
+        if (value <= 150U) {
+            tempC = value;
+        } else {
+            /* invalid */
+        }
+    }
+    std::uint16_t getTemp() const {
+        return tempC;
+    }
+};
+#endif
+
+
+
+//engine_temp.cpp
+#include "engine_temp.hpp"
+
+
+
+//main.cpp
+#include <iostream>
+#include "engine_temp.hpp"
+int main() {
+    EngineTemp t;
+    t.setTemp(95U);
+    std::uint16_t v = t.getTemp();
+    std::cout << "Engine Temp: " << v << " C\n";
+  return 0;
+}
+/*
+Output
+Engine Temp: 95 C
+*/

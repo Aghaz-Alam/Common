@@ -1,0 +1,40 @@
+//Railway – Brake Pressure Monitor
+
+//brake_pressure.hpp
+#ifndef BRAKE_PRESSURE_HPP
+#define BRAKE_PRESSURE_HPP
+#include <cstdint>
+class BrakePressure {
+  private:
+    std::uint16_t pressure; /* psi */
+  public:
+    BrakePressure() : pressure(0U) {}
+    void set(std::uint16_t p) {
+        if (p <= 300U) {
+            pressure = p;
+        } else {
+            /* invalid */
+        }
+    }
+    std::uint16_t get() const {
+        return pressure;
+    }
+};
+#endif
+
+
+
+
+//main.cpp
+#include <iostream>
+#include "brake_pressure.hpp"
+int main() {
+    BrakePressure b;
+    b.set(220U);
+    std::cout << "Brake Pressure: " << b.get() << " psi\n";
+  return 0;
+}
+/*
+Output
+Brake Pressure: 220 psi
+*/

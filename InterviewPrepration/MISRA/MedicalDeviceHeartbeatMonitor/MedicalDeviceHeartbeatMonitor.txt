@@ -1,0 +1,46 @@
+//Medical Device – Heartbeat Monitor
+
+
+//heartbeat_monitor.hpp
+#ifndef HEARTBEAT_MONITOR_HPP
+#define HEARTBEAT_MONITOR_HPP
+#include <cstdint>
+class HeartbeatMonitor {
+  private:
+    std::uint16_t bpm; /* beats per minute */
+  public:
+    HeartbeatMonitor() : bpm(0U) {}
+    void setRate(std::uint16_t rate) {
+        if ((rate >= 30U) && (rate <= 220U)) {
+            bpm = rate;
+        } else {
+            /* invalid */
+        }
+    }
+    std::uint16_t getRate() const {
+        return bpm;
+    }
+};
+#endif
+
+
+
+//heartbeat_monitor.cpp
+#include "heartbeat_monitor.hpp"
+
+
+
+//main.cpp
+#include <iostream>
+#include "heartbeat_monitor.hpp"
+int main() {
+    HeartbeatMonitor h;
+    h.setRate(72U);
+    std::uint16_t r = h.getRate();
+    std::cout << "Heartbeat: " << r << " bpm\n";
+  return 0;
+}
+/*
+Output
+Heartbeat: 72 bpm
+*/

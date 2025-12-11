@@ -1,0 +1,37 @@
+//Power Systems – Voltage Monitor
+
+//voltage_monitor.hpp
+#ifndef VOLTAGE_MONITOR_HPP
+#define VOLTAGE_MONITOR_HPP
+#include <cstdint>
+class VoltageMonitor {
+  private:
+    std::uint16_t volts; /* 0–500 V */
+  public:
+    VoltageMonitor() : volts(0U) {}
+    void set(std::uint16_t v) {
+        if (v <= 500U) {
+            volts = v;
+        }
+    }
+    std::uint16_t get() const {
+        return volts;
+    }
+};
+#endif
+
+
+
+//main.cpp
+#include <iostream>
+#include "voltage_monitor.hpp"
+int main() {
+    VoltageMonitor vm;
+    vm.set(230U);
+    std::cout << "Voltage: " << vm.get() << "V\n";
+  return 0;
+}
+/*
+Output
+Voltage: 230V
+*/

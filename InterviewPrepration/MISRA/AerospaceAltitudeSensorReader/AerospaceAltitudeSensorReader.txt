@@ -1,0 +1,47 @@
+//Aerospace – Altitude Sensor Reader
+
+//altitude_sensor.hpp
+#ifndef ALTITUDE_SENSOR_HPP
+#define ALTITUDE_SENSOR_HPP
+#include <cstdint>
+class AltitudeSensor {
+  private:
+    std::uint32_t altitude; /* meters */
+  public:
+    AltitudeSensor() : altitude(0U) {}
+    void update(std::uint32_t value) {
+        if (value <= 50000U) {  /* 50km limit */
+            altitude = value;
+        } else {
+            /* invalid */
+        }
+    }
+    std::uint32_t read() const {
+        return altitude;
+    }
+};
+#endif
+
+
+
+
+//altitude_sensor.cpp
+#include "altitude_sensor.hpp"
+
+
+
+
+//main.cpp
+#include <iostream>
+#include "altitude_sensor.hpp"
+int main() {
+    AltitudeSensor a;
+    a.update(15000U);
+    std::uint32_t x = a.read();
+    std::cout << "Altitude: " << x << " m\n";
+   return 0;
+}
+/*
+Output
+Altitude: 15000 m
+*/

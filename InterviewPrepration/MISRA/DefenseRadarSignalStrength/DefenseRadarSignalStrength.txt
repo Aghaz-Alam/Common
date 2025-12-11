@@ -1,0 +1,41 @@
+//Defense – Radar Signal Strength
+
+//radar_signal.hpp
+#ifndef RADAR_SIGNAL_HPP
+#define RADAR_SIGNAL_HPP
+#include <cstdint>
+class RadarSignal {
+  private:
+    std::uint8_t strength; /* 0–100 */
+  public:
+    RadarSignal() : strength(0U) {}
+
+    void set(std::uint8_t v) {
+        if (v <= 100U) {
+            strength = v;
+        } else { }
+    }
+
+    std::uint8_t get() const {
+        return strength;
+    }
+};
+#endif
+
+
+
+
+//main.cpp
+#include <iostream>
+#include <cstdint>
+#include "radar_signal.hpp"
+int main() {
+    RadarSignal r;
+    r.set(65U);
+    std::cout << "Radar Signal: " << static_cast<int>(r.get()) << "%\n";
+  return 0;
+}
+/*
+Output
+Radar Signal: 65%
+*/

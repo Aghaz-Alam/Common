@@ -1,0 +1,52 @@
+//✅ PROJECT 2 — Safe Counter (MISRA-Compliant)
+//(Avoids overflow, all fixed-width types)
+
+//📁 safe_counter.hpp
+#ifndef SAFE_COUNTER_HPP
+#define SAFE_COUNTER_HPP
+#include <cstdint>
+class SafeCounter{
+  private:
+    std::uint16_t count;
+  public:
+    SafeCounter() : count(0U){ }
+    void increment(){
+        if (count < 1000U){
+            count = count + 1U;
+        }
+        else{
+            /* out of range, ignore */
+        }
+    }
+
+    std::uint16_t getCount() const {
+        return count;
+    }
+};
+#endif /* SAFE_COUNTER_HPP */
+
+
+
+
+//📁 safe_counter.cpp
+#include "safe_counter.hpp"
+
+
+
+
+//📁 main.cpp
+#include <iostream>
+#include <cstdint>
+#include "safe_counter.hpp"
+int main(){
+    SafeCounter c;
+    c.increment();
+    c.increment();
+    std::uint16_t value = c.getCount();
+    std::cout << "Counter value: " << value << '\n';
+  return 0;
+}
+/*
+✔ Expected Output
+Counter value: 2
+*/

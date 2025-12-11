@@ -1,0 +1,50 @@
+//✅ PROJECT 4 — Battery Monitor (MISRA-Compliant)
+
+//📁 battery_monitor.hpp
+#ifndef BATTERY_MONITOR_HPP
+#define BATTERY_MONITOR_HPP
+#include <cstdint>
+class BatteryMonitor{
+  private:
+    std::uint8_t level; /* 0–100 percent */
+  public:
+    BatteryMonitor() : level(0U){}
+
+    void setLevel(std::uint8_t value){
+        if (value <= 100U){
+            level = value;
+        }
+        else{
+            /* invalid */
+        }
+    }
+
+    std::uint8_t getLevel() const{
+        return level;
+    }
+};
+#endif /* BATTERY_MONITOR_HPP */
+
+
+
+
+//📁 battery_monitor.cpp
+#include "battery_monitor.hpp"
+
+
+
+//📁 main.cpp
+#include <iostream>
+#include <cstdint>
+#include "battery_monitor.hpp"
+int main(){
+    BatteryMonitor b;
+    b.setLevel(85U);
+    std::uint8_t lvl = b.getLevel();
+    std::cout << "Battery Level: " << static_cast<int>(lvl) << "%\n";
+  return 0;
+}
+/*
+✔ Expected Output
+Battery Level: 85%
+*/
