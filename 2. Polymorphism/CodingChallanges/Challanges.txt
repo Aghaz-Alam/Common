@@ -1,0 +1,924 @@
+Challenge 1 – Create a Cloneable Interface (Virtual Constructor)
+Implement:
+class Shape {
+  public:
+    virtual Shape* clone() = 0;
+};
+
+Derived:
+class Circle : public Shape {
+  public:
+    int r;
+    Circle(int x) : r(x) {}
+    Circle* clone() override { return new Circle(*this); }
+};
+Main should clone shapes into a new vector.
+
+/*----------------------------------------------------------------------------
+Challenge Answer: 1 — Cloneable Interface (Virtual Constructor / Prototype)
+Goal: Shape::clone() returns a new copy (polymorphic copy).
+
+// cloneable.cpp
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Shape {
+ public:
+    virtual unique_ptr<Shape> clone() const = 0;
+    virtual void draw() const = 0;
+    virtual ~Shape() = default;
+};
+class Circle : public Shape {
+    int r;
+  public:
+    Circle(int r_) : r(r_) {}
+    unique_ptr<Shape> clone() const override { return make_unique<Circle>(*this); }
+    void draw() const override { cout << "Circle r=" << r << "\n"; }
+};
+class Square : public Shape {
+    int side;
+  public:
+    Square(int s) : side(s) {}
+    unique_ptr<Shape> clone() const override { return make_unique<Square>(*this); }
+    void draw() const override { cout << "Square side=" << side << "\n"; }
+};
+
+int main() {
+    vector<unique_ptr<Shape>> shapes;
+    shapes.push_back(make_unique<Circle>(5));
+    shapes.push_back(make_unique<Square>(3));
+
+    vector<unique_ptr<Shape>> copies;
+    for (auto &s : shapes) copies.push_back(s->clone());
+
+    cout << "Originals:\n";
+    for (auto &s : shapes) s->draw();
+
+    cout << "Clones:\n";
+    for (auto &c : copies) c->draw();
+}
+/*
+Output
+Originals:
+Circle r=5
+Square side=3
+Clones:
+Circle r=5
+Square side=3
+
+//Explanation: clone() is virtual, each derived type returns its own copy. Uses unique_ptr for safe memory management.
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 2 – Show object slicing and fix it
+Solve:
+vector<Base> v;  // slicing
+v.push_back(Derived());
+
+Fix with:
+vector<Base*>
+or
+smart pointers
+
+/*-----------------------------------------------------------
+Challenge 2 — Object Slicing and Fix
+//Goal: Show slicing and fix it using pointers.
+
+// slicing.cpp
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+
+struct Base {
+    virtual void who() const { cout << "Base\n"; }
+    virtual ~Base() = default;
+};
+
+struct Derived : public Base {
+    int extra;
+    Derived(int e=7): extra(e) {}
+    void who() const override { cout << "Derived extra=" << extra << "\n"; }
+};
+
+int main() {
+    cout << "Slicing example:\n";
+    vector<Base> v;
+    Derived d(42);
+    v.push_back(d); // slicing happens
+    v[0].who();     // calls Base::who (sliced)
+
+    cout << "\nFixed with pointers:\n";
+    vector<unique_ptr<Base>> vp;
+    vp.push_back(make_unique<Derived>(42));
+    vp[0]->who();   // calls Derived::who
+}
+/*
+Output
+Slicing example:
+Base
+
+Fixed with pointers:
+Derived extra=42
+
+Explanation: Pushing Derived into vector<Base> slices off derived parts. Use vector<unique_ptr<Base>> or references to preserve polymorphism.
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 3 – Implement Strategy Pattern (Payment System)
+Write:
+class PaymentStrategy { virtual void pay() = 0; };
+class UPI : public PaymentStrategy {};
+class Card : public PaymentStrategy {};
+
+Switch behavior at runtime.
+
+
+/*-----------------------------------------------------------
+Challenge 3 — Strategy Pattern (Payment)
+Goal: Runtime switching of algorithm (payment strategy).
+
+// strategy_payment.cpp
+#include <iostream>
+using namespace std;
+struct PaymentStrategy {
+    virtual void pay(int amount) = 0;
+    virtual ~PaymentStrategy() = default;
+};
+struct UPI : PaymentStrategy {
+    void pay(int amount) override { cout << "Paid via UPI: " << amount << "\n"; }
+};
+struct Card : PaymentStrategy {
+    void pay(int amount) override { cout << "Paid via Card: " << amount << "\n"; }
+};
+struct Processor {
+    PaymentStrategy* strat;
+    Processor(PaymentStrategy* s) : strat(s) {}
+    void setStrategy(PaymentStrategy* s) { strat = s; }
+    void process(int amount) { strat->pay(amount); }
+};
+int main() {
+    UPI upi;
+    Card card;
+    Processor p(&upi);
+    p.process(100);
+    p.setStrategy(&card);
+    p.process(250);
+  return 0;
+}
+/*
+Output
+Paid via UPI: 100
+Paid via Card: 250
+
+Explanation: Processor depends on interface; behavior switched at runtime.
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 4 – Multiple Dispatch (Visitor Pattern)
+Shapes:
+Circle, Square
+
+Visitors:
+DrawVisitor
+AreaVisitor
+Implement double dispatch.
+
+
+
+/*-----------------------------------------------------------
+Challenge 4 — Visitor Pattern (Double Dispatch)
+Goal: Implement visitor to perform different operations on shape types.
+
+// visitor.cpp
+#include <iostream>
+using namespace std;
+class Circle;
+class Square;
+struct Visitor {
+    virtual void visit(Circle*) = 0;
+    virtual void visit(Square*) = 0;
+    virtual ~Visitor() = default;
+};
+struct Shape {
+    virtual void accept(Visitor* v) = 0;
+    virtual ~Shape() = default;
+};
+struct Circle : Shape {
+    void accept(Visitor* v) override { v->visit(this); }
+    void radius() { cout << "Circle radius()\n"; }
+};
+struct Square : Shape {
+    void accept(Visitor* v) override { v->visit(this); }
+    void side() { cout << "Square side()\n"; }
+};
+struct Draw : Visitor {
+    void visit(Circle* c) override { cout << "Draw Circle\n"; c->radius(); }
+    void visit(Square* s) override { cout << "Draw Square\n"; s->side(); }
+};
+int main() {
+    Circle c;
+    Square s;
+    Draw drawer;
+    c.accept(&drawer);
+    s.accept(&drawer);
+}
+/*
+Output
+Draw Circle
+Circle radius()
+Draw Square
+Square side()
+
+Explanation: Double dispatch achieves behavior depending on both visitor and concrete element types.
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 5 – Virtual Inheritance Problem
+Given code:
+class A { public: int x = 10; };
+class B : virtual public A {};
+class C : virtual public A {};
+class D : public B, public C {};
+
+Print:
+D d;
+cout << d.x;
+Explain memory layout.
+
+
+/*-----------------------------------------------------------
+
+Challenge 5 — Virtual Inheritance Example
+Goal: Show virtual inheritance resolves diamond.
+
+// virtual_base.cpp
+#include <iostream>
+using namespace std;
+struct A { int x = 10; };
+struct B : virtual A {};
+struct C : virtual A {};
+struct D : B, C {};
+int main() {
+    D d;
+    cout << "d.x = " << d.x << "\n";
+    // show addresses to illustrate single Base subobject
+    cout << "addr of d: " << &d << "\n";
+    A* pa = (A*)&d;
+    cout << "addr of base: " << pa << "\n";
+}
+/*
+Output (addresses will vary):
+d.x = 10
+addr of d: 0x7ffc12345670
+addr of base: 0x7ffc12345670
+
+Explanation: A appears once in D. Virtual inheritance makes derived classes share a single A.
+-----------------------------------------------------------*/
+/*===========================================================*/
+
+🎯 Challenge 6 – Detect overriding vs hiding
+Given:
+class Base { public: virtual void fun(int); };
+class Derived : public Base { public: void fun(double); };
+
+Questions:
+Is it overriding?
+How to fix?
+What does vtable contain?
+
+
+/*-----------------------------------------------------------
+
+Challenge 6 — Detect Overriding vs Hiding
+Goal: Show hiding vs correct overriding.
+
+// hiding_vs_overriding.cpp
+#include <iostream>
+using namespace std;
+struct Base {
+    virtual void fun(int) { cout << "Base::fun(int)\n"; }
+};
+struct Derived : Base {
+    // this hides Base::fun(int), not overrides
+    void fun(double) { cout << "Derived::fun(double)\n"; }
+};
+struct FixedDerived : Base {
+    void fun(int) override { cout << "FixedDerived::fun(int)\n"; }
+};
+int main() {
+    Derived d;
+    Base* b = &d;
+    b->fun(5); // calls Base::fun(int) because Derived didn't override with same signature
+
+    FixedDerived fd;
+    Base* bb = &fd;
+    bb->fun(6); // calls FixedDerived::fun(int)
+}
+/*
+Output
+Base::fun(int)
+FixedDerived::fun(int)
+
+Explanation: Signature must match to override. Use using Base::fun; in Derived to bring base overloads into scope if needed.
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 7 – RTTI Exercise
+Given:
+Base* b = new Derived();
+dynamic_cast<Derived*>(b);
+Explain RTTI usage, conditions, and failure case.
+
+
+/*-----------------------------------------------------------
+Challenge 7 — RTTI Example
+Goal: Use dynamic_cast and show failure case.
+
+// rtti.cpp
+#include <iostream>
+using namespace std;
+struct Base { virtual ~Base() = default; };
+struct Derived : Base { void dex() { cout << "Derived method\n"; } };
+struct Other : Base {};
+int main() {
+    Base* b = new Derived();
+    if (Derived* d = dynamic_cast<Derived*>(b)) d->dex();
+    else cout << "cast failed\n";
+
+    Base* b2 = new Other();
+    if (Derived* d2 = dynamic_cast<Derived*>(b2)) d2->dex();
+    else cout << "cast failed (b2)\n";
+
+    delete b; delete b2;
+}
+/*
+Output
+Derived method
+cast failed (b2)
+
+Explanation: dynamic_cast returns nullptr if cast invalid. Works only for polymorphic base (has virtual).
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 8 – Polymorphic Logging Framework
+Interface:
+class ILogger {
+  public:
+    virtual void log(string) = 0;
+};
+
+Implement:
+FileLogger
+ConsoleLogger
+NetworkLogger
+Use dependency injection.
+
+
+/*-----------------------------------------------------------
+
+Challenge 8 — Polymorphic Logging Framework (DI)
+Goal: DI with loggers.
+
+// logger.cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+using namespace std;
+struct ILogger {
+    virtual void log(const string& s) = 0;
+    virtual ~ILogger() = default;
+};
+struct ConsoleLogger : ILogger {
+    void log(const string& s) override { cout << "[Console] " << s << "\n"; }
+};
+struct FileLogger : ILogger {
+    void log(const string& s) override { cout << "[File] " << s << " (pretend write)\n"; }
+};
+struct App {
+    ILogger* logger;
+    App(ILogger* l) : logger(l) {}
+    void doWork() { logger->log("work done"); }
+};
+int main() {
+    ConsoleLogger c;
+    FileLogger f;
+    App a(&c);
+    a.doWork();
+    App b(&f);
+    b.doWork();
+}
+/*
+Output
+[Console] work done
+[File] work done (pretend write)
+
+Explanation: App depends on logger interface; can inject any logger — helpful for testing.
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 9 – Implement a virtual destructor hierarchy
+Test deleting derived via base pointer.
+
+
+/*-----------------------------------------------------------
+
+Challenge 9 — Virtual Destructor Hierarchy
+Goal: Show correct destruction via base pointer.
+
+// virt_dtor.cpp
+#include <iostream>
+using namespace std;
+struct Base {
+    Base() { cout << "Base ctor\n"; }
+    virtual ~Base() { cout << "Base dtor\n"; }
+};
+struct Derived : Base {
+    Derived() { cout << "Derived ctor\n"; }
+    ~Derived() override { cout << "Derived dtor\n"; }
+};
+int main() {
+    Base* b = new Derived();
+    delete b; // should call Derived::~Derived then Base::~Base
+}
+/*
+Output
+Base ctor
+Derived ctor
+Derived dtor
+Base dtor
+
+Explanation: Virtual destructor ensures derived destructor runs when deleting via base pointer.
+
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 10 – Create a Custom vtable Simulation (Very advanced)
+Simulate runtime polymorphism without virtual functions:
+Store function pointers manually
+Create a fake vtable
+Call functions dynamically
+(asked in low-level system interviews)
+
+
+
+/*-----------------------------------------------------------
+
+Challenge 10 — Simulate vtable Manually (custom vtable)
+Goal: Implement polymorphism using function pointers without virtual.
+
+// manual_vtable.cpp
+#include <iostream>
+using namespace std;
+struct VTable {
+    void (*draw)(void*);
+    void (*destroy)(void*);
+};
+struct Shape {
+    VTable* vt;
+};
+struct Circle {
+    Shape base;
+    int r;
+};
+void circle_draw(void* p) {
+    Circle* c = (Circle*)p;
+    cout << "circle r=" << c->r << "\n";
+}
+void circle_destroy(void* p) {
+    delete (Circle*)p;
+}
+VTable circle_vt = { circle_draw, circle_destroy };
+int main() {
+    Circle* c = new Circle();
+    c->base.vt = &circle_vt;
+    c->r = 9;
+
+    Shape* s = (Shape*)c;
+    s->vt->draw(s); // dynamic call
+    s->vt->destroy(s);
+}
+/*
+Output
+circle r=9
+
+Explanation: Manual vtable shows how compiler could implement dynamic dispatch — function pointers in table, this passed manually.
+
+
+
+
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 11 – Template Polymorphism vs Virtual Polymorphism Benchmark
+Write two versions of same code using:
+templates
+virtual functions
+Measure performance.
+
+
+/*-----------------------------------------------------------
+Challenge 11 — Template vs Virtual Performance Demo (simple)
+Goal: Show two approaches; templated version inlines calls.
+
+// template_vs_virtual.cpp
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+struct Base {
+    virtual int op(int) = 0;
+    virtual ~Base() = default;
+};
+struct ImplV : Base {
+    int op(int x) override { return x + 1; }
+};
+template<typename T>
+int call_template(T& obj, int n) {
+    int sum = 0;
+    for (int i=0;i<n;++i) sum += obj.op(i);
+    return sum;
+}
+int call_virtual(Base& b, int n) {
+    int sum = 0;
+    for (int i=0;i<n;++i) sum += b.op(i);
+    return sum;
+}
+struct ImplT {
+    int op(int x) { return x + 1; }
+};
+int main() {
+    ImplT it;
+    ImplV iv;
+
+    cout << "template result: " << call_template(it, 5) << "\n";
+    cout << "virtual result: " << call_virtual(iv, 5) << "\n";
+}
+/*
+Output
+template result: 15
+virtual result: 15
+
+Explanation: Both give same result. Templates avoid vptr/indirection and can be inlined; virtual costs a vtable lookup.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 12 – Operator Overloading Polymorphism
+Create:
+Shape& operator+(const Shape& other);
+Use dynamic casting to merge shapes.
+
+
+/*-----------------------------------------------------------
+Challenge 12 — Operator Overloading + Polymorphism (merge)
+Goal: Overload operator+ and do a runtime merge via clone().
+
+// shape_merge.cpp
+#include <iostream>
+#include <memory>
+using namespace std;
+struct Shape {
+    virtual unique_ptr<Shape> clone() const = 0;
+    virtual void info() const = 0;
+    virtual ~Shape() = default;
+};
+struct Circle : Shape {
+    int r;
+    Circle(int rr): r(rr) {}
+    unique_ptr<Shape> clone() const override { return make_unique<Circle>(*this); }
+    void info() const override { cout << "Circle r=" << r << "\n"; }
+};
+unique_ptr<Shape> merge(const Shape& a, const Shape& b) {
+    // simplistic merging -> clone first
+    return a.clone();
+}
+int main() {
+    Circle c1(3), c2(4);
+    auto m = merge(c1, c2);
+    m->info();
+}
+/*
+Output
+Circle r=3
+
+Explanation: Demonstrates polymorphic cloning; real merging logic would inspect runtime types (via dynamic_cast) to behave accordingly.
+
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 13 – Pure virtual destructor puzzle
+Make:
+class Base {
+  public:
+    virtual ~Base() = 0;
+};
+Explain why definition is mandatory.
+
+
+/*-----------------------------------------------------------
+
+Challenge 13 — Pure Virtual Destructor Puzzle
+Goal: declare pure virtual destructor and define it.
+
+// pure_virtual_dtor.cpp
+#include <iostream>
+using namespace std;
+struct Base {
+    virtual ~Base() = 0;
+};
+Base::~Base() { cout << "Base pure virtual dtor definition\n"; }
+struct Derived : Base {
+    ~Derived() { cout << "Derived dtor\n"; }
+};
+int main() {
+    Base* b = new Derived();
+    delete b;
+}
+/*
+Output
+Derived dtor
+Base pure virtual dtor definition
+
+Explanation: Even if destructor declared pure virtual to make class abstract, it must be defined because derived destructors call it.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 14 – Diamond Ambiguity Resolution
+Given:
+class B1 : public A {};
+class B2 : public A {};
+class C : public B1, public B2 {};
+Fix ambiguity without virtual inheritance using scope resolution.
+
+
+/*-----------------------------------------------------------
+
+Challenge 14 — Diamond Ambiguity Resolution w/o virtual inheritance
+Goal: Resolve by qualified lookup.
+
+// diamond_scope_resolution.cpp
+#include <iostream>
+using namespace std;
+struct A { void f() { cout << "A::f\n"; } };
+struct B1 : A {};
+struct B2 : A {};
+struct C : B1, B2 {};
+int main() {
+    C c;
+    // c.f(); // ambiguous
+    c.B1::f(); // resolve explicitly
+    c.B2::f();
+}
+/*
+Output
+A::f
+A::f
+
+Explanation: Without virtual inheritance there are two A subobjects; call must disambiguate with scope resolution.
+
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 15 – Multiple vtable demonstration
+With:
+class A { virtual void f(); };
+class B { virtual void g(); };
+class C : public A, public B {};
+
+Print:
+number of vptrs
+layout diagram
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 15 — Multiple vptr Demonstration
+Goal: Count vptrs by printing sizeof and addresses offsets (conceptual).
+
+// multiple_vptr.cpp
+#include <iostream>
+using namespace std;
+struct A { virtual void fa() {} virtual ~A(){} };
+struct B { virtual void fb() {} virtual ~B(){} };
+struct C : A, B {};
+int main() {
+    C c;
+    cout << "sizeof(C) = " << sizeof(c) << "\n";
+    // Note: exact vptr count isn't directly queryable in portable C++,
+    // but multiple inheritance usually adds multiple vptrs increasing sizeof.
+}
+/*
+Sample Output (platform dependent)
+sizeof(C) = 16
+
+Explanation: C typically has two vptrs (one per base), increasing object size. Exact number and size vary by ABI.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 16 – Function Hiding Detection
+Given:
+void Base::fun(int);
+void Derived::fun(int, int);
+Explain why Base::fun() is hidden.
+Fix with:
+using Base::fun;
+
+
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 16 — Function Hiding Detection + using
+Goal: Show using to bring base overloads.
+
+// using_base.cpp
+#include <iostream>
+using namespace std;
+struct Base { void fun(int) { cout << "Base::fun(int)\n"; } };
+struct Derived : Base {
+    using Base::fun; // bring in Base::fun overloads
+    void fun(int a, int b) { cout << "Derived::fun(int,int)\n"; }
+};
+int main() {
+    Derived d;
+    d.fun(1);      // now resolves to Base::fun
+    d.fun(1,2);    // Derived::fun
+}
+/*
+Output
+Base::fun(int)
+Derived::fun(int,int)
+
+Explanation: using brings base overloads into derived scope, preventing hiding.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 17 – Conversion operator + virtual
+Create class:
+virtual operator int() const;
+Explain why conversion operators cannot be virtual in some compilers.
+
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 17 — Conversion Operator + virtual (explain)
+Goal: Show conversion operator cannot be virtual in C++ (attempt commented).
+
+// conv_op.cpp
+#include <iostream>
+using namespace std;
+struct A {
+    // virtual operator int() const { return 42; } // illegal: conversion functions cannot be virtual
+    operator int() const { return 42; }
+};
+int main() {
+    A a;
+    int x = a;
+    cout << x << "\n";
+}
+/*
+Output
+42
+
+Explanation: Conversion operators cannot be virtual in C++; they are class-specific and invoked statically.
+
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 18 – Make your own RTTI system
+Implement:
+virtual const char* type();
+Without using typeid.
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 18 — Custom RTTI System
+Goal: Implement type() method for type identification.
+
+// custom_rtti.cpp
+#include <iostream>
+using namespace std;
+struct Base {
+    virtual const char* type() const { return "Base"; }
+    virtual ~Base() = default;
+};
+struct Derived : Base {
+    const char* type() const override { return "Derived"; }
+};
+int main() {
+    Base* b = new Derived();
+    cout << "type: " << b->type() << "\n";
+    delete b;
+}
+/*
+Output
+type: Derived
+
+Explanation: A simple virtual type() provides a manual RTTI system; typeid/dynamic_cast are the language RTTI.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 19 – Polymorphic Deep Copy in a Base Pointer Array
+Given:
+Base* arr[10];
+Implement deep copy using clone().
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 19 — Polymorphic Deep Copy in Base Pointer Array
+Goal: Use clone() to deep-copy an array of base pointers.
+
+// deep_copy_array.cpp
+#include <iostream>
+#include <memory>
+using namespace std;
+struct Base {
+    virtual unique_ptr<Base> clone() const = 0;
+    virtual void show() const = 0;
+    virtual ~Base() = default;
+};
+struct D : Base {
+    int v;
+    D(int a): v(a) {}
+    unique_ptr<Base> clone() const override { return make_unique<D>(*this); }
+    void show() const override { cout << "D v=" << v << "\n"; }
+};
+int main() {
+    unique_ptr<Base> arr[2];
+    arr[0] = make_unique<D>(10);
+    arr[1] = make_unique<D>(20);
+
+    unique_ptr<Base> copy[2];
+    for (int i=0;i<2;i++) copy[i] = arr[i]->clone();
+
+    for (int i=0;i<2;i++) copy[i]->show();
+}
+/*
+Output
+D v=10
+D v=20
+
+Explanation: clone() enables polymorphic deep copy for arrays of base pointers.
+
+
+-----------------------------------------------------------*/
+/*===========================================================*/
+🎯 Challenge 20 – Override default arguments and show problem
+Default args are static:
+class Base { virtual void f(int x = 10); };
+class Derived { void f(int x = 20); };
+
+Call:
+Base* b = new Derived();
+b->f();
+
+Which argument is used?
+→ Base’s (10)
+Explain why.
+
+
+/*-----------------------------------------------------------
+
+
+Challenge 20 — Default Arguments & Polymorphism
+Goal: Show default arguments are compile-time (base's default used).
+
+// default_args.cpp
+#include <iostream>
+using namespace std;
+struct Base {
+    virtual void f(int x = 10) { cout << "Base::f x=" << x << "\n"; }
+    virtual ~Base() = default;
+};
+struct Derived : Base {
+    void f(int x = 20) override { cout << "Derived::f x=" << x << "\n"; }
+};
+int main() {
+    Derived d;
+    Base* b = &d;
+    b->f(); // calls Derived::f but default argument comes from Base (10)
+    d.f();  // calls Derived::f with Derived's default (20)
+}
+/*
+Output
+Derived::f x=10
+Derived::f x=20
+
+Explanation: Default parameter values are bound at call site compile-time using static type of pointer/reference. Thus b->f() uses Base's default even though the overridden function runs.
+-----------------------------------------------------------*/
+/*===========================================================*/
