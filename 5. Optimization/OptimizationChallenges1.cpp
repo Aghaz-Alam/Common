@@ -151,7 +151,13 @@ public:
     }
 };
 
-class MyObject { public: int x; void hello(){cout<<"Hello\n";} };
+class MyObject { 
+    public: 
+     int x; 
+     void hello(){
+        cout<<"Hello\n";
+    } 
+};
 
 int main() {
     PoolAllocator<MyObject> pool(2);
@@ -171,7 +177,6 @@ Hello
 #include <iostream>
 #include <memory>
 using namespace std;
-
 int main() {
     unique_ptr<int[]> arr = make_unique<int[]>(5);
     for(int i=0;i<5;i++) arr[i]=i*10;
@@ -188,7 +193,6 @@ Output:
 #include <iostream>
 #include <memory>
 using namespace std;
-
 int main() {
     shared_ptr<int> p1 = make_shared<int>(42);
     shared_ptr<int> p2 = p1;
@@ -204,10 +208,9 @@ Output:
 #include <iostream>
 #include <utility>
 using namespace std;
-
 class MyClass {
     int* data;
-public:
+  public:
     MyClass(size_t n): data(new int[n]){}
     ~MyClass(){ delete[] data; }
 
@@ -217,7 +220,6 @@ public:
         return *this;
     }
 };
-
 int main() {
     MyClass a(5);
     MyClass b = move(a);
@@ -233,7 +235,6 @@ Moved successfully
 #include <iostream>
 #include <vector>
 using namespace std;
-
 int main() {
     vector<int> v; v.reserve(1000);
     for(int i=0;i<1000;i++) v.push_back(i);
@@ -250,7 +251,6 @@ Vector size: 1000, capacity: 1000
 #include <vector>
 #include <list>
 using namespace std;
-
 int main() {
     vector<int> vec(5); list<int> lst(5);
     cout << "Vector first element: " << vec[0] << endl;
@@ -313,10 +313,16 @@ Size of Derived: 4
 using namespace std;
 
 template<typename T>
-struct Base { void call() { static_cast<T*>(this)->impl(); } };
+struct Base { 
+    void call() { 
+        static_cast<T*>(this)->impl(); 
+    } 
+};
 
 struct Derived: Base<Derived> {
-    void impl() { cout << "CRTP called\n"; }
+    void impl() { 
+        cout << "CRTP called\n"; 
+    }
 };
 
 int main() {
