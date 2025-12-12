@@ -959,7 +959,531 @@ HP 900
 
 
 
+// 1. Ride Sharing System (Uber-like)
+// Car IS-A Vehicle
+// Trip HAS-A Driver, Rider, Vehicle
 
+#include <iostream>
+#include <string>
+using namespace std;
+class Vehicle {
+ public:
+    virtual string type() const = 0;
+};
+class Car : public Vehicle {                     // IS-A
+ public:
+    string type() const override { return "Car"; }
+};
+class Driver { public: string name; Driver(string n):name(n){} };
+class Rider  { public: string name; Rider(string n):name(n){} };
+class Trip {                                     // HAS-A
+    Driver* d;
+    Rider* r;
+    Vehicle* v;
+  public:
+    Trip(Driver* D, Rider* R, Vehicle* V) : d(D), r(R), v(V) {}
+    void start() {
+        cout << r->name << " riding with " << d->name << " in a " << v->type();
+    }
+};
+int main() {
+    Car c;
+    Driver d("Alex");
+    Rider  r("Bob");
+    Trip t(&d, &r, &c);
+    t.start();
+}
+
+
+
+
+
+// 2. Online Shopping System
+// CreditCard IS-A PaymentMethod
+// Order HAS-A Cart
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class PaymentMethod {
+public: virtual void pay(double amt)=0; };
+
+class CreditCard : public PaymentMethod {        // IS-A
+public: void pay(double amt){ cout<<"Paid "<<amt<<" using Card"; } };
+class Cart {
+    vector<int> items;                           // HAS-A
+  public:
+    void add(int price){ items.push_back(price); }
+    int total() { int sum=0; for(int x:items) sum+=x; return sum; }
+};
+class Order {
+    Cart c;                                      // composition
+  public:
+    void addItem(int price){ c.add(price); }
+    void checkout(PaymentMethod& p){ p.pay(c.total()); }
+};
+int main(){
+    Order o;
+    o.addItem(100); o.addItem(200);
+    CreditCard cc;
+    o.checkout(cc);
+}
+
+
+
+
+// 3. Media Player System
+// AudioPlayer & VideoPlayer IS-A Player
+// Playlist HAS-A vector<Player>*
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Player { public: virtual void play()=0; };
+
+class AudioPlayer : public Player {              // IS-A
+public: void play(){ cout<<"Playing audio\n"; } };
+
+class VideoPlayer : public Player {              // IS-A
+public: void play(){ cout<<"Playing video\n"; } };
+class Playlist {
+    vector<Player*> plist;                       // aggregation
+  public:
+    void add(Player* p){ plist.push_back(p); }
+    void playAll(){ for(auto* p:plist) p->play(); }
+};
+int main(){
+    AudioPlayer a;
+    VideoPlayer v;
+    Playlist p;
+    p.add(&a);
+    p.add(&v);
+    p.playAll();
+}
+
+
+
+// 4. Airport Management System
+// CargoPlane IS-A Plane
+// Airport HAS-A list<Plane>*
+#include <iostream>
+#include <list>
+using namespace std;
+
+class Plane { public: virtual void land()=0; };
+
+class CargoPlane : public Plane {                // IS-A
+public: void land(){ cout<<"Cargo plane landing\n"; } };
+
+class PassengerPlane : public Plane {            // IS-A
+public: void land(){ cout<<"Passenger plane landing\n"; } };
+
+class Airport {
+    list<Plane*> runway;                         // aggregation
+public:
+    void requestLanding(Plane* p){ runway.push_back(p); }
+    void process(){ for(auto* p:runway) p->land(); }
+};
+
+int main(){
+    CargoPlane c;
+    PassengerPlane p;
+    Airport a;
+    a.requestLanding(&c);
+    a.requestLanding(&p);
+    a.process();
+}
+
+
+
+
+//5. Hospital Management System
+//Surgeon IS-A Doctor
+//Surgery HAS-A Doctor & Patient
+#include <iostream>
+using namespace std;
+class Doctor { 
+    public: 
+      virtual string role()=0;
+};
+
+class Surgeon : public Doctor {                  // IS-A
+  public: 
+    string role(){ return "Surgeon"; } 
+};
+
+class Patient { 
+  public: 
+    string name; 
+    Patient(string n):name(n){} 
+};
+class Surgery {                                  // HAS-A
+    Doctor* d;
+    Patient* p;
+  public:
+    Surgery(Doctor* D, Patient* P) : d(D), p(P) {}
+    void perform(){ cout<<d->role()<<" operating "<<p->name; }
+};
+int main(){
+    Surgeon s;
+    Patient p("Ravi");
+    Surgery op(&s, &p);
+    op.perform();
+}
+
+
+
+//6. Banking System
+//SavingsAccount IS-A Account
+//Bank HAS-A vector<Account>*
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Account { 
+    public: 
+      virtual void show()=0; 
+};
+
+class SavingsAccount : public Account {          // IS-A
+  public: 
+    void show(){ cout<<"Savings account\n"; } 
+};
+
+class CurrentAccount : public Account {          // IS-A
+  public: 
+    void show(){ cout<<"Current account\n"; } 
+};
+class Bank {
+    vector<Account*> acc;                        // aggregation
+  public:
+    void add(Account* a){ acc.push_back(a); }
+    void list(){ for(auto* a:acc) a->show(); }
+};
+int main(){
+    SavingsAccount s;
+    CurrentAccount c;
+    Bank b;
+    b.add(&s);
+    b.add(&c);
+    b.list();
+}
+
+
+
+//7. Hotel Booking System
+//DeluxeRoom IS-A Room
+//Booking HAS-A Room + Customer
+
+
+#include <iostream>
+using namespace std;
+
+class Room { 
+  public: 
+    virtual string type()=0; 
+};
+
+class DeluxeRoom : public Room {                 // IS-A
+  public: 
+    string type(){ return "Deluxe"; } 
+};
+
+class Customer { 
+  public: 
+    string name; 
+    Customer(string n):name(n){} 
+};
+
+class Booking {
+    Room* r; Customer* c;                        // aggregation
+ public:
+    Booking(Room* R, Customer* C):r(R),c(C){}
+    void show(){ cout<<c->name<<" booked "<<r->type(); }
+};
+
+int main(){
+    DeluxeRoom d;
+    Customer c("Aman");
+    Booking b(&d,&c);
+    b.show();
+}
+
+
+
+//8. Game Engine System
+//Enemy IS-A Entity
+//GameWorld HAS-A vector<Entity>*
+
+#include <iostream>
+#include <vector>
+using namespace std;
+class Entity { 
+    public: 
+      virtual void update()=0; 
+};
+
+class Enemy : public Entity {                    // IS-A
+  public: 
+    void update(){ cout<<"Enemy update\n"; } 
+};
+
+class Player : public Entity {                   // IS-A
+  public: 
+    void update(){ cout<<"Player update\n"; } 
+};
+class GameWorld {
+    vector<Entity*> ents;                        // aggregation
+  public:
+    void add(Entity* e){ ents.push_back(e); }
+    void tick(){ for(auto* e:ents) e->update(); }
+};
+int main(){
+    Enemy e;
+    Player p;
+    GameWorld g;
+    g.add(&e);
+    g.add(&p);
+    g.tick();
+}
+
+
+
+
+//9. Database Connection Manager
+//MySQLConnection IS-A DBConnection
+//Repository HAS-A DBConnection
+
+
+#include <iostream>
+using namespace std;
+
+class DBConnection { 
+    public: 
+      virtual void connect()=0; 
+};
+
+class MySQLConnection : public DBConnection {    // IS-A
+  public: 
+    void connect(){ cout<<"MySQL connected\n"; } 
+};
+
+class Repository {
+    DBConnection& db;                            // HAS-A
+  public:
+    Repository(DBConnection& d):db(d){}
+    void load(){ db.connect(); }
+};
+int main(){
+    MySQLConnection m;
+    Repository r(m);
+    r.load();
+}
+
+
+
+//10. Messaging System
+//Email IS-A Notification
+//Notifier HAS-A Notification
+
+
+#include <iostream>
+using namespace std;
+class Notification { 
+    public: 
+      virtual void send()=0;
+};
+
+class Email : public Notification {              // IS-A
+   public: 
+     void send(){ cout<<"Email sent\n"; } 
+};
+
+class SMS : public Notification {                // IS-A
+  public: 
+    void send(){ cout<<"SMS sent\n"; } 
+};
+class Notifier {
+    Notification* n;                             // aggregation
+  public:
+    Notifier(Notification* N):n(N){}
+    void alert(){ n->send(); }
+};
+int main(){
+    SMS s;
+    Notifier n(&s);
+    n.alert();
+}
+
+
+
+//11. E-commerce Inventory System
+//Laptop IS-A Product
+//Warehouse HAS-A Product inventory
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Product { 
+    public: 
+    virtual void info()=0; 
+};
+
+class Laptop : public Product {                  // IS-A
+  public: 
+    void info(){ cout<<"Laptop\n"; } 
+};
+
+class Phone : public Product {                   // IS-A
+  public: 
+    void info(){ cout<<"Phone\n"; } 
+};
+class Warehouse {
+    vector<Product*> items;                      // aggregation
+  public:
+    void add(Product* p){ items.push_back(p); }
+    void print(){ for(auto* p:items) p->info(); }
+};
+int main(){
+    Laptop l; Phone p;
+    Warehouse w;
+    w.add(&l); w.add(&p);
+    w.print();
+}
+
+
+
+//12. Smart Home Automation
+//Light IS-A Device
+//Home HAS-A vector<Device>*
+
+#include <iostream>
+#include <vector>
+using namespace std;
+class Device { 
+   public: 
+     virtual void on()=0; 
+};
+class Light : public Device {                    // IS-A
+  public: 
+    void on(){ cout<<"Light on\n"; } 
+};
+
+class Fan : public Device {                      // IS-A
+  public: 
+    void on(){ cout<<"Fan on\n"; } 
+};
+class Home {
+    vector<Device*> d;                           // aggregation
+  public:
+    void add(Device* x){ d.push_back(x); }
+    void activate(){ for(auto* x:d) x->on(); }
+};
+int main(){
+    Light l; Fan f;
+    Home h;
+    h.add(&l); h.add(&f);
+    h.activate();
+}
+
+
+
+
+
+//13. Logistics Delivery System
+//Truck IS-A Vehicle
+//Delivery HAS-A Vehicle + Package
+
+#include <iostream>
+using namespace std;
+class Vehicle { public: virtual void move()=0; };
+class Truck : public Vehicle {                   // IS-A
+  public: 
+    void move(){ cout<<"Truck moving\n"; } 
+};
+
+class Package { public: string id; Package(string i):id(i){} };
+
+class Delivery {
+    Vehicle* v; Package* p;                      // aggregation
+  public:
+    Delivery(Vehicle* V, Package* P):v(V),p(P){}
+    void send(){ v->move(); cout<<"Package "<<p->id; }
+};
+int main(){
+    Truck t;
+    Package p("BX101");
+    Delivery d(&t,&p);
+    d.send();
+}
+
+
+
+//14. Payroll Processing System
+//FullTimeEmployee IS-A Employee
+//Payroll HAS-A vector<Employee>*
+
+#include <iostream>
+#include <vector>
+using namespace std;
+class Employee { public: virtual int salary()=0; };
+class FullTimeEmployee : public Employee {       // IS-A
+public: int salary(){ return 5000; } };
+class PartTimeEmployee : public Employee {       // IS-A
+public: int salary(){ return 2000; } };
+class Payroll {
+    vector<Employee*> emps;                      // aggregation
+  public:
+    void add(Employee* e){ emps.push_back(e); }
+    int total(){ int s=0; for(auto* e:emps) s+=e->salary(); return s; }
+};
+int main(){
+    FullTimeEmployee f; 
+    PartTimeEmployee p;
+    Payroll pay;
+    pay.add(&f); pay.add(&p);
+    cout<<pay.total();
+}
+
+
+
+
+//15. Library Management System
+//EBook IS-A Book
+//Library HAS-A list<Book>*
+
+#include <iostream>
+#include <list>
+using namespace std;
+class Book { 
+    public: 
+      virtual string format()=0; 
+};
+class EBook : public Book {                      // IS-A
+  public: 
+  string format(){ return "EBook"; } 
+};
+class PaperBook : public Book {                  // IS-A
+  public: 
+    string format(){ return "PaperBook"; } 
+};
+
+class Library {
+    list<Book*> books;                           // aggregation
+  public:
+    void add(Book* b){ books.push_back(b); }
+    void show(){ for(auto* b:books) cout<<b->format()<<endl; }
+};
+int main(){
+    EBook e; PaperBook p;
+    Library l;
+    l.add(&e); l.add(&p);
+    l.show();
+}
 
 
 
