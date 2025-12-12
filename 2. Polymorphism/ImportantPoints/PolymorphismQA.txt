@@ -1,0 +1,284 @@
+Q1. What is polymorphism?
+Answer:
+Polymorphism means one interface, many implementations.
+In C++:
+Compile-time polymorphism → function/ operator overloading
+Run-time polymorphism → virtual functions + overriding
+
+
+Q2. Why do we need virtual functions?
+Answer:
+So that the correct derived function is called when using a base class pointer.
+Without virtual, dynamic binding does NOT happen.
+
+
+
+Q3. What is the difference between overloading and overriding?
+| Overloading      | Overriding     |
+| ---------------- | -------------- |
+| Compile time     | Runtime        |
+| Same class       | Base + Derived |
+| Different params | Same signature |
+| No virtual       | Needs virtual  |
+
+
+
+Q4. What is a pure virtual function?
+Answer:
+A function declared like:
+virtual void fun() = 0;
+It forces the class to become abstract.
+
+
+
+Q5. Can we create constructor as virtual?
+Answer:
+❌ No.
+Because constructors are used to create objects; virtual mechanism requires an existing object.
+
+
+
+
+Q6. Why is destructor often virtual?
+Answer:
+To ensure correct derived destructor is called when deleting via base pointer:
+Base* b = new Derived();
+delete b; // must call Derived::~Derived()
+
+
+
+
+
+⭐ Intermediate Questions
+Q7. What is vptr and vtable?
+vptr: hidden pointer in object
+vtable: array of function pointers for virtual functions
+Used to implement runtime polymorphism.
+
+
+
+Q8. Does virtual function increase object size?
+Answer:
+Yes. Each object of a polymorphic class contains a vptr (usually 8 bytes).
+
+
+
+Q9. What happens if a class has multiple virtual base classes?
+Compiler adds:
+-->Multiple vbptrs (virtual base pointers)
+-->A virtual base table (VBT)
+Each branch maintains pointer to shared virtual bases.
+
+
+
+Q10. What is object slicing?
+Answer:
+Storing derived object into base object:
+
+Derived d;
+Base b = d;   // slicing
+
+Derived part is dropped.
+Avoid using references/pointers instead.
+
+
+
+Q11. Why do we use override keyword?
+To get compile-time error if function signature mismatch.
+
+
+
+Q12. Can constructor call virtual function?
+Yes, but base version is always called (dynamic dispatch disabled during base construction).
+
+
+
+
+⭐ Advanced / Tricky Questions
+Q13. What is the memory layout in virtual inheritance?
+➡ Already explained above.
+
+
+
+Q14. Why multiple inheritance is considered risky?
+Diamond problem
+Ambiguous method resolution
+Increased memory overhead
+Harder to maintain
+But virtual inheritance solves most issues.
+
+
+
+Q15. Can we override a static function?
+❌ No.
+Static functions are not part of object; no vtable entry.
+
+
+
+Q16. Can you disable polymorphism?
+Yes:
+final     // prevents overriding
+override  // ensures correct overriding
+
+
+
+Q17. What are covariant return types?
+Overriding is allowed to return a derived pointer instead of base pointer.
+Base* f();
+Derived* f(); // OK
+
+
+Q18. What is the cost of virtual functions?
+One pointer per object (vptr)
+One table in memory (vtable)
+One indirection per call (lookup)
+Cannot inline virtual calls
+
+
+Q19. What is Run-Time Type Information (RTTI)?
+Used for:
+dynamic_cast
+typeid
+Works only with polymorphic classes (having at least one virtual func).
+
+
+Q20. When is virtual inheritance needed?
+To avoid duplicate base subobjects and ambiguity in multiple inheritance.
+
+
+
+
+✅ 1. What is “virtual dispatch” and how does the compiler implement it?
+Explain:
+vptr added to object
+vtable created at compile time
+call resolves via vtable entry
+Indirection → prevents inlining
+
+
+
+✅ 2. What happens if a class has virtual function but no object of that class is created?
+vtable is still generated because it’s part of the class, not the object.
+Object contains vptr, but vtable exists regardless.
+
+
+
+✅ 3. Can a constructor be virtual? Why not?
+No.
+Reason: virtual dispatch needs an object → ctor comes before object exists.
+
+
+
+✅ 4. Can a destructor be pure virtual? What is its use?
+Yes.
+virtual ~Base() = 0;
+But must provide definition because derived destructors call it.
+
+
+
+✅ 5. What is “virtual constructor” concept? How do you simulate it?
+Simulated using:
+Factory pattern
+Clone pattern (virtual Base* clone())
+
+
+
+✅ 6. Are virtual functions inherited? Yes or No?
+Yes.
+Derived class inherits vtable layout and can override entries.
+
+
+
+✅ 7. What is “vtable pointer adjustment” in multiple inheritance?
+If a class inherits from multiple bases with virtual functions, the object has:
+Multiple vptrs (one per base)
+Pointer offsets
+Compiler adjusts the this pointer when calling base functions.
+
+
+
+✅ 8. How does dynamic_cast work with virtual functions?
+Requires vtable (class must be polymorphic).
+Uses RTTI stored in vtable to perform safe downcast.
+
+
+
+
+✅ 9. What is the difference between interface-based polymorphism vs template-based polymorphism?
+| Templates                 | Virtual Functions             |
+| ------------------------- | ----------------------------- |
+| Compile-time polymorphism | Runtime polymorphism          |
+| No vptr/vtable            | Requires vptr/vtable          |
+| Faster                    | Slightly slower (indirection) |
+| Code bloat                | No code bloat                 |
+| Duck typing               | Interface typing              |
+
+
+
+
+✅ 10. What is multiple dispatch? Does C++ support it?
+C++ supports single dispatch (via vtable).
+Multiple dispatch needs patterns like:
+Visitor pattern
+Double dispatch
+
+
+
+✅ 11. Can a final class be inherited?
+No.
+class A final {};
+
+
+
+✅ 12. What is covariant return type?
+Allows overriding functions to return derived type instead of base type.
+
+
+
+✅ 13. Can virtual function be static? Why not?
+No.
+Static methods belong to class, not object → no vptr.
+
+
+
+✅ 14. What is the size of an empty class with a virtual function?
+Not empty anymore: contains a vptr.
+Typically 8 bytes on 64-bit OS.
+
+
+
+
+✅ 15. What is thunk in C++ polymorphism?
+A small compiler-generated function used to adjust this pointer in:
+Multiple inheritance
+Virtual inheritance
+Before calling actual function.
+
+
+
+✅ 16. Explain “diamond problem” and how virtual inheritance solves it.
+Without virtual inheritance → duplicate base copies.
+Virtual inheritance keeps a single shared base.
+
+
+
+✅ 17. What is shadowing vs overriding?
+Shadowing:
+class D { void fun(int); }; // hides Base::fun();
+Signature mismatch = not overriding.
+
+
+
+✅ 18. What are “default arguments” and why do they break polymorphism?
+Default arguments are resolved at compile time → taken from base version even if function overridden.
+
+
+
+✅ 19. What is pure virtual destructor used for?
+To make a class abstract while still allowing cleanup via base destructor.
+
+
+
+✅ 20. Can you override an inline virtual function?
+Yes.
+But the overridden function cannot be inlined when invoked via a base pointer (dynamic dispatch).
