@@ -1,0 +1,6 @@
+7️⃣ Operating System / Hardware Protocols
+| Protocol             | Description              | Use Case                  |
+| -------------------- | ------------------------ | ------------------------- |
+| **CAN bus**          | Automotive embedded      | ECU communication         |
+| **I2C / SPI / UART** | Low-level embedded buses | Sensors, microcontrollers |
+| **Modbus**           | Industrial PLC           | Factory automation        |

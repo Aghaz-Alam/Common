@@ -1,0 +1,8 @@
+5️⃣ Database / Storage Protocols
+Used for C++ apps interacting with databases or caches.
+
+| Protocol                  | Description                            | Use Case             |
+| ------------------------- | -------------------------------------- | -------------------- |
+| **SQL over TCP**          | MySQL / PostgreSQL protocol            | Relational DB access |
+| **Redis protocol (RESP)** | Key-value in-memory DB                 | Caching, pub/sub     |
+| **LevelDB / RocksDB**     | Local storage with custom file formats | Embedded storage     |

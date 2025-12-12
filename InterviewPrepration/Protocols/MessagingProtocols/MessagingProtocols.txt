@@ -1,0 +1,23 @@
+4️⃣ Serialization / Messaging Protocols
+Used to encode data efficiently across IPC or network.
+
+| Protocol / Library              | Description                          | Use Case                    |
+| ------------------------------- | ------------------------------------ | --------------------------- |
+| **Protocol Buffers (protobuf)** | Binary serialization, gRPC           | Microservices, messaging    |
+| **FlatBuffers**                 | Zero-copy serialization              | Games, high-speed messaging |
+| **Cap’n Proto**                 | Fast binary serialization            | Low-latency apps            |
+| **Thrift**                      | Serialization + RPC                  | Cross-language services     |
+| **JSON**                        | Human-readable                       | REST APIs, config           |
+| **MessagePack**                 | Compact JSON-like binary             | IoT, low-bandwidth          |
+| **CBOR**                        | Concise Binary Object Representation | IoT, embedded               |
+
+
+
+6️⃣ Other Middleware / Messaging Protocols
+| Protocol                            | Description                    | Use Case                   |
+| ----------------------------------- | ------------------------------ | -------------------------- |
+| **ZeroMQ**                          | Socket-style messaging         | Distributed systems        |
+| **nanomsg / NNG**                   | Next-gen lightweight messaging | Microservices, event buses |
+| **AMQP (RabbitMQ)**                 | Brokered message queue         | Enterprise messaging       |
+| **Kafka protocol**                  | Distributed log                | Event streaming            |
+| **DDS (Data Distribution Service)** | Pub/Sub for real-time systems  | Automotive, aerospace      |

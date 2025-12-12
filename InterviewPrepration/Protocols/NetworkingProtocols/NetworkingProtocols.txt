@@ -1,0 +1,15 @@
+3️⃣ Networking Protocols
+Used for network communication, either local or over the Internet.
+
+| Protocol                          | Description                       | C++ Use Case                  |
+| --------------------------------- | --------------------------------- | ----------------------------- |
+| **TCP**                           | Reliable byte stream              | Web servers, games, chat apps |
+| **UDP**                           | Unreliable datagrams              | VoIP, video streaming, games  |
+| **HTTP/HTTPS**                    | Web communication                 | REST APIs, web clients        |
+| **HTTP/2**                        | Multiplexing, used in gRPC        | Fast microservices            |
+| **WebSocket**                     | Full-duplex persistent connection | Real-time apps                |
+| **QUIC**                          | UDP-based, low latency            | Cloud & web apps              |
+| **CoAP**                          | Lightweight IoT protocol          | Embedded IoT devices          |
+| **CAN (Controller Area Network)** | Automotive / embedded bus         | Vehicle ECU communication     |
+| **MQTT**                          | Pub/Sub messaging                 | IoT / telemetry               |
+

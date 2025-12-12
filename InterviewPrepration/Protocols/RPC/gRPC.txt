@@ -1,0 +1,217 @@
+✅ What is gRPC?
+gRPC (Google Remote Procedure Call) is a high-performance, open-source RPC framework from Google.
+It uses:
+->HTTP/2
+->Protocol Buffers (protobuf) for data serialization
+->Client–server model with remote function calls
+You write a .proto file describing services + messages.
+gRPC generates C++ code for client and server automatically.
+
+
+
+
+
+✅ Why do we use gRPC?
+Because it is:
+->Fast (binary serialization)
+->Lightweight (small message sizes)
+->Streaming support (bidirectional)
+->Language-independent
+->Strongly typed API (compile-time checks)
+->Ideal for microservices, mobile, cloud, IoT
+
+
+
+
+✅ Where is gRPC used?
+Used in:
+✔ Distributed systems
+✔ Microservices architecture
+✔ Cloud APIs (Google Cloud, AWS, etc.)
+✔ Backend-to-backend communication
+✔ Low-latency communication (C++ apps, trading, games)
+✔ IoT and edge devices
+✔ CNCF ecosystem (Kubernetes uses gRPC)
+
+
+
+
+✅ Advantages (Pros)
+| Feature                 | Benefit                                            |
+| ----------------------- | -------------------------------------------------- |
+| **HTTP/2**              | Multiplexing, low latency, bidirectional streaming |
+| **Protocol Buffers**    | Fast, small binary data (better than JSON)         |
+| **Auto-generated code** | No manual serialization                            |
+| **Streaming**           | Client, server, and bidirectional                  |
+| **Secure by default**   | TLS supported                                      |
+| **Cross-language**      | C++, Python, Java, Go, Rust...                     |
+
+
+
+❌ Disadvantages (Cons)
+| Drawback                           | Description                                         |
+| ---------------------------------- | --------------------------------------------------- |
+| Not human-readable                 | Uses binary protobuf data                           |
+| Harder debugging                   | Tools required (grpcurl)                            |
+| Not ideal for browsers             | HTTP/2 + protobuf not native in JS (needs gRPC-Web) |
+| More complex setup                 | Needs protoc compiler + plugins                     |
+| Load balancers must support HTTP/2 | Some infrastructures need work                      |
+
+
+
+
+
+gRPC Architecture
+Client --------------------> Server
+      gRPC Stub (auto-gen)
+      Protocol Buffers
+      HTTP/2 stream
+
+The client calls functions as if local, but gRPC sends requests over HTTP/2.
+
+🧩 Simple gRPC Example in C++
+Here is the simplest Hello Service in gRPC (C++).
+
+1️⃣ Define .proto file
+➡ hello.proto
+
+syntax = "proto3";
+package demo;
+service HelloService {
+  rpc SayHello (HelloRequest) returns (HelloResponse);
+}
+message HelloRequest {
+  string name = 1;
+}
+message HelloResponse {
+  string message = 1;
+}
+
+2️⃣ Generate C++ code
+Run:
+protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` hello.proto
+protoc --cpp_out=. hello.proto
+
+
+This generates:
+hello.pb.cc / hello.pb.h
+hello.grpc.pb.cc / hello.grpc.pb.h
+
+3️⃣ Implement the gRPC Server
+//➡ server.cpp
+
+#include <grpcpp/grpcpp.h>
+#include "hello.grpc.pb.h"
+
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::ServerContext;
+using grpc::Status;
+
+class HelloServiceImpl final : public demo::HelloService::Service {
+public:
+    Status SayHello(ServerContext* context,
+                    const demo::HelloRequest* request,
+                    demo::HelloResponse* response) override {
+        response->set_message("Hello " + request->name());
+        return Status::OK;
+    }
+};
+
+int main() {
+    std::string address("0.0.0.0:50051");
+    HelloServiceImpl service;
+
+    ServerBuilder builder;
+    builder.AddListeningPort(address, grpc::InsecureServerCredentials());
+    builder.RegisterService(&service);
+
+    std::unique_ptr<Server> server(builder.BuildAndStart());
+    std::cout << "Server running on " << address << std::endl;
+
+    server->Wait();
+}
+
+4️⃣ Implement the gRPC Client
+//➡ client.cpp
+
+#include <grpcpp/grpcpp.h>
+#include "hello.grpc.pb.h"
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::Status;
+class HelloClient {
+  public:
+    HelloClient(std::shared_ptr<Channel> channel): stub_(demo::HelloService::NewStub(channel)) {}
+
+    std::string SayHello(const std::string& name) {
+        demo::HelloRequest request;
+        request.set_name(name);
+
+        demo::HelloResponse response;
+        ClientContext context;
+
+        Status status = stub_->SayHello(&context, request, &response);
+
+        if (status.ok())
+            return response.message();
+        else
+            return "RPC failed";
+    }
+  private:
+    std::unique_ptr<demo::HelloService::Stub> stub_;
+};
+int main() {
+    HelloClient client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+
+    std::string reply = client.SayHello("Aghaz");
+    std::cout << "Server Response: " << reply << std::endl;
+}
+
+
+
+5️⃣ Build with CMake
+➡ CMakeLists.txt
+
+cmake_minimum_required(VERSION 3.10)
+project(gRPCExample)
+
+find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
+
+add_executable(server server.cpp hello.pb.cc hello.grpc.pb.cc)
+target_link_libraries(server gRPC::grpc++ protobuf::libprotobuf)
+
+add_executable(client client.cpp hello.pb.cc hello.grpc.pb.cc)
+target_link_libraries(client gRPC::grpc++ protobuf::libprotobuf)
+
+
+Build:
+mkdir build && cd build
+cmake ..
+make
+
+
+
+Run:
+./server
+./client
+
+
+
+🎉 Output
+Server running on 0.0.0.0:50051
+Client → Server: "Aghaz"
+Response: Hello Aghaz
+
+
+
+🆚 gRPC vs REST Summary
+| Feature          | gRPC                  | REST      |
+| ---------------- | --------------------- | --------- |
+| Protocol         | HTTP/2                | HTTP/1.1  |
+| Data             | Protobuf (binary)     | JSON      |
+| Speed            | Very fast             | Slower    |
+| Streaming        | ✓ Yes                 | ✗ Limited |
+| Language support | Many                  | Many      |
+| Browser support  | Poor (needs gRPC-Web) | Excellent |

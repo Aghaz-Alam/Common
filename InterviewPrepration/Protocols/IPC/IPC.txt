@@ -1,0 +1,301 @@
+✅ IPC (Inter-Process Communication)
+👉 What is IPC?
+IPC (Inter-Process Communication) refers to the mechanisms that allow multiple processes to communicate with each other and share data.
+
+Processes can be:
+On the same machine (most common)
+On different machines (less common but possible with certain mechanisms)
+
+👉 Why do we use IPC?
+Because:
+Processes are isolated in their own memory space.
+They CANNOT directly access each other’s data.
+To cooperate, share information, coordinate tasks → you need IPC.
+
+👉 Where do we use IPC?
+IPC is used everywhere in system programming:
+OS Level
+Communication between user applications and daemon/system services
+e.g., systemd, udev, journald in Linux
+Application Level
+Components of browsers (Chrome spawns many sandboxed processes)
+Databases (PostgreSQL uses shared memory + semaphores)
+Game engines communicating physics, rendering, and AI processes
+Embedded systems (ECUs in automotive sharing data)
+Microservice-like architectures on the same machine:
+Messaging between components
+
+👉 Forms of IPC (Mechanisms)
+IPC gives MANY mechanisms (depends on OS):
+
+1. Pipes / Named Pipes (FIFOs)
+Unidirectional or bidirectional byte stream.
+
+2. Message Queues
+Send/receive messages asynchronously.
+
+3. Shared Memory
+Fastest method (multiple processes access the same memory region).
+
+4. Semaphores / Mutexes
+Synchronization, avoid race conditions.
+
+5. Sockets (Unix Domain Sockets / TCP/UDP)
+IPC even across network or between programs.
+
+6. Signals
+Simple notifications (SIGINT, SIGKILL etc.)
+
+7. Memory-Mapped Files (mmap)
+Shared file-backed memory.
+
+👉 Pros & Cons of IPC
+✔ PROS
+Efficient and fast (esp. shared memory)
+Suitable for local communication
+Supported by all OSes
+Powerful synchronization and messaging primitives
+
+❌ CONS
+More complex programming (deadlocks, race conditions)
+Shared memory requires careful synchronization
+Some IPCs cannot easily scale over network
+Security concerns (permissions, access rights)
+
+🟦 Example Use Cases
+| Scenario                      | IPC Mechanism                  |
+| ----------------------------- | ------------------------------ |
+| Chrome Browser tabs           | Shared memory + message queues |
+| Database servers (PostgreSQL) | Shared memory + semaphores     |
+| System calls to OS kernel     | Pipes, sockets, signals        |
+| Logging systems               | Named pipes                    |
+
+Summary
+IPC = communication between processes, often on same machine, using OS-level primitives.
+
+
+
+
+
+
+C++ IPC examples for:
+✔ Pipes (unnamed pipe — parent ↔ child)
+✔ Shared Memory (shmget, shmat, shmdt)
+✔ Sockets (TCP client/server)
+
+All examples are Linux/UNIX compatible.
+They are simplified for learning (safe and interview-ready).
+
+✅ 1. PIPES (Parent → Child communication)
+Processes communicate using a unidirectional byte stream.
+
+📌 Use Case
+Shell pipelines: ls | grep txt
+Parent sending commands to child
+
+📌 Example: Parent writes, child reads
+// ipc_pipe.cpp
+#include <iostream>
+#include <unistd.h>
+#include <cstring>
+
+int main() {
+    int fd[2];  // fd[0] = read end, fd[1] = write end
+
+    if (pipe(fd) == -1) {
+        perror("pipe failed");
+        return 1;
+    }
+
+    pid_t pid = fork();
+
+    if (pid < 0) {
+        perror("fork failed");
+        return 1;
+    }
+
+    if (pid == 0) {  
+        // Child process
+        close(fd[1]);  // close write end
+
+        char buffer[128];
+        read(fd[0], buffer, sizeof(buffer));
+        std::cout << "Child received: " << buffer << "\n";
+        close(fd[0]);
+    } 
+    else {  
+        // Parent process
+        close(fd[0]);  // close read end
+        const char* msg = "Hello from parent via PIPE!";
+        write(fd[1], msg, strlen(msg) + 1);
+        close(fd[1]);
+    }
+
+    return 0;
+}
+
+Compile & run:
+g++ ipc_pipe.cpp -o pipe
+./pipe
+
+🚀 2. SHARED MEMORY (Fastest IPC)
+Two processes share a portion of RAM.
+
+📌 Use Case
+Databases
+Browser multiprocess rendering
+High-performance IPC
+
+📌 Example using shmget/shmat
+// ipc_shared_memory.cpp
+#include <iostream>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
+#include <cstring>
+int main() {
+    key_t key = ftok("shmfile", 65);   // generate unique key
+    int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+
+    if (shmid < 0) {
+        perror("shmget failed");
+        return 1;
+    }
+
+    char* shared_memory = (char*) shmat(shmid, nullptr, 0);
+
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Child writes
+        strcpy(shared_memory, "Hello from child via Shared Memory!");
+        shmdt(shared_memory);
+    }
+    else {
+        // Parent waits then reads
+        sleep(1);
+        std::cout << "Parent read: " << shared_memory << "\n";
+        shmdt(shared_memory);
+        shmctl(shmid, IPC_RMID, nullptr);  // cleanup
+    }
+}
+
+Compile:
+g++ ipc_shared_memory.cpp -o shm
+./shm
+
+🌐 3. SOCKETS (TCP)
+General IPC — works locally or across network.
+
+📌 Use Case
+Client/server apps
+Microservices
+Network programming
+
+
+
+
+3A. TCP SERVER Example
+// ipc_socket_server.cpp
+#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <cstring>
+int main() {
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons(8080);
+
+    bind(server_fd, (sockaddr*)&addr, sizeof(addr));
+    listen(server_fd, 3);
+
+    std::cout << "Server listening on port 8080...\n";
+
+    int client_fd = accept(server_fd, nullptr, nullptr);
+
+    char buffer[1024] = {0};
+    read(client_fd, buffer, sizeof(buffer));
+    std::cout << "Received: " << buffer << "\n";
+
+    const char* reply = "Hello from SERVER!";
+    send(client_fd, reply, strlen(reply), 0);
+
+    close(client_fd);
+    close(server_fd);
+    return 0;
+}
+
+
+
+
+
+3B. TCP CLIENT Example
+// ipc_socket_client.cpp
+#include <iostream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <cstring>
+int main() {
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    sockaddr_in serv{};
+    serv.sin_family = AF_INET;
+    serv.sin_port = htons(8080);
+    inet_pton(AF_INET, "127.0.0.1", &serv.sin_addr);
+
+    connect(sock, (sockaddr*)&serv, sizeof(serv));
+
+    const char* msg = "Hello from CLIENT!";
+    send(sock, msg, strlen(msg), 0);
+
+    char buffer[1024] = {0};
+    read(sock, buffer, sizeof(buffer));
+    std::cout << "Server replied: " << buffer << "\n";
+
+    close(sock);
+    return 0;
+}
+
+Run in separate terminals:
+Terminal 1:
+./server
+
+Terminal 2:
+./client
+
+
+
+
+
+
+
+
+
+
+
+1️⃣ Inter-Process Communication (IPC) Protocols
+Used for communication between processes on the same machine.
+
+
+| Protocol / Mechanism                  | Description                 | Use Case                                |
+| ------------------------------------- | --------------------------- | --------------------------------------- |
+| **Pipes (unnamed / named)**           | Byte-stream communication   | Parent-child processes, shell pipelines |
+| **FIFO (named pipes)**                | Persistent pipe with name   | Daemon communication                    |
+| **Shared Memory (POSIX, System V)**   | Fast memory-sharing         | Databases, high-performance IPC         |
+| **Message Queues (POSIX / System V)** | Queue-based async messaging | Logging systems, task dispatch          |
+| **Semaphores / Mutexes**              | Synchronization primitives  | Protect shared resources                |
+| **Signals**                           | OS-level notifications      | Process termination, events             |
+| **Unix Domain Sockets (AF_UNIX)**     | Local socket communication  | Local services, db servers              |
+
+
+
+
+
+
+
+
