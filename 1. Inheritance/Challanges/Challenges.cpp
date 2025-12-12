@@ -1176,8 +1176,6 @@ int main(){
 //7. Hotel Booking System
 //DeluxeRoom IS-A Room
 //Booking HAS-A Room + Customer
-
-
 #include <iostream>
 using namespace std;
 
@@ -1216,7 +1214,6 @@ int main(){
 //8. Game Engine System
 //Enemy IS-A Entity
 //GameWorld HAS-A vector<Entity>*
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1255,8 +1252,6 @@ int main(){
 //9. Database Connection Manager
 //MySQLConnection IS-A DBConnection
 //Repository HAS-A DBConnection
-
-
 #include <iostream>
 using namespace std;
 
@@ -1287,8 +1282,6 @@ int main(){
 //10. Messaging System
 //Email IS-A Notification
 //Notifier HAS-A Notification
-
-
 #include <iostream>
 using namespace std;
 class Notification { 
@@ -1322,8 +1315,6 @@ int main(){
 //11. E-commerce Inventory System
 //Laptop IS-A Product
 //Warehouse HAS-A Product inventory
-
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1360,7 +1351,6 @@ int main(){
 //12. Smart Home Automation
 //Light IS-A Device
 //Home HAS-A vector<Device>*
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1397,7 +1387,6 @@ int main(){
 //13. Logistics Delivery System
 //Truck IS-A Vehicle
 //Delivery HAS-A Vehicle + Package
-
 #include <iostream>
 using namespace std;
 class Vehicle { public: virtual void move()=0; };
@@ -1426,7 +1415,6 @@ int main(){
 //14. Payroll Processing System
 //FullTimeEmployee IS-A Employee
 //Payroll HAS-A vector<Employee>*
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1455,7 +1443,6 @@ int main(){
 //15. Library Management System
 //EBook IS-A Book
 //Library HAS-A list<Book>*
-
 #include <iostream>
 #include <list>
 using namespace std;
