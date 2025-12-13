@@ -157,3 +157,15 @@ std::forward is the bridge between:
 
 One-line takeaway
 Templates erase value category — std::forward<T> restores it using type deduction + reference collapsing.
+
+
+
+
+
+
+
+
+
+
+
+
