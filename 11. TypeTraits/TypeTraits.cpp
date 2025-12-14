@@ -1,16 +1,5 @@
 type traits
 
-
-
-Type Traits in C++11, C++14, and C++17
-
-Type traits are a collection of templates that allow you to query and manipulate types at compile time. 
-They are typically defined in the <type_traits> header. 
-Type traits are extremely useful in generic programming, where you often need to make decisions based on the properties of types.
-
-Let us go over the type traits in C++11, C++14, and C++17, and see the features available in each version, with examples for each.
-
-
 1. Type Traits in C++11
 C++11 introduced the core set of type traits. It provides several templates to inspect, transform, or manipulate types at compile time. 
 The most commonly used type traits in C++11 are in the <type_traits> header.
