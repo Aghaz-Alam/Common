@@ -1342,3 +1342,86 @@ int main() {
 
 (order may vary)
 */
+
+
+
+
+
+
+
+
+
+
+
+Mutex (Correct Mutual Exclusion)
+✅ Code
+#include <iostream>
+#include <thread>
+#include <mutex>
+using namespace std;
+
+mutex m;
+int shared = 0;
+
+void task(int id) {
+    lock_guard<mutex> lg(m);
+    shared++;
+    cout << "Task " << id << " shared=" << shared << "\n";
+}
+
+int main() {
+    thread t1(task, 1);
+    thread t2(task, 2);
+    t1.join();
+    t2.join();
+}
+/* 
+✅ Output
+Task 1 shared=1
+Task 2 shared=2
+*/
+
+
+
+
+
+
+
+
+
+
+
+Semaphore (Signaling, NOT ownership)
+
+C++20 counting_semaphore
+RTOS equivalent: binary semaphore
+
+✅ Code
+#include <iostream>
+#include <thread>
+#include <semaphore>
+using namespace std;
+
+counting_semaphore<1> sem(0);
+
+void worker() {
+    sem.acquire();
+    cout << "Worker running\n";
+}
+
+int main() {
+    thread t(worker);
+    cout << "Main signaling\n";
+    sem.release();
+    t.join();
+}
+/* 
+✅ Output
+Main signaling
+Worker running
+*/
+
+
+
+
+
