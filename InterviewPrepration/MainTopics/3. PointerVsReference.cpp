@@ -169,12 +169,14 @@ int main() {
     int arr[3] = {10, 20, 30};
 
     int* p = arr;
+    cout << *p << endl;   //10
     p++;  // OK: move to next element
-    cout << *p << endl;
+    cout << *p << endl;   //20
 
     int& r = arr[0];
     // r++;         // increments VALUE, not reference
     // &r++;        // ERROR: reference arithmetic invalid
+    cout << r << endl;   //10
 }
 
 
@@ -204,7 +206,7 @@ int main() {
 
 
 9. Reference behaves like an alias; pointer is a separate object
-Code Example
+//Code Example
 #include <iostream>
 using namespace std;
 int main() {
@@ -218,10 +220,12 @@ int main() {
     cout << "Address of reference r: " << &r << endl;
 }
 
-
 Notice:
 ---> r has the same address as x
 ---> p has its own address (it is a separate object)
+
+
+
 
 10. Pointers can be multi-level (pointer to pointer); references cannot
 Code Example
@@ -394,11 +398,11 @@ void usePointer(int* p) {
     if (p)
         cout << "Pointer value = " << *p << endl;
     else
-        cout << "Pointer is NULL\n";
+        cout << "Pointer is NULL\n";              //Pointer is NULL
 }
 
 void useReference(int& r) {
-    cout << "Reference value = " << r << endl;
+    cout << "Reference value = " << r << endl;    //5
 }
 int main() {
     int x = 5;
@@ -420,7 +424,7 @@ int main() {
     int a = 1, b = 2;
 
     int* arr1[2] = { &a, &b };   // OK
-    cout << *arr1[0] << ", " << *arr1[1] << endl;
+    cout << *arr1[0] << ", " << *arr1[1] << endl; //1,  2
 
     // int& arr2[2] = { a, b };  // ERROR: arrays of references not allowed
 }
@@ -434,11 +438,13 @@ int main() {
     int arr[3] = {10, 20, 30};
 
     int* p = arr;
+    cout << *p << endl; // 10
     p++;                // OK
     cout << *p << endl; // 20
 
     int& r = arr[0];
     // &r ++;           // ERROR: reference arithmetic not allowed
+    cout << r << endl; // 10
 }
 
 
@@ -469,9 +475,14 @@ x = x * 2
 
 /* --------------------------- */
 ✅ Q2. Will this compile?
+#include <iostream>
 int& getRef() {
-    int x = 10;
-    return x;
+    int x = 10;     // local variable
+    return x;       // ❌ dangling reference
+}
+int main() {
+    int& r = getRef();   // reference binds to destroyed object
+    std::cout << r << '\n'; // ❌ Undefined Behavior
 }
 
 ✔ Tests:
@@ -484,6 +495,75 @@ Returning references & lifetime issues
 You cannot return a reference to a local variable.
 The variable dies after function exits → reference becomes invalid.
 
+/* --------------------------------------------------------------- */
+
+✅ Correct Fix #1: Return by VALUE (Best & safest)
+#include <iostream>
+int getValue() {
+    int x = 10;
+    return x;   // ✔ returned by value
+}
+int main() {
+    int v = getValue();
+    std::cout << v << '\n';
+}
+/* 
+Output
+10
+
+✔ No lifetime issues
+✔ RVO / NRVO makes it efficient
+✔ Recommended in modern C++
+*/
+
+
+
+✅ Correct Fix #2: Return reference to STATIC variable
+#include <iostream>
+int& getRef() {
+    static int x = 10;  // static storage duration
+    return x;
+}
+int main() {
+    int& r = getRef();
+    r = 20;
+    std::cout << r << '\n';
+}
+/* 
+Output
+20
+
+✔ static lives for entire program
+❌ Shared state (not thread-safe by default)
+*/
+
+
+
+✅ Correct Fix #3: Pass output via reference parameter (MISRA-safe)
+#include <iostream>
+void getValue(int& out) {
+    out = 10;
+}
+int main() {
+    int x;
+    getValue(x);
+    std::cout << x << '\n';
+  return 0;
+}
+/* 
+Output
+10
+
+✔ Clear ownership
+✔ Common in embedded / MISRA code
+✔ No dangling references
+*/
+
+
+
+
+
+/* ===================================================================================================*/
 /* --------------------------- */
 ✅ Q3. What does this print?
 #include <iostream>
