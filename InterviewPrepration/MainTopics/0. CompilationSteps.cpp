@@ -36,7 +36,7 @@ Compilation Steps and Their Tasks
     ->Outputs a raw expanded code file
         -No parsing or type checking yet—just textual substitution.
     ->Produces a cleaned and expanded version of the source
-   Output: Preprocessed source code (usually a .i file)
+   Output: Preprocessed source code (usually a.i file)
 
 
 
