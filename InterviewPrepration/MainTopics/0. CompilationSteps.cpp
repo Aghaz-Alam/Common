@@ -109,7 +109,7 @@ What it does
                 -->Converts IR into CPU-specific assembly instructions.
                 -->Allocates registers.
                 -->Produces .s file.
-       Output:Assembly code (usually a .s file)
+       Output:Assembly code (usually a.s file)
 
 /* ------------------------------------------------ */
 2. Compilation (cc1++)
@@ -289,11 +289,13 @@ Command: g++ example.o -o example
 
 What Happens:
 Links your code with the iostream library (libstdc++).
+
 Resolves symbols like:
 std::cout
 operator<<
 std::endl
 Produces a runnable executable.
+
 Output File:
 ✔ example (or example.exe on Windows)
 
