@@ -61,6 +61,18 @@ Compilation Steps and Their Tasks
 
    View only preprocessing
    Command: g++ -E example.cpp -o example.i
+
+
+/* 
+In g++, the option -E stands for:
+-E = Preprocess only
+
+What it does
+-> Runs only the C++ preprocessor
+-> Stops before compilation
+-> Produces the source after macro expansion, header inclusion, and conditional compilation
+-> No object file, no assembly, no linking — just preprocessing.
+*/
 /* ============================================================================================= */
 ✅ 2. Compilation
       Task Performed:
