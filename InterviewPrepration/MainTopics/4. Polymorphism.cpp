@@ -48,6 +48,38 @@ int main() {
   return 0;
 }
 
+
+/* ------------------- */
+#include<iostream>
+using namespace std;
+// void fun(int x){
+//     cout<<"Int: "<<x<<endl;
+// }
+
+// void fun(float x){
+//     cout<<"Float: "<<x<<endl;
+// }
+
+// void fun(string x){
+//     cout<<"String: "<<x<<endl;
+// }
+template<typename T>
+void fun(T x){
+    cout<<"Generic: "<<x<<endl;
+}
+int main(){
+    fun(5);
+    fun(1.5f);
+    fun("Hi");
+    return 0;
+}
+/* 
+Generic: 5
+Generic: 1.5
+Generic: Hi
+ */
+/* ===================== */
+
 b. Operator Overloading
 You can redefine operators for your class.
 
@@ -83,6 +115,8 @@ How Runtime Polymorphism Works Internally
 --> Every class with a virtual function gets a hidden vtable
 --> Contains addresses of overridden functions
 --> Base pointer uses vtable of the actual object
+
+
 
 Example 1 — Basic Virtual Function Polymorphism
 #include <iostream>
@@ -170,12 +204,12 @@ When designing frameworks, we define interfaces.
 using namespace std;
 
 class Animal {
-public:
+  public:
     virtual void makeSound() = 0;  // pure virtual
 };
 
 class Cow : public Animal {
-public:
+  public:
     void makeSound() override {
         cout << "Cow moos\n";
     }
@@ -183,8 +217,18 @@ public:
 
 int main() {
     // Animal a; // ERROR: abstract class
+
+    Animal *p = new Cow();
+    p->makeSound();         //Cow moos
+    
+    //OR
     Cow c;
-    c.makeSound();
+    c.makeSound();         //Cow moos
+
+
+    //OR
+    Animal& ref = c;
+    ref.makeSound();      //Cow moos
 }
 /* 
 ✔ Why use pure virtual?
@@ -198,15 +242,21 @@ Example 4 — Polymorphism with Arrays of Base Pointers
 using namespace std;
 class Shape {
   public:
-    virtual void draw() { cout << "Shape\n"; }
+    virtual void draw() { 
+      cout << "Shape\n"; 
+    }
 };
 class Square : public Shape {
   public:
-    void draw() override { cout << "Square\n"; }
+    void draw() override { 
+      cout << "Square\n"; 
+    }
 };
 class Triangle : public Shape {
   public:
-    void draw() override { cout << "Triangle\n"; }
+    void draw() override { 
+      cout << "Triangle\n"; 
+    }
 };
 int main() {
     Shape* arr[3];
@@ -225,12 +275,16 @@ Example 5 — Polymorphism + Smart Pointers (C++11+)
 using namespace std;
 class Base {
   public:
-    virtual void show() { cout << "Base\n"; }
+    virtual void show() { 
+      cout << "Base\n"; 
+    }
     virtual ~Base() {}
 };
 class Derived : public Base {
   public:
-    void show() override { cout << "Derived\n"; }
+    void show() override { 
+      cout << "Derived\n"; 
+    }
 };
 int main() {
     unique_ptr<Base> ptr = make_unique<Derived>();
@@ -260,7 +314,12 @@ int main() {
     delete b;  // calls both destructors
   return 0;
 }
-
+/* 
+Base constructed
+Derived constructed
+Derived destroyed
+Base destroyed
+*/
 
 
 /* -------------------------------- */
