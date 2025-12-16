@@ -1153,10 +1153,20 @@ class Vehicle {
 };
 class Car : public Vehicle {                     // IS-A
  public:
-    string type() const override { return "Car"; }
+    string type() const override { 
+      return "Car"; 
+    }
 };
-class Driver { public: string name; Driver(string n):name(n){} };
-class Rider  { public: string name; Rider(string n):name(n){} };
+class Driver { 
+  public: 
+    string name; 
+    Driver(string n):name(n){} 
+};
+class Rider  { 
+  public: 
+    string name; 
+    Rider(string n):name(n){} 
+};
 class Trip {                                     // HAS-A
     Driver* d;
     Rider* r;
@@ -1174,7 +1184,9 @@ int main() {
     Trip t(&d, &r, &c);
     t.start();
 }
-
+/* 
+Bob riding with Alex in a Car
+*/
 
 
 
@@ -1188,21 +1200,37 @@ int main() {
 using namespace std;
 
 class PaymentMethod {
-public: virtual void pay(double amt)=0; };
+  public: virtual void pay(double amt)=0; 
+};
 
 class CreditCard : public PaymentMethod {        // IS-A
-public: void pay(double amt){ cout<<"Paid "<<amt<<" using Card"; } };
+  public: 
+    void pay(double amt){ 
+      cout<<"Paid "<<amt<<" using Card"; 
+    } 
+};
 class Cart {
     vector<int> items;                           // HAS-A
   public:
-    void add(int price){ items.push_back(price); }
-    int total() { int sum=0; for(int x:items) sum+=x; return sum; }
+    void add(int price){ 
+      items.push_back(price); 
+    }
+    int total() { 
+      int sum=0; 
+      for(int x:items) 
+        sum+=x; 
+      return sum; 
+    }
 };
 class Order {
     Cart c;                                      // composition
   public:
-    void addItem(int price){ c.add(price); }
-    void checkout(PaymentMethod& p){ p.pay(c.total()); }
+    void addItem(int price){ 
+      c.add(price); 
+    }
+    void checkout(PaymentMethod& p){ 
+      p.pay(c.total()); 
+    }
 };
 int main(){
     Order o;
@@ -1210,7 +1238,9 @@ int main(){
     CreditCard cc;
     o.checkout(cc);
 }
-
+/* 
+Paid 300 using Card
+*/
 
 
 
@@ -1222,18 +1252,33 @@ int main(){
 #include <vector>
 using namespace std;
 
-class Player { public: virtual void play()=0; };
+class Player { 
+  public: 
+    virtual void play()=0; 
+};
 
 class AudioPlayer : public Player {              // IS-A
-public: void play(){ cout<<"Playing audio\n"; } };
+  public: void play(){ 
+    cout<<"Playing audio\n"; 
+  } 
+};
 
 class VideoPlayer : public Player {              // IS-A
-public: void play(){ cout<<"Playing video\n"; } };
+  public: 
+    void play(){ 
+      cout<<"Playing video\n"; 
+    } 
+};
 class Playlist {
     vector<Player*> plist;                       // aggregation
   public:
-    void add(Player* p){ plist.push_back(p); }
-    void playAll(){ for(auto* p:plist) p->play(); }
+    void add(Player* p){ 
+      plist.push_back(p); 
+    }
+    void playAll(){ 
+      for(auto* p:plist) 
+        p->play(); 
+    }
 };
 int main(){
     AudioPlayer a;
@@ -1243,6 +1288,12 @@ int main(){
     p.add(&v);
     p.playAll();
 }
+/* 
+Playing audio
+Playing video
+*/
+
+
 
 
 
@@ -1253,19 +1304,35 @@ int main(){
 #include <list>
 using namespace std;
 
-class Plane { public: virtual void land()=0; };
+class Plane { 
+  public: 
+    virtual void land()=0; 
+};
 
 class CargoPlane : public Plane {                // IS-A
-public: void land(){ cout<<"Cargo plane landing\n"; } };
+  public: 
+    void land(){ 
+       cout<<"Cargo plane landing\n"; 
+    } 
+};
 
 class PassengerPlane : public Plane {            // IS-A
-public: void land(){ cout<<"Passenger plane landing\n"; } };
+  public: 
+    void land(){ 
+      cout<<"Passenger plane landing\n"; 
+    } 
+};
 
 class Airport {
     list<Plane*> runway;                         // aggregation
-public:
-    void requestLanding(Plane* p){ runway.push_back(p); }
-    void process(){ for(auto* p:runway) p->land(); }
+  public:
+    void requestLanding(Plane* p){ 
+      runway.push_back(p); 
+    }
+    void process(){ 
+      for(auto* p:runway) 
+        p->land(); 
+    }
 };
 
 int main(){
@@ -1276,7 +1343,10 @@ int main(){
     a.requestLanding(&p);
     a.process();
 }
-
+/* 
+Cargo plane landing
+Passenger plane landing
+*/
 
 
 
@@ -1292,7 +1362,9 @@ class Doctor {
 
 class Surgeon : public Doctor {                  // IS-A
   public: 
-    string role(){ return "Surgeon"; } 
+    string role(){ 
+      return "Surgeon"; 
+    } 
 };
 
 class Patient { 
@@ -1305,7 +1377,9 @@ class Surgery {                                  // HAS-A
     Patient* p;
   public:
     Surgery(Doctor* D, Patient* P) : d(D), p(P) {}
-    void perform(){ cout<<d->role()<<" operating "<<p->name; }
+    void perform(){ 
+      cout<<d->role()<<" operating "<<p->name; 
+    }
 };
 int main(){
     Surgeon s;
@@ -1313,7 +1387,9 @@ int main(){
     Surgery op(&s, &p);
     op.perform();
 }
-
+/* 
+Surgeon operating Ravi
+*/
 
 
 //6. Banking System
@@ -1330,18 +1406,27 @@ class Account {
 
 class SavingsAccount : public Account {          // IS-A
   public: 
-    void show(){ cout<<"Savings account\n"; } 
+    void show(){ 
+      cout<<"Savings account\n"; 
+    } 
 };
 
 class CurrentAccount : public Account {          // IS-A
   public: 
-    void show(){ cout<<"Current account\n"; } 
+    void show(){ 
+      cout<<"Current account\n"; 
+    } 
 };
 class Bank {
     vector<Account*> acc;                        // aggregation
   public:
-    void add(Account* a){ acc.push_back(a); }
-    void list(){ for(auto* a:acc) a->show(); }
+    void add(Account* a){ 
+      acc.push_back(a); 
+    }
+    void list(){ 
+      for(auto* a:acc) 
+        a->show(); 
+      }
 };
 int main(){
     SavingsAccount s;
@@ -1351,7 +1436,10 @@ int main(){
     b.add(&c);
     b.list();
 }
-
+/* 
+Savings account
+Current account
+*/
 
 
 //7. Hotel Booking System
@@ -1367,7 +1455,9 @@ class Room {
 
 class DeluxeRoom : public Room {                 // IS-A
   public: 
-    string type(){ return "Deluxe"; } 
+    string type(){ 
+      return "Deluxe"; 
+    } 
 };
 
 class Customer { 
@@ -1378,9 +1468,11 @@ class Customer {
 
 class Booking {
     Room* r; Customer* c;                        // aggregation
- public:
+   public:
     Booking(Room* R, Customer* C):r(R),c(C){}
-    void show(){ cout<<c->name<<" booked "<<r->type(); }
+    void show(){ 
+      cout<<c->name<<" booked "<<r->type(); 
+    }
 };
 
 int main(){
@@ -1389,7 +1481,9 @@ int main(){
     Booking b(&d,&c);
     b.show();
 }
-
+/* 
+Aman booked Deluxe
+*/
 
 
 //8. Game Engine System
@@ -1405,18 +1499,27 @@ class Entity {
 
 class Enemy : public Entity {                    // IS-A
   public: 
-    void update(){ cout<<"Enemy update\n"; } 
+    void update(){ 
+      cout<<"Enemy update\n"; 
+    } 
 };
 
 class Player : public Entity {                   // IS-A
   public: 
-    void update(){ cout<<"Player update\n"; } 
+    void update(){ 
+      cout<<"Player update\n"; 
+    } 
 };
 class GameWorld {
     vector<Entity*> ents;                        // aggregation
   public:
-    void add(Entity* e){ ents.push_back(e); }
-    void tick(){ for(auto* e:ents) e->update(); }
+    void add(Entity* e){ 
+      ents.push_back(e);
+    }
+    void tick(){ 
+      for(auto* e:ents) 
+        e->update(); 
+    }
 };
 int main(){
     Enemy e;
@@ -1426,7 +1529,10 @@ int main(){
     g.add(&p);
     g.tick();
 }
-
+/* 
+Enemy update
+Player update
+*/
 
 
 
@@ -1443,20 +1549,29 @@ class DBConnection {
 
 class MySQLConnection : public DBConnection {    // IS-A
   public: 
-    void connect(){ cout<<"MySQL connected\n"; } 
+    void connect(){ 
+      cout<<"MySQL connected\n"; 
+    } 
 };
 
 class Repository {
     DBConnection& db;                            // HAS-A
   public:
     Repository(DBConnection& d):db(d){}
-    void load(){ db.connect(); }
+    void load(){ 
+      db.connect(); 
+    }
 };
 int main(){
     MySQLConnection m;
     Repository r(m);
     r.load();
 }
+/* 
+MySQL connected
+*/
+
+
 
 
 
@@ -1472,24 +1587,35 @@ class Notification {
 
 class Email : public Notification {              // IS-A
    public: 
-     void send(){ cout<<"Email sent\n"; } 
+     void send(){ 
+      cout<<"Email sent\n"; 
+    } 
 };
 
 class SMS : public Notification {                // IS-A
   public: 
-    void send(){ cout<<"SMS sent\n"; } 
+    void send(){ 
+      cout<<"SMS sent\n"; 
+    } 
 };
 class Notifier {
     Notification* n;                             // aggregation
   public:
     Notifier(Notification* N):n(N){}
-    void alert(){ n->send(); }
+    void alert(){ 
+      n->send(); 
+    }
 };
 int main(){
     SMS s;
     Notifier n(&s);
     n.alert();
 }
+/* 
+SMS sent
+*/
+
+
 
 
 
@@ -1499,7 +1625,6 @@ int main(){
 #include <iostream>
 #include <vector>
 using namespace std;
-
 class Product { 
     public: 
     virtual void info()=0; 
@@ -1507,18 +1632,27 @@ class Product {
 
 class Laptop : public Product {                  // IS-A
   public: 
-    void info(){ cout<<"Laptop\n"; } 
+    void info(){ 
+      cout<<"Laptop\n"; 
+    } 
 };
 
 class Phone : public Product {                   // IS-A
   public: 
-    void info(){ cout<<"Phone\n"; } 
+    void info(){ 
+      cout<<"Phone\n"; 
+    } 
 };
 class Warehouse {
     vector<Product*> items;                      // aggregation
   public:
-    void add(Product* p){ items.push_back(p); }
-    void print(){ for(auto* p:items) p->info(); }
+    void add(Product* p){ 
+      items.push_back(p); 
+    }
+    void print(){ 
+      for(auto* p:items) 
+        p->info(); 
+    }
 };
 int main(){
     Laptop l; Phone p;
@@ -1526,6 +1660,11 @@ int main(){
     w.add(&l); w.add(&p);
     w.print();
 }
+/* 
+Laptop
+Phone
+*/
+
 
 
 
@@ -1541,18 +1680,27 @@ class Device {
 };
 class Light : public Device {                    // IS-A
   public: 
-    void on(){ cout<<"Light on\n"; } 
+    void on(){ 
+      cout<<"Light on\n"; 
+    } 
 };
 
 class Fan : public Device {                      // IS-A
   public: 
-    void on(){ cout<<"Fan on\n"; } 
+    void on(){ 
+      cout<<"Fan on\n"; 
+    } 
 };
 class Home {
     vector<Device*> d;                           // aggregation
   public:
-    void add(Device* x){ d.push_back(x); }
-    void activate(){ for(auto* x:d) x->on(); }
+    void add(Device* x){ 
+      d.push_back(x); 
+    }
+    void activate(){ 
+      for(auto* x:d) 
+        x->on(); 
+    }
 };
 int main(){
     Light l; Fan f;
@@ -1560,7 +1708,10 @@ int main(){
     h.add(&l); h.add(&f);
     h.activate();
 }
-
+/* 
+Light on
+Fan on
+*/
 
 
 
@@ -1570,19 +1721,31 @@ int main(){
 //Delivery HAS-A Vehicle + Package
 #include <iostream>
 using namespace std;
-class Vehicle { public: virtual void move()=0; };
+class Vehicle { 
+  public: 
+    virtual void move()=0; 
+};
 class Truck : public Vehicle {                   // IS-A
   public: 
-    void move(){ cout<<"Truck moving\n"; } 
+    void move(){ 
+      cout<<"Truck moving\n"; 
+    } 
 };
 
-class Package { public: string id; Package(string i):id(i){} };
+class Package { 
+  public: 
+    string id; 
+    Package(string i):id(i){} 
+};
 
 class Delivery {
     Vehicle* v; Package* p;                      // aggregation
   public:
     Delivery(Vehicle* V, Package* P):v(V),p(P){}
-    void send(){ v->move(); cout<<"Package "<<p->id; }
+    void send(){ 
+       v->move(); 
+       cout<<"Package "<<p->id; 
+    }
 };
 int main(){
     Truck t;
@@ -1590,7 +1753,10 @@ int main(){
     Delivery d(&t,&p);
     d.send();
 }
-
+/* 
+Truck moving
+Package BX101
+*/
 
 
 //14. Payroll Processing System
@@ -1599,16 +1765,34 @@ int main(){
 #include <iostream>
 #include <vector>
 using namespace std;
-class Employee { public: virtual int salary()=0; };
+class Employee { 
+  public: 
+    virtual int salary()=0; 
+};
 class FullTimeEmployee : public Employee {       // IS-A
-public: int salary(){ return 5000; } };
+  public: 
+    int salary(){ 
+      return 5000; 
+    } 
+};
 class PartTimeEmployee : public Employee {       // IS-A
-public: int salary(){ return 2000; } };
+  public: 
+    int salary(){ 
+      return 2000; 
+    } 
+};
 class Payroll {
     vector<Employee*> emps;                      // aggregation
   public:
-    void add(Employee* e){ emps.push_back(e); }
-    int total(){ int s=0; for(auto* e:emps) s+=e->salary(); return s; }
+    void add(Employee* e){ 
+      emps.push_back(e); 
+    }
+    int total(){ 
+      int s=0; 
+      for(auto* e:emps) 
+        s+=e->salary(); 
+      return s; 
+    }
 };
 int main(){
     FullTimeEmployee f; 
@@ -1617,7 +1801,9 @@ int main(){
     pay.add(&f); pay.add(&p);
     cout<<pay.total();
 }
-
+/* 
+7000
+*/
 
 
 
@@ -1633,18 +1819,27 @@ class Book {
 };
 class EBook : public Book {                      // IS-A
   public: 
-  string format(){ return "EBook"; } 
+  string format(){ 
+    return "EBook"; 
+  } 
 };
 class PaperBook : public Book {                  // IS-A
   public: 
-    string format(){ return "PaperBook"; } 
+    string format(){ 
+      return "PaperBook"; 
+    } 
 };
 
 class Library {
     list<Book*> books;                           // aggregation
   public:
-    void add(Book* b){ books.push_back(b); }
-    void show(){ for(auto* b:books) cout<<b->format()<<endl; }
+    void add(Book* b){ 
+      books.push_back(b); 
+    }
+    void show(){ 
+      for(auto* b:books) 
+        cout<<b->format()<<endl; 
+    }
 };
 int main(){
     EBook e; PaperBook p;
@@ -1652,7 +1847,11 @@ int main(){
     l.add(&e); l.add(&p);
     l.show();
 }
-
+/* 
+Output:
+EBook
+PaperBook
+*/
 
 
 
