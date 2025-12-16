@@ -319,7 +319,7 @@ int main() {
 /* 
 100
  */
- 
+
 /* ----------------------------------------------------------------------------------------------------- */
 Q1: What is the difference between capture-by-value and capture-by-reference?
 | By Value                          | By Reference                |
@@ -574,7 +574,79 @@ int main() {
 Output:
 1 2 3 4 
 */
+/* --------------------------- */
 
+//for loop + lambda (MOST DIRECT EQUIVALENT)
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    vector<int> v = {1, 2, 3, 4};
+
+    auto print = [](int x) {
+        cout << x << " ";
+    };
+
+    for (int x : v) {
+        print(x);   // lambda explicitly called
+    }
+
+    return 0;
+}
+/* 
+Output
+1 2 3 4
+*/
+
+
+
+//Index-based for loop + lambda
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    vector<int> v = {1, 2, 3, 4};
+
+    auto print = [](int x) {
+        cout << x << " ";
+    };
+
+    for (size_t i = 0; i < v.size(); ++i) {
+        print(v[i]);
+    }
+
+    return 0;
+}
+/* 
+Output
+1 2 3 4
+*/
+
+
+
+//Iterator-based for loop + lambda
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    vector<int> v = {1, 2, 3, 4};
+
+    auto print = [](int x) {
+        cout << x << " ";
+    };
+
+    for (auto it = v.begin(); it != v.end(); ++it) {
+        print(*it);
+    }
+
+    return 0;
+}
+/* 
+Output
+1 2 3 4
+*/
+
+/* ============================================================== */
 
 
 7. Mutable Lambdas: Allows modification of captured-by-value variables inside the lambda.
