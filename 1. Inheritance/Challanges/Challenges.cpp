@@ -238,6 +238,95 @@ Explanation: Engine lifetime tied to Car.
 */
 
 
+/* ---------------------------------------------------- */
+//Composition using std::unique_ptr (OWNERSHIP)
+//Car exclusively owns Engine
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+ public:
+    void start() {
+        cout << "Engine start\n";
+    }
+};
+class Car {
+  private:
+    unique_ptr<Engine> eng;   // ✅ Composition (exclusive ownership)
+  public:
+    Car() : eng(make_unique<Engine>()) {}  // Car creates & owns Engine
+
+    void run() {
+        eng->start();
+        cout << "Car running\n";
+    }
+};
+int main() {
+    Car c;
+    c.run();
+}
+/* 
+Output
+Engine start
+Car running
+
+Why this is composition
+Car owns Engine
+Engine lifetime == Car lifetime
+Cannot be shared or copied
+Engine destroyed automatically when Car is destroyed
+✔️ Heap-based composition 
+*/
+
+
+
+/* ---------------------------------------------------- */
+//Using std::shared_ptr (NOT composition) --Aggregation relation
+//Engine lifetime is shared → NOT exclusive ownership
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+  public:
+    void start() {
+        cout << "Engine start\n";
+    }
+};
+class Car {
+  private:
+    shared_ptr<Engine> eng;   // ❌ Shared ownership
+  public:
+    Car(shared_ptr<Engine> e) : eng(e) {}
+    void run() {
+        eng->start();
+        cout << "Car running\n";
+    }
+};
+int main() {
+    auto engine = make_shared<Engine>();
+    Car c1(engine);
+    Car c2(engine);   // same Engine shared
+
+    c1.run();
+    c2.run();
+}
+/* 
+Output
+Engine start
+Car running
+Engine start
+Car running
+
+Why this is NOT composition
+Engine can exist without Car
+Multiple Cars can share same Engine
+Lifetime not tied to a single owner
+❌ This is aggregation / shared association 
+*/
+
+/* ==================================================== */
+
 //Challenge 10 — Composition: Constructor Initialization
 #include <iostream>
 using namespace std;
