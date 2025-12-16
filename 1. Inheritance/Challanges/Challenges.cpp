@@ -205,7 +205,7 @@ Output
 Explanation: Now only one A instance → no ambiguity.
 */
 
-
+/* ==================================================================== */
 
 //✅ SECTION 2 — HAS-A Composition (Strong Ownership) — 6 Challenges
 //Challenge 9 — Composition Basic
@@ -238,7 +238,6 @@ Explanation: Engine lifetime tied to Car.
 */
 
 
-/* ---------------------------------------------------- */
 //Composition using std::unique_ptr (OWNERSHIP)
 //Car exclusively owns Engine
 #include <iostream>
@@ -295,7 +294,7 @@ class Engine {
 };
 class Car {
   private:
-    shared_ptr<Engine> eng;   // ❌ Shared ownership
+    shared_ptr<Engine> eng;   // Aggregation - Engine can exist without Car
   public:
     Car(shared_ptr<Engine> e) : eng(e) {}
     void run() {
@@ -325,7 +324,7 @@ Lifetime not tied to a single owner
 ❌ This is aggregation / shared association 
 */
 
-/* ==================================================== */
+/* ========================================================================================== */
 
 //Challenge 10 — Composition: Constructor Initialization
 #include <iostream>
@@ -348,6 +347,75 @@ int main() {
 Output
 Battery: 90%
 */
+
+/* ---------------------------------------------- */
+Using std::unique_ptr (TRUE COMPOSITION)
+Laptop exclusively owns Battery
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Battery {
+  public:
+    Battery(int p) {
+        cout << "Battery: " << p << "%\n";
+    }
+};
+class Laptop {
+ private:
+    unique_ptr<Battery> bat;   // ✅ Exclusive ownership
+
+  public:
+    Laptop() : bat(make_unique<Battery>(90)) {}
+};
+int main() {
+    Laptop l;
+}
+/* 
+Output
+Battery: 90%
+
+Why this is composition
+Laptop creates the Battery
+No other owner exists
+Battery destroyed with Laptop
+Heap-based exclusive ownership
+*/
+
+/* ------------------------------------------------------ */
+❌ 2️⃣ Using std::shared_ptr (NOT COMPOSITION)--Aggregation
+Battery ownership is shared
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Battery {
+  public:
+    Battery(int p) {
+        cout << "Battery: " << p << "%\n";
+    }
+};
+class Laptop {
+  private:
+    shared_ptr<Battery> bat;   // ❌ Shared ownership
+  public:
+    Laptop(shared_ptr<Battery> b) : bat(b) {}
+};
+int main() {
+    auto battery = make_shared<Battery>(90);
+
+    Laptop l1(battery);
+    Laptop l2(battery);   // Same Battery shared
+}
+/* 
+Output
+Battery: 90%
+
+(Constructed only once, shared by both laptops)
+*/
+
+
+/* ============================================================================================== */
 
 //Challenge 11 — Composition: Nested Object Behavior
 #include <iostream>
@@ -374,6 +442,81 @@ Output
 City: Delhi
 */
 
+/* --------------------------------------------------- */
+
+Using std::unique_ptr — Composition (Exclusive Ownership)
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Address {
+  public:
+    void print() {
+        cout << "City: Delhi\n";
+    }
+};
+class Person {
+ private:
+    unique_ptr<Address> addr;   // ✅ Composition
+ public:
+    Person() : addr(make_unique<Address>()) {}
+    void showAddress() {
+        addr->print();
+    }
+};
+int main() {
+    Person p;
+    p.showAddress();
+}
+/* 
+Output
+City: Delhi
+
+Why this is composition
+Person creates the Address
+No other object can own or share it
+Address lifetime == Person lifetime
+*/
+/* ------------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Shared Ownership (Aggregation)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Address {
+  public:
+    void print() {
+        cout << "City: Delhi\n";
+    }
+};
+class Person {
+  private:
+    shared_ptr<Address> addr;   // ❌ Shared ownership
+
+  public:
+    Person(shared_ptr<Address> a) : addr(a) {}
+
+    void showAddress() {
+        addr->print();
+    }
+};
+int main() {
+    auto sharedAddress = make_shared<Address>();
+
+    Person p1(sharedAddress);
+    Person p2(sharedAddress);   // Same Address shared
+
+    p1.showAddress();
+    p2.showAddress();
+}
+/* 
+Output
+City: Delhi
+City: Delhi
+*/
+
+
+/* ================================================================================================ */
 
 //Challenge 12 — Composition with Multiple Objects
 #include <iostream>
@@ -400,8 +543,85 @@ Wheel created
 Wheel created
 Bike constructed
 */
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition (Exclusive Ownership)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Wheel {
+ public:
+    Wheel() {
+        cout << "Wheel created\n";
+    }
+};
+class Bike {
+ private:
+    unique_ptr<Wheel> w1;
+    unique_ptr<Wheel> w2;   // ✅ Exclusive ownership
+
+ public:
+    Bike()
+        : w1(make_unique<Wheel>()),
+          w2(make_unique<Wheel>()) {
+        cout << "Bike constructed\n";
+    }
+};
+int main() {
+    Bike b;
+}
+/* 
+Output
+Wheel created
+Wheel created
+Bike constructed
+
+Why this is composition
+Bike creates both wheels
+Each wheel has exactly one owner
+Wheels cannot outlive the bike
+*/
+
+/* ----------------------------------------------------- */
+❌ 2️⃣ Using std::shared_ptr — Shared Ownership (Aggregation)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Wheel {
+  public:
+    Wheel() {
+        cout << "Wheel created\n";
+    }
+};
+class Bike {
+  private:
+    shared_ptr<Wheel> w1;
+    shared_ptr<Wheel> w2;   // ❌ Shared ownership
+
+  public:
+    Bike(shared_ptr<Wheel> a, shared_ptr<Wheel> b)
+        : w1(a), w2(b) {
+        cout << "Bike constructed\n";
+    }
+};
+int main() {
+    auto frontWheel = make_shared<Wheel>();
+    auto rearWheel  = make_shared<Wheel>();
+
+    Bike b(frontWheel, rearWheel);
+
+    // Wheels may outlive Bike
+}
+/* 
+Output
+Wheel created
+Wheel created
+Bike constructed
+*/
 
 
+
+/* ====================================================================================================== */
 //Challenge 13 — Composition Destruction Order
 #include <iostream>
 using namespace std;
@@ -432,7 +652,100 @@ A destroyed
 Explanation: Members destroyed in reverse order of definition.
 */
 
+/* -------------------------------------------------------- */
 
+Using std::unique_ptr — Composition (C OWNS A and B)
+C exclusively owns its members. Destructor order is automatically handled.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class A {
+  public:
+    ~A() {
+        cout << "A destroyed\n";
+    }
+};
+class B {
+  public:
+    ~B() {
+        cout << "B destroyed\n";
+    }
+};
+class C {
+  private:
+    unique_ptr<A> a;
+    unique_ptr<B> b;
+
+  public:
+    C() : a(make_unique<A>()), b(make_unique<B>()) {}
+
+    // Destructor automatically called, no manual deletion needed
+};
+
+int main() {
+    C c;
+}
+/* 
+Expected Output
+B destroyed
+A destroyed
+
+Why this is composition
+C owns A and B
+Exclusive ownership (unique_ptr)
+Destruction happens automatically in reverse order of initialization
+Lifetime bound to C
+*/
+
+/* ----------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Ownership)
+A and B can exist independently and be shared across multiple C objects.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class A {
+  public:
+    ~A() {
+        cout << "A destroyed\n";
+    }
+};
+class B {
+  public:
+    ~B() {
+        cout << "B destroyed\n";
+    }
+};
+class C {
+  public:
+    shared_ptr<A> a;
+    shared_ptr<B> b;
+
+    C(const shared_ptr<A>& a_ptr, const shared_ptr<B>& b_ptr) 
+        : a(a_ptr), b(b_ptr) {}
+};
+int main() {
+    auto a_ptr = make_shared<A>();
+    auto b_ptr = make_shared<B>();
+
+    C c1(a_ptr, b_ptr);
+    C c2(a_ptr, b_ptr);  // same A and B shared
+
+    // Destruction happens when last shared_ptr goes out of scope
+}
+/* 
+Expected Output
+A destroyed
+B destroyed
+
+(Destruction may occur later, only when the last shared_ptr goes out of scope.)
+*/
+
+
+
+/* ============================================================================================================= */
 //Challenge 14 — Forcing Dependency in Composition
 #include <iostream>
 using namespace std;
@@ -457,6 +770,10 @@ Output
 CPU ready
 Computer ON
 */
+
+
+
+/* ======================================================== */
 
 //✅ SECTION 3 — HAS-A Aggregation (Weak Ownership) — 6 Challenges
 //Challenge 15 — Aggregation Basic
@@ -490,7 +807,7 @@ Car running
 Explanation: Engine lives even without Car.
 */
 
-
+/* ======================================================== */
 //Challenge 16 — Aggregation: Shared Object
 #include <iostream>
 using namespace std;
@@ -520,7 +837,7 @@ Teacher: Rahul
 */
 
 
-
+/* ======================================================== */
 //Challenge 17 — Aggregation: Lifetime Independence
 #include <iostream>
 using namespace std;
@@ -554,7 +871,7 @@ Mumbai
 Explanation: Address outlives Employee → aggregation.
 */
 
-
+/* ======================================================== */
 //Challenge 18 — Aggregation with vector of pointers
 #include <iostream>
 #include <vector>
@@ -588,7 +905,7 @@ C++
 Python
 */
 
-
+/* ======================================================== */
 
 //Challenge 19 — Composition vs Aggregation Difference
 #include <iostream>
@@ -628,7 +945,7 @@ Engine built
 Person owns engine externally
 */
 
-
+/* ======================================================== */
 //Challenge 20 — Complex Aggregation: Company Has Many Employees
 #include <iostream>
 #include <vector>
@@ -665,7 +982,7 @@ Explanation: Employees exist independently → aggregation.
 */
 
 
-
+/* ======================================================== */
 
 
 
@@ -710,7 +1027,7 @@ Explanation
 Circle IS-A Shape, so base pointer calls overridden method.
 */
 
-
+/* ======================================================== */
 
 //✅ 2. Demonstrate HAS-A (Composition) with strong ownership
 //Concept: Composition = lifetime ownership
@@ -743,7 +1060,7 @@ Engine destroyed
 Explanation
 Composition ensures Engine dies with Car.
 */
-
+/* ======================================================== */
 
 //✅ 3. Demonstrate HAS-A (Aggregation) with weak association
 //Concept: Aggregation = no ownership
@@ -776,7 +1093,7 @@ Explanation
 Team doesn’t own the player → aggregation.
 */
 
-
+/* ======================================================== */
 
 //✅ 4. IS-A with multiple levels (multilevel inheritance)
 //Question:
@@ -811,7 +1128,7 @@ Output
 Dog
 */
 
-
+/* ======================================================== */
 
 //✅ 5. Composition challenge: Bank account with transaction history
 //Question:
@@ -848,7 +1165,7 @@ Output
 Deposit : 500
 Deposit : 200
 */
-
+/* ======================================================== */
 
 //✅ 6. Aggregation challenge: University with Students
 #include <iostream>
@@ -876,7 +1193,7 @@ int main(){
 Output
 B
 */
-
+/* ======================================================== */
 
 //✅ 7. IS-A: Pure virtual class (abstract)
 #include <iostream>
@@ -901,6 +1218,9 @@ Laptop start
 */
 
 
+
+
+/* ======================================================== */
 //✅ 8. Composition: Laptop HAS-A Battery
 #include <iostream>
 using namespace std;
@@ -921,6 +1241,69 @@ Output
 Battery ok
 */
 
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition (Laptop OWNS Battery)
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Battery {
+  public:
+    Battery() {
+        cout << "Battery ok\n";
+    }
+};
+class Laptop {
+  private:
+    unique_ptr<Battery> b;   // ✅ Composition
+  public:
+    Laptop() : b(make_unique<Battery>()) {}
+};
+int main() {
+    Laptop l;
+}
+/* 
+Output
+Battery ok
+
+Why this is composition
+Laptop creates the Battery
+Exclusive ownership (unique_ptr)
+Battery lifetime == Laptop lifetime
+*/
+
+/* ------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Battery)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Battery {
+  public:
+    Battery() {
+        cout << "Battery ok\n";
+    }
+};
+class Laptop {
+  public:
+    shared_ptr<Battery> b;   // ❌ Aggregation
+
+    Laptop(const shared_ptr<Battery>& battery) : b(battery) {}
+};
+int main() {
+    auto battery = make_shared<Battery>();
+
+    Laptop l1(battery);
+    Laptop l2(battery);   // Same battery shared
+}
+/* 
+Output
+Battery ok
+*/
+
+
+/* ======================================================== */
 
 //✅ 9. Aggregation: Flight HAS-A Pilot (but does not own)
 #include <iostream>
@@ -945,7 +1328,78 @@ Output
 Captain Z
 */
 
+/* -------------------------------------------------------- */
 
+Using std::unique_ptr — Composition (Flight OWNS Pilot)
+The Flight creates, owns, and destroys its Pilot.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Pilot {
+  public:
+    string name;
+    Pilot(string n) : name(n) {}
+};
+class Flight {
+  private:
+    unique_ptr<Pilot> p;   // ✅ Composition
+  public:
+    Flight() : p(make_unique<Pilot>("Captain Z")) {}
+    
+    void showPilot() {
+        cout << p->name;
+    }
+};
+int main() {
+    Flight f;
+    f.showPilot();
+}
+/* 
+Output
+Captain Z
+
+Why this is composition
+Flight owns Pilot
+Exclusive ownership (unique_ptr)
+Pilot lifetime == Flight lifetime
+*/
+/* --------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Pilot)
+Pilot exists independently and can be shared across flights.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Pilot {
+  public:
+    string name;
+    Pilot(string n) : name(n) {}
+};
+class Flight {
+  public:
+    shared_ptr<Pilot> p;   // ❌ Aggregation
+
+    Flight(const shared_ptr<Pilot>& pilot) : p(pilot) {}
+};
+int main() {
+    auto pilot = make_shared<Pilot>("Captain Z");
+
+    Flight f1(pilot);
+    Flight f2(pilot);   // Same pilot shared
+
+    cout << f1.p->name;
+}
+/* 
+Output
+Captain Z
+*/
+
+
+
+
+/* ======================================================== */
 
 
 //✅ 10. IS-A + HAS-A mixed
@@ -982,6 +1436,100 @@ Output
 HP 800
 */
 
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition + Inheritance
+Ferrari IS-A Car
+Car HAS-A Engine (exclusive ownership)
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+  public:
+    int hp;
+    Engine(int h) : hp(h) {}
+};
+class Car {
+  protected:
+    unique_ptr<Engine> e;   // ✅ Composition
+
+  public:
+    explicit Car(int hp) : e(make_unique<Engine>(hp)) {}
+    virtual ~Car() = default;
+};
+class Ferrari : public Car {   // IS-A Car
+  public:
+    Ferrari() : Car(800) {}
+
+    void show() {
+        cout << "HP " << e->hp;
+    }
+};
+int main() {
+    Ferrari f;
+    f.show();
+}
+/* 
+Output
+HP 800
+
+Why this is correct composition
+Car creates and owns Engine
+Ferrari inherits ownership via Car
+Engine lifetime == Car/Ferrari lifetime
+No sharing possible
+*/
+/* -------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation + Inheritance
+Engine lifetime is shared, not owned by Car
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+  public:
+    int hp;
+    Engine(int h) : hp(h) {}
+};
+class Car {
+  protected:
+    shared_ptr<Engine> e;   // ❌ Aggregation
+  public:
+    explicit Car(shared_ptr<Engine> engine) : e(engine) {}
+    virtual ~Car() = default;
+};
+class Ferrari : public Car {
+  public:
+    Ferrari(shared_ptr<Engine> engine) : Car(engine) {}
+
+    void show() {
+        cout << "HP " << e->hp;
+    }
+};
+int main() {
+    auto engine = make_shared<Engine>(800);
+
+    Ferrari f(engine);
+    f.show();
+}
+/* 
+Output
+HP 800
+*/
+
+
+
+
+
+
+
+
+
+
+
+/* ======================================================== */
 
 //✅ 11. Composition for resource management (RAII)
 #include <iostream>
@@ -1007,6 +1555,87 @@ Opened
 Closed
 */
 
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition (RAII, Exclusive Ownership)
+Logger owns the File.
+File opens on creation and closes when Logger is destroyed.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class File {
+ public:
+    File() {
+        cout << "Opened\n";
+    }
+    ~File() {
+        cout << "Closed\n";
+    }
+};
+class Logger {
+  private:
+    unique_ptr<File> f;   // ✅ Composition (RAII)
+  public:
+    Logger() : f(make_unique<File>()) {}
+};
+int main() {
+    Logger l;
+}
+/* 
+Output
+Opened
+Closed
+
+Why this is composition & RAII
+Logger creates the File
+Exclusive ownership (unique_ptr)
+Destructor of File runs automatically
+Perfect RAII semantics on the heap
+*/
+
+/* ---------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Resource)
+File lifetime is not tied to Logger.
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class File {
+  public:
+    File() {
+        cout << "Opened\n";
+    }
+    ~File() {
+        cout << "Closed\n";
+    }
+};
+class Logger {
+  private:
+    shared_ptr<File> f;   // ❌ Aggregation
+  public:
+    Logger(const shared_ptr<File>& file) : f(file) {}
+};
+int main() {
+    auto file = make_shared<File>();
+
+    {
+        Logger l1(file);
+        Logger l2(file);   // same file shared
+    }                     // File NOT closed yet
+
+    // File closed only here
+}
+/* 
+Output
+Opened
+Closed
+
+(Closed only when last owner goes out of scope)
+*/
+
+/* ======================================================== */
 
 //✅ 12. Aggregation in Observer Pattern
 #include <iostream>
@@ -1043,6 +1672,103 @@ Output
 Updated
 */
 
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition (Subject OWNS Observers)
+Subject creates, owns, and destroys its observers.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Observer {
+  public:
+    virtual void update() = 0;
+    virtual ~Observer() = default;
+};
+class Subject {
+  public:
+    vector<unique_ptr<Observer>> obs;   // ✅ Composition
+
+    void add(unique_ptr<Observer> o) {
+        obs.push_back(std::move(o));
+    }
+
+    void notify() {
+        for (auto& o : obs)
+            o->update();
+    }
+};
+class Listener : public Observer {
+  public:
+    void update() override {
+        cout << "Updated\n";
+    }
+};
+int main() {
+    Subject s;
+    s.add(make_unique<Listener>());
+    s.notify();
+}
+/* 
+Output
+Updated
+
+Why this is composition
+Subject owns the observers
+Observers cannot exist independently
+Lifetime strictly controlled by Subject
+*/
+
+/* ---------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Observers Shared)
+Observers exist independently and can subscribe/unsubscribe.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Observer {
+  public:
+    virtual void update() = 0;
+    virtual ~Observer() = default;
+};
+class Subject {
+  public:
+    vector<shared_ptr<Observer>> obs;   // ❌ Aggregation
+
+    void add(const shared_ptr<Observer>& o) {
+        obs.push_back(o);
+    }
+
+    void notify() {
+        for (auto& o : obs)
+            o->update();
+    }
+};
+class Listener : public Observer {
+  public:
+    void update() override {
+        cout << "Updated\n";
+    }
+};
+int main() {
+    auto l = make_shared<Listener>();
+
+    Subject s;
+    s.add(l);      // shared ownership
+    s.notify();
+}
+/* 
+Output
+Updated
+*/
+
+
+
+
+/* ======================================================== */
 
 //✅ 13. IS-A: using protected base methods
 #include <iostream>
@@ -1068,7 +1794,7 @@ Output
 Base
 */
 
-
+/* ======================================================== */
 //✅ 14. Composition: Game HAS-A PhysicsEngine
 #include <iostream>
 using namespace std;
@@ -1095,6 +1821,80 @@ Simulate
 */
 
 
+/* ----------------------------------------------------- */
+
+Using std::unique_ptr — Composition (Game OWNS PhysicsEngine)
+#include <iostream>
+#include <memory>
+using namespace std;
+class PhysicsEngine {
+  public:
+    void simulate() {
+        cout << "Simulate\n";
+    }
+};
+class Game {
+  private:
+    unique_ptr<PhysicsEngine> pe;   // ✅ Composition
+
+  public:
+    Game() : pe(make_unique<PhysicsEngine>()) {}
+
+    void frame() {
+        pe->simulate();
+    }
+};
+int main() {
+    Game g;
+    g.frame();
+}
+/* 
+Output
+Simulate
+
+Why this is composition
+Game creates the PhysicsEngine
+Exclusive ownership (unique_ptr)
+Engine lifetime == Game lifetime
+*/
+
+/* ---------------------------------------------------- */
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared PhysicsEngine)
+#include <iostream>
+#include <memory>
+using namespace std;
+class PhysicsEngine {
+  public:
+    void simulate() {
+        cout << "Simulate\n";
+    }
+};
+class Game {
+  private:
+    shared_ptr<PhysicsEngine> pe;   // ❌ Aggregation
+
+  public:
+    Game(shared_ptr<PhysicsEngine> engine) : pe(engine) {}
+
+    void frame() {
+        pe->simulate();
+    }
+};
+int main() {
+    auto engine = make_shared<PhysicsEngine>();
+
+    Game g1(engine);
+    Game g2(engine);   // Same engine shared
+
+    g1.frame();
+}
+/* 
+Output
+Simulate
+*/
+
+/* ======================================================== */
+
 //✅ 15. Aggregation: City HAS-A list of Buildings
 #include <iostream>
 #include <vector>
@@ -1119,7 +1919,83 @@ Output
 Mall
 */
 
+/* -------------------------------------------------------- */
 
+Using std::unique_ptr — Composition (City OWNS Buildings)
+Buildings are created, owned, and destroyed by City.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Building {
+ public:
+    string name;
+    Building(string n) : name(n) {}
+};
+class City {
+  public:
+    vector<unique_ptr<Building>> b;   // ✅ Composition
+
+    void addBuilding(const string& name) {
+        b.push_back(make_unique<Building>(name));
+    }
+};
+int main() {
+    City c;
+    c.addBuilding("Mall");
+    c.addBuilding("Hospital");
+
+    cout << c.b[0]->name;
+}
+/* 
+Output
+Mall
+
+Why this is composition
+City creates Building
+Exclusive ownership (unique_ptr)
+Buildings cannot exist without the City
+*/
+/* --------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Buildings)
+Buildings can exist independently and be shared across cities.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Building {
+  public:
+    string name;
+    Building(string n) : name(n) {}
+};
+class City {
+  public:
+    vector<shared_ptr<Building>> b;   // ❌ Aggregation
+};
+int main() {
+    auto b1 = make_shared<Building>("Mall");
+    auto b2 = make_shared<Building>("Hospital");
+
+    City c1;
+    c1.b = { b1, b2 };
+
+    City c2;
+    c2.b.push_back(b1);   // Same Mall shared by another city
+
+    cout << c1.b[0]->name;
+}
+/* 
+Output
+Mall
+*/
+
+
+
+
+/* ======================================================== */
 //✅ 16. IS-A: Multiple inheritance (Interface style)
 #include <iostream>
 using namespace std;
@@ -1151,6 +2027,7 @@ Draw
 Move
 */
 
+/* ======================================================== */
 //✅ 17. Composition: Stack HAS-A vector
 #include <iostream>
 #include <vector>
@@ -1175,7 +2052,83 @@ Output
 10
 */
 
+/* -------------------------------------------------------- */
 
+Using std::unique_ptr — Composition (Stack OWNS its data)
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Stack {
+ private:
+    unique_ptr<vector<int>> data;   // ✅ Composition
+
+ public:
+    Stack() : data(make_unique<vector<int>>()) {}
+
+    void push(int x) {
+        data->push_back(x);
+    }
+
+    int top() {
+        return data->back();
+    }
+};
+int main() {
+    Stack s;
+    s.push(10);
+    cout << s.top();
+}
+/* 
+Output
+10
+
+Why this is composition
+Stack creates the vector
+Exclusive ownership (unique_ptr)
+Vector lifetime == Stack lifetime
+*/
+
+/* ------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Data)
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Stack {
+  private:
+    shared_ptr<vector<int>> data;   // ❌ Aggregation
+  public:
+    Stack(shared_ptr<vector<int>> d) : data(d) {}
+
+    void push(int x) {
+        data->push_back(x);
+    }
+
+    int top() {
+        return data->back();
+    }
+};
+int main() {
+    auto sharedData = make_shared<vector<int>>();
+
+    Stack s1(sharedData);
+    Stack s2(sharedData);   // Same underlying storage
+
+    s1.push(10);
+    cout << s2.top();       // 10 (shared!)
+}
+/* 
+Output
+10
+*/
+
+
+
+
+
+/* ======================================================== */
 //✅ 18. Aggregation: Company HAS-A Employees
 #include <iostream>
 #include <vector>
@@ -1198,8 +2151,75 @@ int main(){
 Output
 John
 */
+/* -------------------------------------------------------- */
 
+Using std::unique_ptr — Composition (Company OWNS Employees)
+Employees are created, owned, and destroyed by Company.
 
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Employee {
+  public:
+    string name;
+    Employee(string n) : name(n) {}
+};
+class Company {
+  public:
+    vector<unique_ptr<Employee>> e;   // ✅ Composition
+
+    void hire(string name) {
+        e.push_back(make_unique<Employee>(name));
+    }
+};
+int main() {
+    Company c;
+    c.hire("John");
+
+    cout << c.e[0]->name;
+}
+/* 
+Output
+John
+
+Why this is composition
+Company creates Employee
+Exclusive ownership (unique_ptr)
+Employee lifetime == Company lifetime
+*/
+/* ----------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Aggregation (Shared Ownership)
+Employees can exist independently and be shared.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Employee {
+  public:
+    string name;
+    Employee(string n) : name(n) {}
+};
+class Company {
+  public:
+    vector<shared_ptr<Employee>> e;   // ❌ Aggregation
+};
+int main() {
+    auto e1 = make_shared<Employee>("John");
+
+    Company c;
+    c.e.push_back(e1);   // Company references employee
+
+    cout << c.e[0]->name;
+}
+/* 
+Output
+John
+*/
+
+/* ======================================================== */
 
 //✅ 19. IS-A: Overriding method with more logic
 #include <iostream>
@@ -1226,6 +2246,12 @@ Video
 */
 
 
+
+
+
+
+
+/* ======================================================== */
 //✅ 20. Composition + IS-A mix: Engine inside SportsCar
 #include <iostream>
 using namespace std;
@@ -1255,8 +2281,93 @@ Output
 HP 900
 */
 
+/* -------------------------------------------------------- */
+
+Using std::unique_ptr — Composition (HAS-A Engine)
+SportsCar exclusively owns its Engine
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+ public:
+    int hp;
+    Engine(int h) : hp(h) {}
+};
+class Vehicle {
+ public:
+    virtual void show() = 0;
+    virtual ~Vehicle() = default;
+};
+class SportsCar : public Vehicle {   // IS-A Vehicle
+  private:
+    unique_ptr<Engine> e;             // ✅ HAS-A (composition)
+
+  public:
+    SportsCar() : e(make_unique<Engine>(900)) {}
+
+    void show() override {
+        cout << "HP " << e->hp;
+    }
+};
+int main() {
+    SportsCar s;
+    s.show();
+}
+/* 
+Output
+HP 900
+
+Why this is correct composition
+SportsCar creates and owns Engine
+No other object can share it
+Engine lifetime == SportsCar lifetime
+*/
+
+/* --------------------------------------------------------- */
+
+❌ 2️⃣ Using std::shared_ptr — Shared Ownership (NOT Composition)
+Engine ownership can be shared → Aggregation
+
+#include <iostream>
+#include <memory>
+using namespace std;
+class Engine {
+ public:
+    int hp;
+    Engine(int h) : hp(h) {}
+};
+class Vehicle {
+  public:
+    virtual void show() = 0;
+    virtual ~Vehicle() = default;
+};
+class SportsCar : public Vehicle {
+  private:
+    shared_ptr<Engine> e;   // ❌ Shared ownership
+
+  public:
+    SportsCar(shared_ptr<Engine> engine) : e(engine) {}
+
+    void show() override {
+        cout << "HP " << e->hp;
+    }
+};
+int main() {
+    auto engine = make_shared<Engine>(900);
+
+    SportsCar s1(engine);
+    SportsCar s2(engine);   // Same engine shared
+
+    s1.show();
+}
+/* 
+Output
+HP 900
+*/
 
 
+/* ======================================================== */
 
 
 
