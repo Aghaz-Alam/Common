@@ -433,14 +433,14 @@ using namespace std;
 class Sample;  // Forward declaration
 
 class Test {
-public:
+  public:
     shared_ptr<Sample> sptr;
     Test()  { cout << "Test constructed\n"; }
     ~Test() { cout << "Test destroyed\n"; }
 };
 
 class Sample {
-public:
+  public:
     shared_ptr<Test> tptr;
     Sample()  { cout << "Sample constructed\n"; }
     ~Sample() { cout << "Sample destroyed\n"; }
