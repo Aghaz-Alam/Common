@@ -1,0 +1,18 @@
+//Install outlook
+sudo snap install outlook-for-linux --edge
+
+
+
+QEMU Commands
+ctrl + alt  ==Release mouse & keyboard
+ctrl + alt + F == Toggle full screen
+ctrl + alt + 1/2 == Switch console 
+Ctrl + Q  == force quit
+
+
+
+Basic Commands
+
+
+
+

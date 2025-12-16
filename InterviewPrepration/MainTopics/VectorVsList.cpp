@@ -107,12 +107,116 @@ Use list.
 list::splice moves nodes from one list to another in O(1) by rewiring pointers — no element moves, no allocations (if same allocator).
 
 vector can't splice efficiently; you'd have to copy/move every element (O(n)).
-Code
+Code:
 std::list<int> a = {1,2,3}, b = {4,5};
 a.splice(a.end(), b); // move all nodes from b to end of a, O(1)
 
+/* ==================================================== */
+1️⃣ std::vector — ❌ O(n) (copy / move required)
+❗ Key reason
+
+std::vector stores elements in contiguous memory.
+You cannot relink memory blocks, so elements must be copied or moved one by one.
+
+✅ Vector Example (O(n))
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+    vector<int> a = {1, 2, 3};
+    vector<int> b = {4, 5};
+
+    // Simulate splice-like behavior
+    a.reserve(a.size() + b.size());   // avoid realloc for clarity
+
+    for (int x : b) {                 // O(n)
+        a.push_back(x);               // copy/move each element
+    }
+
+    b.clear();                         // b is now empty
+
+    // Print
+    for (int x : a)
+        cout << x << " ";
+}
+
+🖥️ Output
+1 2 3 4 5
+
+🔍 Why O(n)?
+Let n = b.size().
+
+Operations performed:
+b[0] → copy/move → a
+b[1] → copy/move → a
+...
+b[n-1] → copy/move → a
 
 
+Each element is individually copied/moved → O(n).
+
+Memory picture
+vector a: [1][2][3]
+vector b: [4][5]
+
+After:
+vector a: [1][2][3][4][5]
+
+👉 No pointer relinking possible
+
+
+
+
+
+2️⃣ std::list — ✅ O(1) splice (node relinking)
+❗ Key reason
+
+std::list is a doubly-linked list.
+Each element is a node, so splice just rewires pointers.
+
+
+✅ List Example (O(1))
+#include <iostream>
+#include <list>
+using namespace std;
+
+int main() {
+    list<int> a = {1, 2, 3};
+    list<int> b = {4, 5};
+
+    // O(1) splice: no copies, no moves
+    a.splice(a.end(), b);
+
+    // Print
+    for (int x : a)
+        cout << x << " ";
+}
+
+🖥️ Output
+1 2 3 4 5
+
+🔍 Why O(1)?
+std::list::splice does:
+a.tail->next = b.head
+b.head->prev = a.tail
+a.tail = b.tail
+b.head = b.tail = nullptr
+
+✔ No element copies
+✔ No allocations
+✔ No destructor calls
+
+Memory picture
+Before:
+a: 1 <-> 2 <-> 3
+b: 4 <-> 5
+
+After:
+a: 1 <-> 2 <-> 3 <-> 4 <-> 5
+b: empty
+
+Only constant number of pointer changes → O(1).
+/* ================================================================================================= */
 /* --------------------------------------------------- */
 Scenario G — Sorting large sequence
 ---> vector: std::sort is usually fastest in practice (uses random-access, great cache locality).
