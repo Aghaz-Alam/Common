@@ -123,8 +123,18 @@ Explanation: Destruction happens reverse order.
 //Challenge 6 — Ambiguous Function Call (Multiple Inheritance)
 #include <iostream>
 using namespace std;
-class A { public: void fun(){ cout << "A fun\n"; } };
-class B { public: void fun(){ cout << "B fun\n"; } };
+class A { 
+  public: 
+    void fun(){ 
+      cout << "A fun\n"; 
+    } 
+};
+class B { 
+  public: 
+    void fun(){ 
+      cout << "B fun\n"; 
+    } 
+};
 class C : public A, public B {};
 int main() {
     C c;
@@ -143,7 +153,10 @@ Explanation: Must resolve ambiguity using scope.
 //Challenge 7 — Diamond Inheritance Without virtual
 #include <iostream>
 using namespace std;
-class A { public: int x = 10; };
+class A { 
+  public: 
+     int x = 10; 
+};
 class B : public A {};
 class C : public A {};
 class D : public B, public C {};
