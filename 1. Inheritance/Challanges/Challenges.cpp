@@ -32,11 +32,15 @@ Explanation: Dog IS-A Animal, so it inherits eat().
 using namespace std;
 class Car {
   public:
-    virtual void start() { cout << "Car starts\n"; }
+    virtual void start() { 
+      cout << "Car starts\n"; 
+    }
 };
 class SportsCar : public Car {
  public:
-    void start() override { cout << "SportsCar starts fast\n"; }
+    void start() override { 
+      cout << "SportsCar starts fast\n"; 
+    }
 };
 int main() {
     Car* c = new SportsCar();
@@ -60,7 +64,9 @@ class Base {
 };
 class Derived : public Base {
   public:
-    void show() { cout << "x = " << x << "\n"; }
+    void show() { 
+      cout << "x = " << x << "\n"; 
+    }
 };
 int main() {
     Derived d;
@@ -79,11 +85,15 @@ Explanation: protected allows derived access.
 using namespace std;
 class A {
   public:
-    A() { cout << "A ctor\n"; }
+    A() { 
+      cout << "A ctor\n"; 
+    }
 };
 class B : public A {
   public:
-    B() { cout << "B ctor\n"; }
+    B() { 
+      cout << "B ctor\n"; 
+    }
 };
 int main() {
     B b;
@@ -102,11 +112,15 @@ Explanation: Base constructed first, then derived.
 using namespace std;
 class A {
   public:
-    ~A() { cout << "A dtor\n"; }
+    ~A() { 
+      cout << "A dtor\n"; 
+    }
 };
 class B : public A {
   public:
-    ~B() { cout << "B dtor\n"; }
+    ~B() { 
+      cout << "B dtor\n"; 
+    }
 };
 int main() {
     B b;
@@ -199,7 +213,9 @@ Explanation: Now only one A instance → no ambiguity.
 using namespace std;
 class Engine {
   public:
-    void start() { cout << "Engine start\n"; }
+    void start() { 
+      cout << "Engine start\n"; 
+    }
 };
 class Car {
     Engine eng;   // Composition (Car OWNS engine)
@@ -227,7 +243,9 @@ Explanation: Engine lifetime tied to Car.
 using namespace std;
 class Battery {
   public:
-    Battery(int p){ cout << "Battery: " << p << "%\n"; }
+    Battery(int p){ 
+      cout << "Battery: " << p << "%\n"; 
+    }
 };
 class Laptop {
     Battery bat;
@@ -247,12 +265,16 @@ Battery: 90%
 using namespace std;
 class Address {
   public:
-    void print() { cout << "City: Delhi\n"; }
+    void print() { 
+      cout << "City: Delhi\n"; 
+    }
 };
 class Person {
     Address addr;
   public:
-    void showAddress() { addr.print(); }
+    void showAddress() { 
+      addr.print(); 
+    }
 };
 int main() {
     Person p;
@@ -269,12 +291,16 @@ City: Delhi
 using namespace std;
 class Wheel { 
   public: 
-     Wheel() { cout << "Wheel created\n"; } 
+    Wheel() { 
+      cout << "Wheel created\n"; 
+    } 
 };
 class Bike {
     Wheel w1, w2;
   public:
-    Bike() { cout << "Bike constructed\n"; }
+    Bike() { 
+      cout << "Bike constructed\n"; 
+    }
 };
 int main() {
     Bike b;
@@ -349,7 +375,9 @@ Computer ON
 using namespace std;
 class Engine {
   public:
-    void start(){ cout << "Engine start\n"; }
+    void start(){ 
+      cout << "Engine start\n"; 
+    }
 };
 class Car {
     Engine* eng;      // Aggregation — Car DOES NOT own Engine
@@ -386,7 +414,9 @@ class Student {
     Teacher* t;
    public:
     Student(Teacher* t):t(t){}
-    void print(){ cout << "Teacher: " << t->name << "\n"; }
+    void print(){ 
+      cout << "Teacher: " << t->name << "\n"; 
+    }
 };
 int main(){
     Teacher t("Rahul");
@@ -414,7 +444,9 @@ class Employee {
     Address* addr;
   public:
     Employee(Address* a):addr(a){}
-    void show(){ cout << addr->city << "\n"; }
+    void show(){ 
+      cout << addr->city << "\n"; 
+    }
 };
 int main(){
     Address* a = new Address("Mumbai");
@@ -446,9 +478,12 @@ class Book{
 class Library{
     vector<Book*> books;   // aggregation
   public:
-    void add(Book* b){ books.push_back(b); }
+    void add(Book* b){ 
+      books.push_back(b); 
+    }
     void show(){
-        for(auto b: books) cout << b->name << "\n";
+        for(auto b: books) 
+           cout << b->name << "\n";
     }
 };
 int main(){
@@ -471,18 +506,24 @@ Python
 using namespace std;
 class Engine{
   public:
-    Engine(){ cout<<"Engine built\n"; }
+    Engine(){ 
+      cout<<"Engine built\n"; 
+    }
 };
 class Car{       // Composition
     Engine e;
   public:
-    Car(){ cout<<"Car built\n"; }
+    Car(){ 
+      cout<<"Car built\n"; 
+    }
 };
 class Person{    // Aggregation
     Engine* e;
   public:
     Person(Engine* ee):e(ee){}
-    void show(){ cout<<"Person owns engine externally\n"; }
+    void show(){ 
+      cout<<"Person owns engine externally\n"; 
+    }
 };
 int main(){
     Car c;
@@ -511,9 +552,12 @@ class Employee{
 class Company{
     vector<Employee*> emps;
   public:
-    void hire(Employee* e){ emps.push_back(e); }
+    void hire(Employee* e){ 
+      emps.push_back(e); 
+    }
     void list(){
-        for(auto e: emps) cout << e->name << "\n";
+        for(auto e: emps) 
+          cout << e->name << "\n";
     }
 };
 int main(){
@@ -560,7 +604,9 @@ class Circle : public Shape {   // IS-A
     double r;
   public:
     Circle(double radius) : r(radius) {}
-    double area() const override { return 3.14 * r * r; }
+    double area() const override { 
+      return 3.14 * r * r; 
+    }
 };
 int main() {
     Shape* s = new Circle(5);  
