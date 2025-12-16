@@ -290,8 +290,18 @@ Bike constructed
 //Challenge 13 — Composition Destruction Order
 #include <iostream>
 using namespace std;
-class A { public: ~A(){ cout << "A destroyed\n"; } };
-class B { public: ~B(){ cout << "B destroyed\n"; } };
+class A { 
+  public: 
+    ~A(){ 
+      cout << "A destroyed\n"; 
+    } 
+};
+class B { 
+  public: 
+    ~B(){ 
+      cout << "B destroyed\n"; 
+    } 
+};
 class C {
     A a;
     B b;
@@ -313,12 +323,16 @@ Explanation: Members destroyed in reverse order of definition.
 using namespace std;
 class CPU {
   public:
-    CPU(){ cout << "CPU ready\n"; }
+    CPU(){ 
+      cout << "CPU ready\n"; 
+    }
 };
 class Computer {
     CPU cpu;
   public:
-    Computer(){ cout << "Computer ON\n"; }
+    Computer(){ 
+      cout << "Computer ON\n"; 
+    }
 };
 int main() {
     Computer c;
@@ -573,8 +587,12 @@ Circle IS-A Shape, so base pointer calls overridden method.
 using namespace std;
 class Engine {
   public:
-    Engine() { cout << "Engine constructed\n"; }
-    ~Engine() { cout << "Engine destroyed\n"; }
+    Engine() { 
+      cout << "Engine constructed\n"; 
+    }
+    ~Engine() { 
+      cout << "Engine destroyed\n"; 
+    }
 };
 class Car {  // HAS-A (composition)
     Engine engine; 
@@ -631,10 +649,28 @@ Team doesn’t own the player → aggregation.
 
 #include <iostream>
 using namespace std;
-class Animal { public: virtual void sound(){ cout<<"Animal\n"; } };
-class Mammal : public Animal { public: void sound() override { cout<<"Mammal\n"; } };
-class Dog : public Mammal { public: void sound() override { cout<<"Dog\n"; } };
-int main(){ Animal* a = new Dog(); a->sound(); }
+class Animal { 
+  public: 
+    virtual void sound(){ 
+      cout<<"Animal\n"; 
+    } 
+};
+class Mammal: public Animal { 
+    public: 
+      void sound() override { 
+        cout<<"Mammal\n"; 
+      } 
+};
+class Dog : public Mammal { 
+  public: 
+    void sound() override { 
+      cout<<"Dog\n"; 
+    } 
+};
+int main(){ 
+  Animal* a = new Dog(); 
+  a->sound(); 
+}
 /* 
 Output
 Dog
@@ -658,7 +694,9 @@ class Transaction {
 class BankAccount {
     vector<Transaction> history; // composition
   public:
-    void deposit(int amt) { history.emplace_back("Deposit", amt); }
+    void deposit(int amt) { 
+      history.emplace_back("Deposit", amt); 
+    }
     void print() {
         for (auto& t : history)
             cout << t.type << " : " << t.amount << endl;
@@ -681,11 +719,17 @@ Deposit : 200
 #include <iostream>
 #include <vector>
 using namespace std;
-class Student { public: string name; Student(string n):name(n){} };
+class Student { 
+  public: 
+    string name; 
+    Student(string n):name(n){} 
+};
 class University {
   public:
     vector<Student*> students;  // aggregation
-    void add(Student* s){ students.push_back(s); }
+    void add(Student* s){ 
+      students.push_back(s); 
+    }
 };
 int main(){
     Student s1("A"), s2("B");
@@ -702,9 +746,20 @@ B
 //✅ 7. IS-A: Pure virtual class (abstract)
 #include <iostream>
 using namespace std;
-class Device { public: virtual void start()=0; };
-class Laptop : public Device { public: void start(){ cout<<"Laptop start\n"; } };
-int main(){ Device* d=new Laptop(); d->start(); }
+class Device { 
+  public: 
+     virtual void start()=0; 
+};
+class Laptop : public Device { 
+  public: 
+    void start(){ 
+      cout<<"Laptop start\n"; 
+    } 
+};
+int main(){ 
+  Device* d=new Laptop(); 
+  d->start(); 
+}
 /* 
 Output
 Laptop start
@@ -714,9 +769,18 @@ Laptop start
 //✅ 8. Composition: Laptop HAS-A Battery
 #include <iostream>
 using namespace std;
-class Battery { public: Battery(){ cout<<"Battery ok\n"; } };
-class Laptop { Battery b; };
-int main(){ Laptop l; }
+class Battery { 
+  public: 
+    Battery(){ 
+      cout<<"Battery ok\n"; 
+    } 
+};
+class Laptop { 
+  Battery b; 
+};
+int main(){ 
+  Laptop l; 
+}
 /* 
 Output
 Battery ok
@@ -726,7 +790,11 @@ Battery ok
 //✅ 9. Aggregation: Flight HAS-A Pilot (but does not own)
 #include <iostream>
 using namespace std;
-class Pilot { public: string name; Pilot(string n):name(n){} };
+class Pilot { 
+  public: 
+    string name; 
+    Pilot(string n):name(n){} 
+};
 class Flight {
   public:
     Pilot* p;   // aggregation
@@ -752,7 +820,11 @@ Captain Z
 
 #include <iostream>
 using namespace std;
-class Engine { public: int hp; Engine(int h):hp(h){} };
+class Engine { 
+  public: 
+    int hp; 
+    Engine(int h):hp(h){} 
+};
 class Car {
   protected:
     Engine e;  // composition
@@ -762,9 +834,14 @@ class Car {
 class Ferrari : public Car {  // IS-A
   public:
     Ferrari():Car(800){}
-    void show(){ cout<<"HP "<<e.hp; }
+    void show(){ 
+      cout<<"HP "<<e.hp; 
+    }
 };
-int main(){ Ferrari f; f.show(); }
+int main(){ 
+  Ferrari f; 
+  f.show(); 
+}
 /* 
 Output
 HP 800
@@ -775,11 +852,20 @@ HP 800
 #include <iostream>
 using namespace std;
 class File {
-  public: File(){ cout<<"Opened\n"; }
-        ~File(){ cout<<"Closed\n"; }
+  public: 
+    File(){ 
+      cout<<"Opened\n"; 
+    }
+    ~File(){ 
+      cout<<"Closed\n"; 
+    }
 };
-class Logger { File f; }; // composition = RAII
-int main(){ Logger l; }
+class Logger { 
+  File f; 
+}; // composition = RAII
+int main(){ 
+  Logger l; 
+}
 /* 
 Output
 Opened
@@ -791,15 +877,26 @@ Closed
 #include <iostream>
 #include <vector>
 using namespace std;
-class Observer { public: virtual void update() = 0; };
+class Observer { 
+  public: 
+    virtual void update() = 0; 
+};
 class Subject {
   public:
     vector<Observer*> obs; // aggregation
-    void add(Observer* o) { obs.push_back(o); }
-    void notify() { for (auto* o : obs) o->update(); }
+    void add(Observer* o) { 
+      obs.push_back(o); 
+    }
+    void notify() { 
+      for (auto* o : obs) 
+           o->update(); 
+    }
 };
 class Listener : public Observer {
-public: void update(){ cout<<"Updated\n"; }
+  public: 
+    void update(){ 
+      cout<<"Updated\n"; 
+    }
 };
 int main(){
     Subject s; Listener l;
@@ -815,9 +912,22 @@ Updated
 //✅ 13. IS-A: using protected base methods
 #include <iostream>
 using namespace std;
-class Base { protected: void msg(){ cout<<"Base\n"; } };
-class Derived : public Base { public: void call(){ msg(); } };
-int main(){ Derived d; d.call(); }
+class Base { 
+  protected: 
+     void msg(){ 
+      cout<<"Base\n"; 
+    } 
+};
+class Derived : public Base { 
+  public: 
+    void call(){ 
+      msg(); 
+    } 
+};
+int main(){ 
+  Derived d; 
+  d.call(); 
+}
 /* 
 Output
 Base
@@ -827,13 +937,23 @@ Base
 //✅ 14. Composition: Game HAS-A PhysicsEngine
 #include <iostream>
 using namespace std;
-class PhysicsEngine { public: void simulate(){ cout<<"Simulate\n"; } };
+class PhysicsEngine { 
+  public: 
+    void simulate(){ 
+      cout<<"Simulate\n"; 
+    } 
+};
 class Game {
     PhysicsEngine pe;  // composition
   public:
-    void frame(){ pe.simulate(); }
+    void frame(){ 
+      pe.simulate(); 
+    }
 };
-int main(){ Game g; g.frame(); }
+int main(){ 
+  Game g; 
+  g.frame(); 
+}
 /* 
 Output
 Simulate
@@ -844,14 +964,19 @@ Simulate
 #include <iostream>
 #include <vector>
 using namespace std;
-class Building { public: string name; Building(string n):name(n){} };
+class Building { 
+  public: 
+    string name; 
+    Building(string n):name(n){} 
+};
 class City {
   public:
     vector<Building*> b; // aggregation
 };
 int main(){
     Building b1("Mall"), b2("Hospital");
-    City c; c.b={&b1,&b2};
+    City c; 
+    c.b={&b1,&b2};
     cout<<c.b[0]->name;
 }
 /* 
@@ -863,15 +988,27 @@ Mall
 //✅ 16. IS-A: Multiple inheritance (Interface style)
 #include <iostream>
 using namespace std;
-class Drawable { public: virtual void draw()=0; };
-class Movable { public: virtual void move()=0; };
+class Drawable { 
+   public: 
+     virtual void draw()=0; 
+};
+class Movable { 
+   public: 
+     virtual void move()=0; 
+};
 class Sprite : public Drawable, public Movable {
   public:
-    void draw(){ cout<<"Draw\n"; }
-    void move(){ cout<<"Move\n"; }
+    void draw(){ 
+      cout<<"Draw\n"; 
+    }
+    void move(){ 
+      cout<<"Move\n"; 
+    }
 };
 int main(){
-    Sprite s; s.draw(); s.move();
+    Sprite s; 
+    s.draw(); 
+    s.move();
 }
 /* 
 Output
@@ -886,10 +1023,18 @@ using namespace std;
 class Stack {
     vector<int> data; // composition
   public:
-    void push(int x){ data.push_back(x); }
-    int top(){ return data.back(); }
+    void push(int x){ 
+      data.push_back(x); 
+    }
+    int top(){ 
+      return data.back(); 
+    }
 };
-int main(){ Stack s; s.push(10); cout<<s.top(); }
+int main(){ 
+  Stack s; 
+  s.push(10); 
+  cout<<s.top(); 
+}
 /* 
 Output
 10
@@ -900,7 +1045,11 @@ Output
 #include <iostream>
 #include <vector>
 using namespace std;
-class Employee { public: string name; Employee(string n):name(n){} };
+class Employee { 
+  public: 
+    string name; 
+    Employee(string n):name(n){} 
+};
 class Company {
   public:
     vector<Employee*> e; // aggregation
@@ -920,8 +1069,18 @@ John
 //✅ 19. IS-A: Overriding method with more logic
 #include <iostream>
 using namespace std;
-class Media { public: virtual void play(){ cout<<"Media\n"; } };
-class Video : public Media { public: void play(){ cout<<"Video\n"; } };
+class Media { 
+  public: 
+    virtual void play(){ 
+      cout<<"Media\n"; 
+    } 
+};
+class Video : public Media { 
+   public: 
+      void play(){ 
+        cout<<"Video\n"; 
+      } 
+};
 int main(){ 
     Media* m = new Video(); 
     m->play(); 
@@ -935,13 +1094,22 @@ Video
 //✅ 20. Composition + IS-A mix: Engine inside SportsCar
 #include <iostream>
 using namespace std;
-class Engine { public: int hp; Engine(int h):hp(h){} };
-class Vehicle { public: virtual void show()=0; };
+class Engine { 
+  public: 
+    int hp; 
+    Engine(int h):hp(h){} 
+};
+class Vehicle { 
+  public: 
+    virtual void show()=0; 
+};
 class SportsCar : public Vehicle {  // IS-A Vehicle
     Engine e; // HAS-A Engine
   public:
     SportsCar() : e(900) {}
-    void show(){ cout<<"HP "<<e.hp; }
+    void show(){ 
+      cout<<"HP "<<e.hp; 
+    }
 };
 int main(){ 
     SportsCar s; 
