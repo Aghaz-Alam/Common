@@ -1,3 +1,58 @@
+#include <iostream>
+using namespace std;
+template <typename T>
+class SharedPtr {
+    T* ptr;
+    size_t* refCount;
+  public:
+    SharedPtr(T* p = nullptr) : ptr(p), refCount(new size_t(1)) {}
+    // Copy constructor
+    SharedPtr(const SharedPtr& other) {
+        ptr = other.ptr;
+        refCount = other.refCount;
+        ++(*refCount);
+    }
+    // Assignment operator
+    SharedPtr& operator=(const SharedPtr& other) {
+        if (this != &other) {
+            release();
+
+            ptr = other.ptr;
+            refCount = other.refCount;
+            ++(*refCount);
+        }
+        return *this;
+    }
+    void release() {
+        if (--(*refCount) == 0) {
+            delete ptr;
+            delete refCount;
+        }
+    }
+    ~SharedPtr() {
+        release();
+    }
+    T& operator*() { return *ptr; }
+    T* operator->() { return ptr; }
+    size_t use_count() const { return *refCount; }
+};
+int main() {
+    SharedPtr<int> p1(new int(10));
+    cout << p1.use_count() << endl; // 1
+    {
+        SharedPtr<int> p2 = p1;
+        cout << p1.use_count() << endl; // 2
+    }
+    cout << p1.use_count() << endl; // back to 1
+  return 0;
+}
+/* 
+1
+2
+1
+*/
+
+
 //SharedPtr<T> Implementation
 #include <iostream>
 #include <utility>

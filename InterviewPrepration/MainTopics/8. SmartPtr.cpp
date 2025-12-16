@@ -42,7 +42,7 @@ int main() {
 ---> They solve common raw-pointer problems:
 
 ✔ Memory leaks
----> If you forget to delete memory → leak.
+---> If we forget to delete memory → leak.
 ---> Smart pointers call delete automatically.
 
 ✔ Exception safety
@@ -159,9 +159,93 @@ int main() {
 }
 
 
+/* --------------------------------- */
+#include <iostream>
+#include <memory>
+using namespace std;
 
+class Sample;
 
-what types of smart pointers.
+class Test {
+public:
+    shared_ptr<Sample> s;
+
+    Test() {
+        cout << "Test is created!" << endl;
+    }
+
+    ~Test() {
+        cout << "Test is destroyed!" << endl;
+    }
+};
+
+class Sample {
+public:
+    weak_ptr<Test> t;
+
+    Sample() {
+        cout << "Sample is created!" << endl;
+    }
+
+    ~Sample() {
+        cout << "Sample is destroyed!" << endl;
+    }
+
+    // Safe way to check if Test still exists
+    void checkTest() {
+        if (t.expired()) {
+            cout << "Test reference count is ZERO (object destroyed)" << endl;
+        } else {
+            cout << "Test object is still alive" << endl;
+        }
+    }
+};
+
+int main() {
+
+    weak_ptr<Test> testObserver;   // observe lifetime safely
+
+    {
+        shared_ptr<Test> tp = make_shared<Test>();
+        shared_ptr<Sample> sp = make_shared<Sample>();
+
+        tp->s = sp;
+        sp->t = tp;
+
+        testObserver = tp;
+
+        cout << "Reference count Test   : " << tp.use_count() << endl;
+        cout << "Reference count Sample : " << sp.use_count() << endl;
+
+        sp->checkTest();
+    } // tp and sp go out of scope here
+
+    cout << "After scope exit:" << endl;
+
+    if (testObserver.expired()) {
+        cout << "Test reference count reached ZERO" << endl;
+    } else {
+        cout << "Test is still alive" << endl;
+    }
+
+    cout << "End of scope!" << endl;
+    return 0;
+}
+/* 
+Test is created!
+Sample is created!
+Reference count Test   : 1
+Reference count Sample : 2
+Test object is still alive
+Test is destroyed!
+Sample is destroyed!
+After scope exit:
+Test reference count reached ZERO
+End of scope!
+ */
+/* ===================================================================== */
+
+what are the types of smart pointers.
 how shared pointer is implemented.
 
 ⭐ 1. Types of Smart Pointers in C++ (C++11+)
