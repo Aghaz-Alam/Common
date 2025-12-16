@@ -205,31 +205,46 @@ Example: count_if
 int countEven = count_if(v.begin(), v.end(),[](int x){ return x % 2 == 0; });
 
 
+/* ------------------------------- */
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+int main(){
+   vector<int> v = {5, 3, 9, 1};
 
+   sort(v.begin(), v.end(), [](int a, int b) {
+      return a > b;    // descending
+   });
+
+   for(auto x: v){
+    cout<<x<<" ";
+   }
+   cout<<endl;
+  return 0;
+
+}
+/* 
+9 5 3 1 
+ */
 
 /* ----------------------------------------------------------------------------------------------------- */
 8. Lambda as Function Objects (Functors)
-
 A lambda is compiled as an unnamed class with:
-
 Operator () overloaded
-
 Captured variables stored as data members
 
 Visualization:
 auto f = [x](int y){ return x + y; };
 
-
 Compiler generates something like:
-
 class __Lambda_1 {
     int x;
-public:
+  public:
     int operator()(int y) const {
         return x + y;
     }
 };
-
 
 f is an object of this class.
 
@@ -237,13 +252,10 @@ f is an object of this class.
 
 /* ------------------------------------------------------------------------------------------------------- */
 9. Generic Lambdas (C++14)
-
 Use auto in parameters:
-
 auto add = [](auto a, auto b) {
     return a + b;
 };
-
 cout << add(2, 3);       // 5
 cout << add(2.5, 3.5);   // 6.0
 
@@ -263,8 +275,28 @@ class A {
     }
 };
 
+/* ------------------------------- */
+#include <iostream>
+using namespace std;
+class A {
+   public:
+    int x = 5;
 
-
+    void show() {
+        auto lam = [this]() {
+            cout << x;
+        };
+        lam();
+    }
+};
+int main() {
+    A obj;
+    obj.show();
+    return 0;
+}
+/* 
+5 
+ */
 /* ----------------------------------------------------------------------------------------------------- */
 11. C++20: Lambda Templates
 auto func = []<typename T>(T x) {
@@ -273,8 +305,21 @@ auto func = []<typename T>(T x) {
 
 cout << func(10);     // 100
 
+/* -------------------------- */
+#include <iostream>
+using namespace std;
+int main() {
+   auto func = []<typename T>(T x) {
+    return x * x;
+   };
+   cout << func(10);     // 100
 
-
+  return 0;
+}
+/* 
+100
+ */
+ 
 /* ----------------------------------------------------------------------------------------------------- */
 Q1: What is the difference between capture-by-value and capture-by-reference?
 | By Value                          | By Reference                |
