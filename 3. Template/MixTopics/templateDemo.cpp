@@ -475,6 +475,43 @@ int main(){
 ✅ 4) Template Metaprogramming (Compile-Time Calculation): Compute factorial at compile time.
 ➤ Compile-time factorial using recursion
 
+//Metaprogramming
+#include<iostream>
+using namespace std;
+/*
+//C++11--accepts only return
+constexpr int factorial(int n){
+    return n<=1 ? 1 : n*factorial(n-1);
+}
+*/
+
+//C++14--accepts loops as well
+constexpr int factorial(int n) {
+    int fact = 1;
+    for (int i = 2; i <= n; ++i) {
+        fact *= i;
+    }
+    return fact;
+}
+
+int main(){
+     // Compile-time evaluation
+    constexpr int fact = factorial(5);
+    cout<<"Compiletime factorial: "<<fact<<endl;
+    
+     // Runtime evaluation
+    int fact1 = 4;
+    cout<<"Runtime factorial: "<<factorial(fact1)<<endl;
+}
+/*
+Compiletime factorial: 120
+Runtime factorial: 24
+*/
+
+
+
+
+//Metaprogramming
 #include <iostream>
 using namespace std;
 template <int N>
