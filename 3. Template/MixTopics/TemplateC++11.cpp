@@ -357,7 +357,6 @@ int main() {
 
 /* -------------------------------------- */
 #include <iostream>
-
 template<typename T>
 using ptr = T*;
 
@@ -977,6 +976,8 @@ Example 1: Function overloading with SFINAE
 We can conditionally enable a function for certain types using std::enable_if. 
 Here's a simple example that adds two numbers, but only if the types are integral types (like int, long, etc.).
 
+
+//SFINAE--C++11
 #include <iostream>
 #include <type_traits>
 
@@ -993,7 +994,6 @@ typename std::enable_if<std::is_floating_point<T>::value, T>::type
 add(T a, T b) {
     return a + b;
 }
-
 int main() {
     std::cout << add(1, 2) << std::endl;          // Calls the integral version
     std::cout << add(1.5, 2.5) << std::endl;      // Calls the floating-point version
@@ -1004,6 +1004,29 @@ int main() {
 4
 */
 
+//SFINAE--C++14
+#include<iostream>
+using namespace std;
+template<typename T>
+enable_if_t<is_integral<T>::value, T> 
+add(T a, T b){
+    return a + b;
+} 
+
+template<typename T>
+enable_if_t<is_floating_point<T>::value, T> 
+add(T x, T y){
+    return x + y; 
+}
+int main(){
+     cout<<add(5,8)<<endl;
+     cout<<add(5.4, 5.7)<<endl;
+   return 0;
+}
+/*
+13
+11.1
+*/
 
 
 Metaprogramming (C++11)

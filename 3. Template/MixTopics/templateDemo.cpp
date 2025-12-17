@@ -314,22 +314,34 @@ This is the cleanest and most reliable SFINAE pattern.
 #include <iostream>
 #include <type_traits>
 using namespace std;
-// Case 1: T has size()
+
+// -------- has_size trait --------
+template <typename, typename = void>
+struct has_size : false_type {};
+
 template <typename T>
-auto printSize(const T& t) -> decltype(t.size(), void()) {
+struct has_size<T, void_t<decltype(declval<T>().size())>>: true_type {};
+
+// -------- function overloading --------
+template <typename T>
+typename enable_if<has_size<T>::value>::type
+printSize(const T& t) {
     cout << "Has size(): " << t.size() << endl;
 }
-// Case 2: T has no size()
+
 template <typename T>
-typename enable_if<!is_same<decltype(declval<T>().size()), void>::value, void>::type
+typename enable_if<!has_size<T>::value>::type
 printSize(const T&) {
     cout << "No size() available" << endl;
 }
 int main() {
-    printSize(string("hello"));  // Has size()
-    printSize(10);               // No size()
-  return 0;
+    printSize(string("hello"));
+    printSize(10);
 }
+/*
+Has size(): 5
+No size() available
+*/
 
 ✅ ✔ Simpler Correct SFINAE Version (Overload with int/...)
 This is the classic trick:
@@ -399,6 +411,65 @@ No size() available
 */
 /* ---------------------- */
 
+
+
+//SFINAE
+Example 1: Function overloading with SFINAE
+We can conditionally enable a function for certain types using std::enable_if. 
+Here's a simple example that adds two numbers, but only if the types are integral types (like int, long, etc.).
+
+
+//SFINAE--C++11
+#include <iostream>
+#include <type_traits>
+
+// Enable only for integral types (int, char, etc.)
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, T>::type
+add(T a, T b) {
+    return a + b;
+}
+
+// Enable only for floating-point types (float, double)
+template <typename T>
+typename std::enable_if<std::is_floating_point<T>::value, T>::type
+add(T a, T b) {
+    return a + b;
+}
+int main() {
+    std::cout << add(1, 2) << std::endl;          // Calls the integral version
+    std::cout << add(1.5, 2.5) << std::endl;      // Calls the floating-point version
+    // std::cout << add("string", "test");       // Compile error because strings are not handled
+}
+/*
+3
+4
+*/
+
+//SFINAE--C++14
+#include<iostream>
+#include<type_traits>
+using namespace std;
+template<typename T>
+enable_if_t<is_integral<T>::value, T> 
+add(T a, T b){
+    return a + b;
+} 
+
+template<typename T>
+enable_if_t<is_floating_point<T>::value, T> 
+add(T x, T y){
+    return x + y; 
+}
+int main(){
+     cout<<add(5,8)<<endl;
+     cout<<add(5.4, 5.7)<<endl;
+   return 0;
+}
+/*
+13
+11.1
+*/
 
 
 ✅ 4) Template Metaprogramming (Compile-Time Calculation): Compute factorial at compile time.
