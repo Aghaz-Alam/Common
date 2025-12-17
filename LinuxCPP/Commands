@@ -11,7 +11,25 @@ Ctrl + Q  == force quit
 
 
 
-Basic Commands
+//Install QEMU
+sudo apt update && sudo apt upgrade
+sudo apt install -y qemu-system-x86 qemu-utils
+
+//QEMU version
+qemu-system-x86_64 --version
+
+//launch QEMU
+qemu-system-x86_64 -nic user,model=e1000
+
+qemu-system-x86_64, -m 2048, -hda disk.img, -nic user,model=e1000
+
+
+
+//Confirm host connectivity from guest
+ip route
+
+
+
 
 
 

@@ -145,6 +145,38 @@ Pointer Type
 ✔ Partial specialization pattern:
 template <typename T> class TypeInfo<T*>
 
+/* -------------------------------------- */
+
+#include<iostream>
+using namespace std;
+template<typename T>
+class Box{
+  public:
+   static void show(T val){
+       cout<<"Generic Val: "<<val<<endl;
+   }
+};
+template<typename T>
+class Box<T*>{
+   public:
+    static void show(T* val){
+        cout<<"pinter Val: "<<*val<<endl;
+    }
+};
+int main(){
+    Box<double>::show(5.5);
+    
+    int a=10;
+    Box<int*>::show(&a);
+  return 0;
+}
+/*
+Generic Val: 5.5
+pinter Val: 10
+*/
+
+/* =========================================================================== */
+
 ✅ 4) Partial Specialization for Arrays
 #include <iostream>
 using namespace std;
