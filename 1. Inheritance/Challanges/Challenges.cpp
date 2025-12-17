@@ -1092,6 +1092,67 @@ Ronaldo
 Explanation
 Team doesn’t own the player → aggregation.
 */
+/* ----------------------------------------- */
+//Aggregation keeping object in private
+#include <iostream>
+using namespace std;
+class Player {
+  public:
+    string name;
+    Player(string n) : name(n) {}
+};
+
+class Team {
+  private:
+    Player* p;   // aggregation: NOT owned
+
+  public:
+    explicit Team(Player* player) : p(player) {}
+
+    void showPlayer() const {
+        cout << p->name;
+    }
+};
+
+int main() {
+    Player p("Ronaldo");
+    Team t(&p);
+    t.showPlayer();
+}
+/*
+Ronaldo
+*/
+
+/* ---------------------------------------- */
+//Composition using std::unique_ptr (Team OWNS Player)
+#include <iostream>
+#include <memory>
+using namespace std;
+class Player {
+  public:
+    string name;
+    Player(string n) : name(n) {}
+};
+class Team {
+  private:
+    unique_ptr<Player> p;   // ✅ Composition (owned)
+
+  public:
+    Team(string playerName): p(make_unique<Player>(playerName)) {}
+
+    void show() const {
+        cout << p->name;
+    }
+};
+int main() {
+    Team t("Ronaldo");
+    t.show();
+}
+/* 
+Output
+Ronaldo
+*/
+
 
 /* ======================================================== */
 
