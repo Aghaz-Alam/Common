@@ -527,7 +527,7 @@ int main() {
 using namespace std;
 
 class Demo {
-public:
+  public:
     int* p;
 
     Demo() { p = new int(10); }
