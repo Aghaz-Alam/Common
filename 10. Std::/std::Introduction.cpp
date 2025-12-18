@@ -186,6 +186,63 @@ int main() {
 */
 
 
+
+// g++ -std=c++17
+#include <optional>
+#include <iostream>
+using namespace std;
+
+optional<int> find_even(int x) {
+    if (x % 2 == 0) return x;
+    return nullopt;
+}
+
+int main() {
+    if (auto v = find_even(3)) 
+        cout << *v << '\n'; 
+    else 
+        cout << "none\n";
+    
+    if (auto v = find_even(4)) 
+        cout << *v << '\n'; 
+    else 
+        cout << "none\n";
+}
+/* 
+Output
+none
+4
+*/
+
+
+
+
+// g++ -std=c++17
+#include <optional>
+#include <iostream>
+using namespace std;
+
+optional<int> find_even(int x) {
+    if (x % 2 == 0) return x;
+    return nullopt;
+}
+int main() {
+    for (int i = 0; i <= 9; ++i) {
+        optional<int> result = find_even(i);
+
+        if (result) {              // same as result.has_value()
+            cout << *result << " ";
+        }
+    }
+    cout << endl;
+    return 0;
+}
+/*
+0 2 4 6 8
+*/
+
+
+
 ## 10. std::variant
 Type-safe union.
 
