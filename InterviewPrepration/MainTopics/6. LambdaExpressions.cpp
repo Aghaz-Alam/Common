@@ -739,3 +739,413 @@ All deduced types must match exactly.
 | Must specify `-> return_type` for complex returns        | ✔️ Yes | ❌ No   |
 | Can deduce only if all return expressions have same type | —      | ✔️ Yes |
 
+
+
+
+
+
+
+
+//1️⃣ Capture NOTHING [ ]
+#include <iostream>
+using namespace std;
+int main() {
+    auto f = []() {
+        return 10 + 20;
+    };
+
+    cout << f() << endl;
+    return 0;
+}
+/* 
+Output
+30
+*/
+
+
+
+//2️⃣ Capture BY VALUE [x, y]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [x, y]() {
+        return x + y;
+    };
+
+    cout << f() << endl;
+    return 0;
+}
+/* 
+Output
+30
+*/
+
+
+
+//3️⃣ Capture BY REFERENCE [&x, &y]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [&x, &y]() {
+        x += 5;
+        return x + y;
+    };
+
+    cout << f() << endl;
+    cout << x << " " << y << endl;
+    return 0;
+}
+/* 
+Output
+35
+15 20
+*/
+
+
+
+//4️⃣ Capture ALL BY VALUE [=]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [=]() {
+        return x + y;
+    };
+
+    cout << f() << endl;
+    return 0;
+}
+/* 
+Output
+30
+*/
+
+
+
+//5️⃣ Capture ALL BY REFERENCE [&]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [&]() {
+        x += 2;
+        y += 3;
+        return x + y;
+    };
+
+    cout << f() << endl;
+    cout << x << " " << y << endl;
+    return 0;
+}
+/* 
+Output
+35
+12 23
+*/
+
+
+
+
+//6️⃣ Mixed capture [=, &y]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [=, &y]() {
+        y += 10;
+        return x + y;
+    };
+
+    cout << f() << endl;
+    cout << x << " " << y << endl;
+    return 0;
+}
+/* 
+Output
+40
+10 30
+*/
+
+
+
+
+//7️⃣ Mixed capture [&, x]
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [&, x]() {
+        y += 5;
+        return x + y;
+    };
+
+    cout << f() << endl;
+    cout << x << " " << y << endl;
+    return 0;
+}
+/* 
+Output
+35
+10 25
+*/
+
+
+
+
+//8️⃣ mutable lambda (modify value copies)
+//Code
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [x, y]() mutable {
+        x += 5;
+        y += 5;
+        return x + y;
+    };
+
+    cout << f() << endl;
+    cout << x << " " << y << endl;
+    return 0;
+}
+/* 
+Output
+40
+10 20
+*/
+
+
+
+
+//9️⃣ Capture EXPRESSIONS (C++14+)
+//Code
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20;
+
+    auto f = [sum = x + y]() {
+        return sum;
+    };
+
+    cout << f() << endl;
+    return 0;
+}
+/* 
+Output
+30
+*/
+
+
+
+//🔟 Capture this (class example)
+//Code
+#include <iostream>
+using namespace std;
+class Test {
+    int x = 10;
+  public:
+    void show() {
+        auto f = [this]() {
+            cout << x << endl;
+        };
+        f();
+    }
+};
+int main() {
+    Test t;
+    t.show();
+    return 0;
+}
+/* 
+Output
+10
+*/
+
+
+
+
+
+
+1️⃣ Why lambda operator() is const
+Reason (Core concept)
+By default, a lambda captures by value, so the compiler makes:
+operator() const
+This prevents accidental modification of captured copies.
+
+❌ Without mutable (ERROR)
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10;
+
+    auto f = [x]() {
+        // x++;   // ❌ ERROR: x is read-only
+        return x;
+    };
+
+    cout << f();
+    return 0;
+}
+
+📌 Compilation error: cannot modify captured variable
+
+
+
+//✔ With mutable
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+
+    auto f = [x]() mutable {
+        x += 5;
+        return x;
+    };
+
+    cout << f() << endl;
+    cout << x << endl;
+    return 0;
+}
+/* 
+Output
+15
+10
+
+📌 operator() is no longer const
+
+✅ Conclusion
+Lambdas are const by default
+mutable removes const
+Original variables remain unchanged
+*/
+
+
+
+2️⃣ Difference between [=] and [x, y]
+[=] — capture ALL used variables by value
+[x, y] — capture ONLY x and y
+
+
+[=] Example
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20, z = 30;
+
+    auto f = [=]() {
+        return x + y + z;
+    };
+
+    cout << f();
+    return 0;
+}
+/* 
+Output
+60
+*/
+
+
+
+
+[x, y] Example
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10, y = 20, z = 30;
+
+    auto f = [x, y]() {
+        return x + y;
+        // z not accessible
+    };
+
+    cout << f();
+    return 0;
+}
+/* 
+Output
+30
+*/
+
+
+
+3️⃣ Dangling reference problem with [&]
+What is it?
+Lambda captures references to variables that may no longer exist
+
+//❌ DANGEROUS CODE (Undefined Behavior)
+#include <iostream>
+using namespace std;
+auto make_lambda() {
+    int x = 10;
+    return [&]() { return x; };  // ❌ dangling reference
+}
+int main() {
+    auto f = make_lambda();
+    cout << f();   // Undefined behavior
+    return 0;
+}
+/* 
+Output (unpredictable)
+10   (or garbage or crash)
+
+📌 x is destroyed when make_lambda() returns
+*/
+
+
+
+
+//✔ SAFE VERSION (capture by value)
+#include <iostream>
+using namespace std;
+auto make_lambda() {
+    int x = 10;
+    return [x]() { return x; };
+}
+int main() {
+    auto f = make_lambda();
+    cout << f();
+    return 0;
+}
+/* 
+Output
+10
+*/
+
+
+
+
+
+//✔ SAFE VERSION (heap memory)
+#include <iostream>
+using namespace std;
+auto make_lambda() {
+    auto x = make_shared<int>(10);
+    return [x]() { return *x; };
+}
+int main() {
+    auto f = make_lambda();
+    cout << f();
+  return 0;
+}
+/* 
+Output
+10
+*/
+
+
+
+
+
+
+
