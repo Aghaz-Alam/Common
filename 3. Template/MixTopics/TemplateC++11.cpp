@@ -116,6 +116,147 @@ int main() {
     return 0;
 }
 
+
+
+
+
+/* --------------------------------------------------- */
+
+//Variadic Templates
+//C++11 and C++14
+#include<iostream>
+using namespace std;
+int add(){
+    return 0;
+}
+template<typename T, typename... Args>
+T add(T first, Args... rest){
+    return first+ add(rest...);
+}
+
+int main(){
+    cout<<"Sum: "<<add(1,2,3,4,5)<<endl;
+  return 0;
+}
+
+/*
+Output;
+Sum: 15
+*/
+
+
+
+//C++17 Fold expression
+#include<iostream>
+using namespace std;
+template<typename... Args>
+int add(Args&&... args){
+    return (args + ...);
+}
+int main(){
+    cout<<"Sum: "<<add(1,2,3,4,5)<<endl;
+   return 0;
+}
+/*
+Output;
+Sum: 15
+*/
+
+/* -------------------------------------------------- */
+//Variadic Templates
+//C++11 and C++14
+/*
+#include<iostream>
+using namespace std;
+int add(){
+    return 0;
+}
+template<typename T, typename... Args>
+T add(T first, Args... rest){
+    return first+ add(rest...);
+}
+
+int main(){
+    cout<<"Sum: "<<add(1,2,3,4,5)<<endl;
+  return 0;
+}
+
+/*
+Output;
+Sum: 15
+*/
+
+
+
+//C++17 Fold expression
+/*
+#include<iostream>
+using namespace std;
+template<typename... Args>
+int add(Args&&... args){
+    return (args + ...);
+}
+int main(){
+    cout<<"Sum: "<<add(1,2,3,4,5)<<endl;
+   return 0;
+}
+/*
+Output;
+Sum: 15
+*/
+
+
+
+
+//C++ 11 and C++ 14
+#include<iostream>
+using namespace std;
+void print(){
+    cout<<"Empty fun!"<<endl;
+}
+template<typename T, typename... Args>
+void print(T first, Args... rest){
+    cout<<first<<endl;
+    print(rest...);
+}
+int main(){
+    print(1, 1.5, "Hi", "Hello");
+   return 0;
+}
+/*
+1
+1.5
+Hi
+Hello
+Empty fun!
+*/
+
+
+
+
+//C++17 Fold expression
+#include<iostream>
+using namespace std;
+template<typename... Args>
+void print(Args... args){
+     ((cout << args << endl), ...);
+}
+int main(){
+    print(1, 1.5, "Hi", "Hello");
+  return 0;
+}
+/*
+1
+1.5
+Hi
+Hello
+*/
+
+
+
+/* ======================================================================================== */
+
+
 //b. Class Template Specialization
 #include <iostream>
 #include <string>

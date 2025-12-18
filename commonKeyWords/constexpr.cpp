@@ -59,7 +59,7 @@ inside constexpr functions.
 Example (C++14 and later):
 #include <iostream>
 constexpr int factorial(int n) {
-    if (n == 0) return 1;
+    if (n <= 1) return 1;
     return n * factorial(n - 1);  // Recursion allowed in constexpr
 }
 int main() {
@@ -289,6 +289,28 @@ Variables declared as constexpr must be initialized with constant expressions.
 
 
 
+
+
+//C++11
+//*
+#include<iostream>
+using namespace std;
+constexpr int fibonacci(int n){
+    return (n <= 1) ? n : fibonacci(n-1) + fibonacci(n-2);
+}
+int main(){
+    constexpr int result = fibonacci(5);
+    cout<<result<<endl;
+    int a =6;
+    cout<<fibonacci(a)<<endl;
+  return 0;
+}
+/*
+5
+8
+*/
+
+
 2. constexpr in C++14:
 In C++14, several improvements were made to constexpr to make it more powerful.
 
@@ -296,22 +318,34 @@ In C++14, several improvements were made to constexpr to make it more powerful.
 In C++14, constexpr functions can have more complex bodies, such as loops and if statements.
 
 Functions can have local variables in constexpr functions.
-constexpr int fibonacci(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, temp;
-    for (int i = 2; i <= n; ++i) {
-        temp = a + b;
-        a = b;
-        b = temp;
+//C++14
+//*
+#include<iostream>
+using namespace std;
+constexpr int fibonacci(int n){
+    if(n<=1) return n;
+    
+    int a=0, b=1;
+    for(int i=2; i<=n; i++){
+        int temp = a+b;
+        a=b;
+        b=temp;
     }
     return b;
 }
-int main() {
-    constexpr int fib = fibonacci(10);  // Computed at compile-time
-    std::cout << "Fibonacci of 10 is: " << fib << std::endl;
+int main(){
+    constexpr int result = fibonacci(5);
+    cout<<result<<endl;
+    
+    int a = 6;
+    cout<<fibonacci(a)<<endl;
+    
   return 0;
 }
-
+/*
+5
+8
+*/
 
 
 
@@ -423,9 +457,9 @@ constexpr bool is_integral() {
 // C++14: More complex constexpr function
 constexpr int fibonacci(int n) {
     if (n <= 1) return n;
-    int a = 0, b = 1, temp;
+    int a = 0, b = 1;
     for (int i = 2; i <= n; ++i) {
-        temp = a + b;
+        int temp = a + b;
         a = b;
         b = temp;
     }
