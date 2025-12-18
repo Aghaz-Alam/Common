@@ -1,4 +1,6 @@
-Memory management is a critical aspect of C++ programming, as it gives the programmer fine-grained control over how memory is allocated, used, and deallocated. Proper memory management ensures efficient resource usage, prevents memory leaks, and avoids undefined behavior. Here are the key C++ concepts used for better memory management, explained with their typical use cases:
+Memory management is a critical aspect of C++ programming, as it gives the programmer fine-grained control over how memory is allocated, used, and deallocated. 
+Proper memory management ensures efficient resource usage, prevents memory leaks, and avoids undefined behavior. 
+Here are the key C++ concepts used for better memory management, explained with their typical use cases:
 
 1. Stack vs Heap Memory
 
