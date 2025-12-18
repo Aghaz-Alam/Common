@@ -16,7 +16,7 @@ Each entry includes:
 # 🔵 C++11 (Modern C++ begins)
 ## 1. std::move
 Forces move semantics (casts to rvalue).
-```cpp
+
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -35,22 +35,22 @@ Preserves lvalue/rvalue category in templates.
 
 #include <iostream>
 using namespace std;
-void f(int& ) { 
-    cout << "lvalue"; 
+void fun(int& ) { 
+    cout << "lvalue"<<endl; 
 }
-void f(int&&) { 
-    cout << "rvalue"; 
+void fun(int&&) { 
+    cout << "rvalue"<<endl; 
 }
 
 template<typename T>
 void wrapper(T&& x) {
-    f(forward<T>(x));
+    fun(forward<T>(x));
 }
 
 int main() {
     int a = 10;
     wrapper(a);
-    cout << " ";
+    
     wrapper(20);
 }
 /* 
