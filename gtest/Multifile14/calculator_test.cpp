@@ -1,5 +1,6 @@
 //calculator_test.cpp
 
+
 #include <gtest/gtest.h>
 #include "calculator.hpp"
 
@@ -10,15 +11,14 @@ TEST(CalcTest, Compute) {
 
 
 
-
-
-//g++ calculator_test.cpp calculator.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
-
-
+//g++ calculator_test.cpp calculator.cpp adder_test.cpp adder.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
 
 
 /* 
+adder.hpp
+adder.cpp
 calculator.hpp
 calculator.cpp
 calculator_test.cpp
+adder_test.cpp
 */

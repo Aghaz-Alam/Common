@@ -18,3 +18,11 @@ TEST_F(DatabaseTest, ConnectionEstablished) {
 
 
 //g++ db_test.cpp db.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+/* 
+db.hpp
+db.cpp
+db_test.cpp
+*/

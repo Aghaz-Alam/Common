@@ -12,3 +12,12 @@ TEST(CalcPrivateTest, Add) {
 
 
 //g++ calculator_friend_test.cpp calculator.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+
+/* 
+calculator.hpp
+calculator.cpp
+calculator_private_test.cpp
+*/

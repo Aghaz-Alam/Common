@@ -10,3 +10,12 @@ TEST(DivideTest, DiesOnZero) {
 
 
 //g++ safe_div_test.cpp safe_div.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+
+/* 
+safe_div.hpp
+safe_div.cpp
+safe_div_test.cpp
+*/

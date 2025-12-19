@@ -11,3 +11,11 @@ TEST(AdditionTest, NegativeNumbers) {
 
 
 //g++ test.cpp add.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+/* 
+add.hpp
+add.cpp
+test.cpp
+*/

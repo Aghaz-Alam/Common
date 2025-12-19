@@ -17,3 +17,11 @@ TEST(CounterTest, Second) {
 
 
 //g++ counter_test.cpp  counter.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+/* 
+counter.hpp
+counter.cpp
+counter_test.cpp
+*/

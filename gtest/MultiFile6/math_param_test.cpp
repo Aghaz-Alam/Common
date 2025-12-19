@@ -19,3 +19,12 @@ INSTANTIATE_TEST_SUITE_P(
 
 
 //g++ math_param_test.cpp math.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+
+/* 
+math.hpp
+math.cpp
+math_param_test.cpp
+*/

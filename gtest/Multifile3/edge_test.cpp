@@ -13,3 +13,12 @@ TEST(AddTest, Zero) {
 
 
 //g++ add_test.cpp edge_test.cpp add.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+/* 
+add.hpp
+add.cpp
+add_test.cpp
+edge_test.cpp
+*/

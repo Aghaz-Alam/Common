@@ -20,3 +20,10 @@ TYPED_TEST(AdderTest, WorksForTypes) {
 
 //g++ adder_test.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
 
+
+
+
+/* 
+adder.hpp
+adder_test.cpp
+*/

@@ -8,3 +8,12 @@ int main(int argc, char** argv) {
 
 
 //g++ test.cpp test_main.cpp add.cpp -lgtest -lpthread -o gTest && ./gTest
+
+
+
+/* 
+add.hpp
+add.cpp
+test.cpp
+test_main.cpp
+*/

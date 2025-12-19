@@ -11,3 +11,11 @@ TEST(SecretTest, HiddenLogic) {
 
 
 //g++ secret_test.cpp secret.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
+
+
+
+/* 
+secret.hpp
+secret.cpp
+secret_test.cpp
+*/
