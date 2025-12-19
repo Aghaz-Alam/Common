@@ -57,6 +57,57 @@ int main() {
 
 
 
+//Non static member functions
+#include<iostream>
+using namespace std;
+class Calculator{
+    public:
+      void fun(int x, int y){
+          cout<<x+y<<endl;
+      }
+};
+int main(){
+    Calculator c;
+    auto (Calculator::*f)(int, int) = &Calculator::fun;
+    (c.*f)(10,20);
+}
+/*
+30
+*/
+
+
+
+//static member functions
+#include <iostream>
+using namespace std;
+class Calculator {
+  public:
+    static void fun(int x, int y) {
+        cout << x + y << endl;
+    }
+};
+int main() {
+    // Pointer to function (NOT member pointer)
+    void (*f)(int, int) = &Calculator::fun;
+
+    f(10, 20);
+
+    return 0;
+}
+/* 
+30
+*/
+
+
+
+
+
+
+
+
+
+
+
 //3️⃣ Using typedef (cleaner syntax)
 /*
 #include <iostream>
