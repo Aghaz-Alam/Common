@@ -1,28 +1,28 @@
 //Sample_Test.cpp
+//*
+#include <gtest/gtest.h>
+#include "Math_Functions.h" // Use quotes for your local header
 
-// #include <gtest/gtest.h>
-// #include "Math_Functions.h" // Use quotes for your local header
+// No need for a custom main if you link with libgtest_main.a
+// Remove the main function from this file.
 
-// // No need for a custom main if you link with libgtest_main.a
-// // Remove the main function from this file.
+TEST(AdditionTest, Addition) {
+    EXPECT_EQ(5, Add(2, 3));
+}
 
-// TEST(AdditionTest, Addition) {
-//     EXPECT_EQ(5, Add(2, 3));
-// }
-
-// TEST(AdditionTest, Multiplication) {
-//     EXPECT_EQ(6, Multiply(2, 3));
-// }
-
-
-
-// //dell@dell-Latitude-5420:~/Music/App4$ g++ Sample_Test.cpp Math_Functions.cpp -o Sample_Test -I/usr/local/include -L/usr/local/lib -lgtest -lgtest_main -lpthread
-// //dell@dell-Latitude-5420:~/Music/App4$ ./Sample_Test
+TEST(AdditionTest, Multiplication) {
+    EXPECT_EQ(6, Multiply(2, 3));
+}
+/*
 
 
+//  g++ Sample_Test.cpp Math_Functions.cpp -o Sample_Test -I/usr/local/include -L/usr/local/lib -lgtest -lgtest_main -lpthread
+//  ./Sample_Test
+
+*/
 
 
-
+//g++ Sample_Test.cpp Math_Functions.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
 
 
 
@@ -33,6 +33,7 @@
 
 
 //test fixture
+/*
 #include <gtest/gtest.h>
 #include "Math_Functions.h" // Assuming this header declares Add() and Multiply()
 
@@ -67,10 +68,7 @@ TEST_F(MathFunctionsTest, Multiplication) {
 }
 
 // Note: No need for a custom main() if you link with gtest_main library
-
-
-
-
+//g++ Sample_Test.cpp Math_Functions.cpp -lgtest -lgtest_main -lpthread -o gTest && ./gTest
 
 
 
