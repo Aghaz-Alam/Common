@@ -236,3 +236,14 @@ TEST(OrderTest, Second) {
 
 🎯 Interview One-Liner
 Tests must be independent, repeatable, and order-agnostic.
+
+
+
+
+
+
+
+INTERVIEW GOLDEN ANSWER
+Private members should not be tested directly.
+They should be validated via public interfaces.
+If private logic is complex, refactor it into a separate class and test it independently.
