@@ -52,6 +52,7 @@ int main(int argc, char **argv){
 /*
 
 g++ gTestWithTestFixture.cpp -lgtest -lgtest_main -lpthread -o gTestWithTestFixture && ./gTestWithTestFixture
+
 [==========] Running 2 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 2 tests from MyClassTest
