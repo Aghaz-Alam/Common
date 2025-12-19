@@ -32,5 +32,32 @@ ip route
 
 
 
+✅ CORRECT WAYS TO SWITCH DIRECTORIES
+
+✅ WAY 1: Single absolute path (BEST)
+cd /home/dell/Music/Self/Common/gtest/Multifile16/
 
 
+✅ WAY 2: Two commands (if you really want)
+cd ..
+cd /home/dell/Music/Self/Common/gtest/Multifile16/
+
+
+
+✅ WAY 3: Using && (command chaining)
+cd .. && cd /home/dell/Music/Self/Common/gtest/Multifile16/
+
+✔ Second cd runs only if first succeeds
+
+
+
+
+✅ WAY 4: Relative path (clean & fast)
+
+If both folders share a parent:
+cd ../Multifile16
+
+
+
+✅ WAY 5: Use ~ (home shortcut)
+cd ~/Music/Self/Common/gtest/Multifile16

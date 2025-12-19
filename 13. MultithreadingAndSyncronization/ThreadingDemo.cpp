@@ -1,3 +1,847 @@
+/* ============================================================================================================ */
+1️⃣ What is a Thread?
+A thread is the smallest unit of execution inside a process.
+
+A process has:
+Its own memory space
+
+A thread:
+Shares memory with other threads in the same process
+Has its own stack & instruction pointer
+
+📌 One process → multiple threads
+Single Thread (default)
+
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "Main thread running\n";
+}
+/* 
+Output
+Main thread running
+*/
+
+
+
+
+2️⃣ What is Multithreading?
+Multithreading means executing multiple threads concurrently within the same process.
+
+✔ Improves performance
+✔ Better CPU utilization
+✔ Responsive systems (UI, real-time)
+
+Simple Multithreading Example
+#include <iostream>
+#include <thread>
+using namespace std;
+void task() {
+    cout << "Worker thread running\n";
+}
+int main() {
+    thread t(task);
+    cout << "Main thread running\n";
+    t.join();
+}
+/* 
+Output (order may vary)
+Main thread running
+Worker thread running
+*/
+
+
+3️⃣ Types of Threads
+1. User-level threads
+Created by application (std::thread)
+Faster
+Used in C++
+
+2. Kernel-level threads
+Managed by OS
+Used internally by OS
+
+
+
+
+4️⃣ Actual Usage of Threads (Real Projects)
+🎬 Media Project (Video Player)
+| Thread         | Responsibility   |
+| -------------- | ---------------- |
+| UI Thread      | User interaction |
+| Decoder Thread | Decode video     |
+| Audio Thread   | Play sound       |
+| Network Thread | Streaming        |
+
+
+
+Automotive / Instrument Cluster
+| Thread        | Role              |
+| ------------- | ----------------- |
+| Sensor Thread | Read CAN data     |
+| UI Thread     | Speedometer       |
+| Safety Thread | Collision checks  |
+| Logger Thread | Store diagnostics |
+
+
+
+
+Example: Media-style parallel tasks
+#include <iostream>
+#include <thread>
+using namespace std;
+
+void decodeVideo() { cout << "Decoding video\n"; }
+void playAudio()   { cout << "Playing audio\n"; }
+
+int main() {
+    thread t1(decodeVideo);
+    thread t2(playAudio);
+
+    t1.join();
+    t2.join();
+}
+/* 
+Output
+Decoding video
+Playing audio
+*/
+
+
+5️⃣ Synchronization
+Synchronization ensures correct access to shared resources.
+❌ Without synchronization → data race
+✔ With synchronization → safe execution
+
+
+
+6️⃣ Types of Synchronization
+| Type               | Used For         |
+| ------------------ | ---------------- |
+| Mutex              | Mutual exclusion |
+| Lock Guard         | RAII locking     |
+| Condition Variable | Wait/notify      |
+| Semaphore          | Resource count   |
+| Atomic             | Lock-free ops    |
+
+
+
+7️⃣ Mutex
+A mutex allows only one thread to access a resource at a time.
+
+Mutex Example (Race condition fixed)
+#include <iostream>
+#include <thread>
+#include <mutex>
+using namespace std;
+int counter = 0;
+mutex m;
+void increment() {
+    for(int i=0;i<1000;i++) {
+        lock_guard<mutex> lock(m);
+        counter++;
+    }
+}
+int main() {
+    thread t1(increment);
+    thread t2(increment);
+    t1.join();
+    t2.join();
+
+    cout << counter << endl;
+}
+/* 
+Output
+2000
+*/
+
+
+Types of Mutex
+| Mutex Type             | Header           |
+| ---------------------- | ---------------- |
+| `mutex`                | `<mutex>`        |
+| `recursive_mutex`      | `<mutex>`        |
+| `timed_mutex`          | `<mutex>`        |
+| `shared_mutex` (C++17) | `<shared_mutex>` |
+
+
+
+
+
+Recursive Mutex
+#include <iostream>
+#include <mutex>
+using namespace std;
+
+recursive_mutex rm;
+
+void fun(int n) {
+    if(n <= 0) return;
+    rm.lock();
+    cout << n << endl;
+    fun(n-1);
+    rm.unlock();
+}
+
+int main() {
+    fun(3);
+}
+
+
+Output
+
+3
+2
+1
+
+8️⃣ Condition Variable
+
+Used when a thread waits for a condition.
+
+📌 Common in:
+
+Producer–Consumer
+
+Media buffering
+
+Automotive signal wait
+
+Condition Variable Example
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+using namespace std;
+
+mutex m;
+condition_variable cv;
+bool ready = false;
+
+void worker() {
+    unique_lock<mutex> lock(m);
+    cv.wait(lock, []{ return ready; });
+    cout << "Worker running\n";
+}
+
+int main() {
+    thread t(worker);
+    this_thread::sleep_for(chrono::seconds(1));
+
+    {
+        lock_guard<mutex> lock(m);
+        ready = true;
+    }
+    cv.notify_one();
+    t.join();
+}
+
+
+Output
+
+Worker running
+
+9️⃣ Semaphore (C++20)
+
+Semaphore controls number of threads accessing a resource.
+
+📌 Used in:
+
+Thread pools
+
+Resource-limited hardware
+
+Automotive ECUs
+
+Binary Semaphore Example
+#include <iostream>
+#include <thread>
+#include <semaphore>
+using namespace std;
+
+binary_semaphore sem(1);
+
+void task() {
+    sem.acquire();
+    cout << "Critical section\n";
+    sem.release();
+}
+
+int main() {
+    thread t1(task);
+    thread t2(task);
+    t1.join();
+    t2.join();
+}
+
+
+Output
+
+Critical section
+Critical section
+
+🔟 Atomic Operations
+
+Lock-free synchronization.
+
+#include <iostream>
+#include <thread>
+#include <atomic>
+using namespace std;
+
+atomic<int> counter{0};
+
+void increment() {
+    for(int i=0;i<1000;i++)
+        counter++;
+}
+
+int main() {
+    thread t1(increment);
+    thread t2(increment);
+    t1.join();
+    t2.join();
+    cout << counter << endl;
+}
+
+
+Output
+
+2000
+
+1️⃣1️⃣ Thread Headers (Complete List)
+| Header                 | Purpose          |
+| ---------------------- | ---------------- |
+| `<thread>`             | Threads          |
+| `<mutex>`              | Mutexes          |
+| `<condition_variable>` | CV               |
+| `<semaphore>` (C++20)  | Semaphores       |
+| `<atomic>`             | Atomic ops       |
+| `<future>`             | async, promise   |
+| `<shared_mutex>`       | Read/write lock  |
+| `<chrono>`             | Time             |
+| `<stop_token>` (C++20) | Cooperative stop |
+
+
+1️⃣2️⃣ C++20 Stop Token (Modern)
+#include <iostream>
+#include <thread>
+using namespace std;
+
+void task(stop_token st) {
+    while(!st.stop_requested()) {
+        cout << "Running\n";
+        this_thread::sleep_for(chrono::milliseconds(300));
+    }
+}
+
+int main() {
+    jthread t(task);
+    this_thread::sleep_for(chrono::seconds(1));
+}
+
+
+Output
+
+Running
+Running
+Running
+
+✅ Interview Summary (Must Remember)
+
+✔ Thread = execution unit
+✔ Multithreading = concurrency
+✔ Mutex = mutual exclusion
+✔ Condition variable = wait/notify
+✔ Semaphore = resource control
+✔ Atomic = lock-free
+✔ Used heavily in media, automotive, real-time systems
+
+
+
+
+
+
+
+
+
+
+1️⃣ <thread>
+What it provides
+
+std::thread
+
+this_thread::sleep_for
+
+this_thread::get_id
+
+Example: Basic thread
+#include <iostream>
+#include <thread>
+using namespace std;
+
+void task() {
+    cout << "Worker thread\n";
+}
+
+int main() {
+    thread t(task);
+    cout << "Main thread\n";
+    t.join();
+}
+
+
+Output
+
+Main thread
+Worker thread
+
+
+📌 Notes
+
+join() is mandatory
+
+Missing join → program terminates
+
+2️⃣ <mutex>
+Provides
+
+mutex
+
+lock_guard
+
+unique_lock
+
+recursive_mutex
+
+timed_mutex
+
+🔹 mutex + lock_guard
+#include <iostream>
+#include <thread>
+#include <mutex>
+using namespace std;
+
+mutex m;
+int count = 0;
+
+void increment() {
+    lock_guard<mutex> lock(m);
+    count++;
+}
+
+int main() {
+    thread t1(increment);
+    thread t2(increment);
+    t1.join();
+    t2.join();
+    cout << count << endl;
+}
+
+
+Output
+
+2
+
+
+📌 Notes
+
+lock_guard → simplest & safest
+
+Locks for scope duration only
+
+🔹 unique_lock (more control)
+#include <iostream>
+#include <thread>
+#include <mutex>
+using namespace std;
+
+mutex m;
+
+void task() {
+    unique_lock<mutex> lock(m);
+    cout << "Locked section\n";
+    lock.unlock();
+    cout << "Unlocked early\n";
+}
+
+int main() {
+    thread t(task);
+    t.join();
+}
+
+
+Output
+
+Locked section
+Unlocked early
+
+
+📌 Notes
+
+Supports manual lock()/unlock()
+
+Needed for condition_variable
+
+🔹 recursive_mutex
+#include <iostream>
+#include <mutex>
+using namespace std;
+
+recursive_mutex rm;
+
+void fun(int n) {
+    if(n == 0) return;
+    rm.lock();
+    cout << n << endl;
+    fun(n-1);
+    rm.unlock();
+}
+
+int main() {
+    fun(3);
+}
+
+
+Output
+
+3
+2
+1
+
+
+📌 Notes
+
+Same thread can lock multiple times
+
+Avoid unless necessary
+
+3️⃣ <condition_variable>
+Provides
+
+condition_variable
+
+wait
+
+notify_one
+
+notify_all
+
+Producer–Consumer Example
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+using namespace std;
+
+mutex m;
+condition_variable cv;
+bool ready = false;
+
+void consumer() {
+    unique_lock<mutex> lock(m);
+    cv.wait(lock, []{ return ready; });
+    cout << "Consumed data\n";
+}
+
+int main() {
+    thread t(consumer);
+
+    this_thread::sleep_for(chrono::seconds(1));
+    {
+        lock_guard<mutex> lock(m);
+        ready = true;
+    }
+    cv.notify_one();
+    t.join();
+}
+
+
+Output
+
+Consumed data
+
+
+📌 Notes
+
+Avoid busy waiting
+
+Used in buffers, pipelines
+
+4️⃣ <semaphore> (C++20)
+Provides
+
+binary_semaphore
+
+counting_semaphore
+
+🔹 Binary Semaphore
+#include <iostream>
+#include <thread>
+#include <semaphore>
+using namespace std;
+
+binary_semaphore sem(1);
+
+void task() {
+    sem.acquire();
+    cout << "Critical section\n";
+    sem.release();
+}
+
+int main() {
+    thread t1(task);
+    thread t2(task);
+    t1.join();
+    t2.join();
+}
+
+
+Output
+
+Critical section
+Critical section
+
+
+📌 Notes
+
+Similar to mutex
+
+Used in OS / embedded / automotive
+
+🔹 Counting Semaphore
+#include <iostream>
+#include <thread>
+#include <semaphore>
+using namespace std;
+
+counting_semaphore<2> sem(2);
+
+void task(int id) {
+    sem.acquire();
+    cout << "Thread " << id << " entered\n";
+    sem.release();
+}
+int main() {
+    thread t1(task,1);
+    thread t2(task,2);
+    thread t3(task,3);
+
+    t1.join(); t2.join(); t3.join();
+}
+/* 
+Output
+Thread 1 entered
+Thread 2 entered
+Thread 3 entered
+
+
+📌 Notes
+Limits concurrency
+Used in resource pools
+*/
+
+
+
+5️⃣ <atomic>
+Provides
+atomic<T>
+Lock-free operations
+
+#include <iostream>
+#include <thread>
+#include <atomic>
+using namespace std;
+atomic<int> counter{0};
+void increment() {
+    counter++;
+}
+int main() {
+    thread t1(increment);
+    thread t2(increment);
+    t1.join();
+    t2.join();
+    cout << counter << endl;
+}
+/* 
+Output
+2
+
+
+📌 Notes
+Faster than mutex
+No deadlocks
+Limited operations only
+*/
+
+
+
+6️⃣ <future>
+Provides
+async
+future
+promise
+packaged_task
+
+🔹 async + future
+#include <iostream>
+#include <future>
+using namespace std;
+int add(int a, int b) {
+    return a + b;
+}
+int main() {
+    future<int> f = async(add, 10, 20);
+    cout << f.get() << endl;
+}
+/* 
+Output
+30
+*/
+
+
+🔹 promise + future
+#include <iostream>
+#include <thread>
+#include <future>
+using namespace std;
+void producer(promise<int> p) {
+    p.set_value(100);
+}
+int main() {
+    promise<int> p;
+    future<int> f = p.get_future();
+    thread t(producer, move(p));
+    cout << f.get() << endl;
+    t.join();
+}
+/* 
+Output
+100
+
+📌 Notes
+Used for thread communication
+Avoid shared state
+*/
+
+
+
+7️⃣ <shared_mutex> (C++17)
+Provides
+shared_mutex
+shared_lock
+unique_lock
+
+#include <iostream>
+#include <thread>
+#include <shared_mutex>
+using namespace std;
+shared_mutex sm;
+int data = 0;
+void reader() {
+    shared_lock<shared_mutex> lock(sm);
+    cout << "Read: " << data << endl;
+}
+void writer() {
+    unique_lock<shared_mutex> lock(sm);
+    data++;
+}
+int main() {
+    thread t1(reader);
+    thread t2(writer);
+    t1.join();
+    t2.join();
+}
+/* 
+Output
+Read: 0
+
+📌 Notes
+Multiple readers
+Single writer
+Used in caches
+*/
+
+
+
+
+
+
+8️⃣ <chrono>
+Provides
+Time utilities
+Durations
+Clocks
+
+#include <iostream>
+#include <chrono>
+#include <thread>
+using namespace std;
+
+int main() {
+    cout << "Start\n";
+    this_thread::sleep_for(chrono::seconds(1));
+    cout << "End\n";
+}
+/* 
+Output
+Start
+End
+
+📌 Notes
+Used in delays, timeout, profiling
+*/
+
+
+
+
+9️⃣ <stop_token> (C++20)
+Provides
+stop_token
+jthread
+
+#include <iostream>
+#include <thread>
+using namespace std;
+void task(stop_token st) {
+    while(!st.stop_requested()) {
+        cout << "Running\n";
+        this_thread::sleep_for(chrono::milliseconds(300));
+    }
+}
+int main() {
+    jthread t(task);
+    this_thread::sleep_for(chrono::seconds(1));
+}
+/* 
+Output
+Running
+Running
+Running
+*/
+
+📌 Notes
+Cooperative cancellation
+Replaces manual flags
+
+🔟 Summary Table (Interview Gold)
+| Header                 | Key Feature      |
+| ---------------------- | ---------------- |
+| `<thread>`             | Thread creation  |
+| `<mutex>`              | Mutual exclusion |
+| `<condition_variable>` | Wait/notify      |
+| `<semaphore>`          | Resource control |
+| `<atomic>`             | Lock-free        |
+| `<future>`             | Async results    |
+| `<shared_mutex>`       | Read/write       |
+| `<chrono>`             | Time             |
+| `<stop_token>`         | Graceful stop    |
+
+
+
+
+
+
+/* ============================================================================================================ */
 ✅ Threading & Concurrency in C++11 → C++20
 
 C++ threading began heavily in C++11, expanded in C++14, improved in C++17, and got modern cancellation in C++20.
@@ -6,7 +850,6 @@ C++ threading began heavily in C++11, expanded in C++14, improved in C++17, and 
 ⭐ C++11 THREADING FEATURES
 ============================
 1️⃣ std::thread
-
 Creates and manages a thread.
 
 Example:
@@ -23,7 +866,6 @@ int main() {
 }
 
 2️⃣ std::mutex / std::lock_guard
-
 Protect shared data.
 
 #include <iostream>

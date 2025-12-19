@@ -1,4 +1,108 @@
 //Perfect forwarding preserves value category
+
+#include<iostream>
+#include<utility>
+using namespace std;
+void fun(int& x){
+    cout <<"lvalue: "<< x <<endl;
+}
+void fun(int&& x){
+    cout <<"rvalue: "<< x <<endl;
+}
+
+template<typename T>
+void test(T&& x){
+    fun(forward<T>(x));
+}
+
+int main(){
+    int x =10;
+    test(x);
+    test(20);
+  return 0;
+}
+/* 
+lvalue: 10
+rvalue: 20
+*/
+
+
+/* ===================================================== */
+#include<iostream>
+#include<utility>
+using namespace std;
+void fun(int& x){
+    cout<<"lvalue:"<<x<<endl;
+}
+
+void fun(int&& x){
+    cout<<"rvalue:"<<x<<endl;
+}
+
+/* 
+template<typename T>
+void test(T&& x){
+    fun(forward<T>(x));
+}
+*/
+
+template<typename... Args>
+void test(Args&&... args) {
+    (fun(forward<Args>(args)), ...); // fold expression
+}
+
+
+int main(){
+    int x =10;
+    test(x);
+    test(20);
+  return 0;
+}
+/* 
+lvalue:10
+rvalue:20
+ */
+
+
+
+ /* ==================================================== */
+
+ #include <iostream>
+#include <utility>
+#include <type_traits>
+using namespace std;
+template<typename T>
+void fun(T&& x) {
+    if constexpr (std::is_lvalue_reference_v<T>) {
+        cout << "lvalue: " << x << endl;
+    } else {
+        cout << "rvalue: " << x << endl;
+    }
+}
+
+template<typename... Args>
+void test(Args&&... args) {
+    (fun(std::forward<Args>(args)), ...);
+}
+
+int main() {
+    int x = 10;
+    test(x);
+    test(20);
+    //test(x, 30, 40, x);
+
+    return 0;
+}
+/* 
+lvalue: 10
+rvalue: 20
+ */
+
+
+
+
+
+/* ===================================================== */
 // ch03_forwarding_preserve.cpp
 #include <iostream>
 #include <utility>
