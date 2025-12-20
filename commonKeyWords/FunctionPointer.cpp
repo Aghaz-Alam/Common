@@ -20,7 +20,7 @@ int main(){
 
 
 //1️⃣ Basic function pointer
-/*
+//*
 #include <iostream>
 using namespace std;
 void greet() {
@@ -39,7 +39,7 @@ Hello
 
 
 //2️⃣ Function pointer with parameters
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -109,7 +109,7 @@ int main() {
 
 
 //3️⃣ Using typedef (cleaner syntax)
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -131,7 +131,7 @@ int main() {
 
 
 //4️⃣ Using using (modern C++)
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -152,7 +152,7 @@ int main() {
 
 
 //5️⃣ Passing function pointer as argument (Callback)   VVI
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -181,7 +181,7 @@ int main() {
 //📌 Very important in systems programming & APIs.
 
 //6️⃣ Function pointer array (menu-driven programs)
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -212,7 +212,7 @@ int main() {
 
 
 //7️⃣ Function pointer vs Lambda
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -234,7 +234,7 @@ int main() {
 
 
 //8️⃣ Function pointer as class member parameter--Static method
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -255,7 +255,7 @@ int main() {
 
 
 // Function pointer as class member parameter--Non Static method
-/*
+//*
 #include <iostream>
 using namespace std;
 class Calculator {
@@ -280,7 +280,7 @@ int main() {
 
 
 //9️⃣ Function pointer returning another function pointer
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -309,7 +309,7 @@ int main() {
 
 
 //🔟 Function pointer vs std::function (comparison)
-/*
+//*
 #include <iostream>
 #include <functional>
 using namespace std;

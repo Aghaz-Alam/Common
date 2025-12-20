@@ -22,7 +22,7 @@ int main(){
 //1️⃣ Functor with internal state
 
 //Unlike function pointers, functors can store data.
-/*
+//*
 #include <iostream>
 using namespace std;
 class Multiplier {
@@ -49,7 +49,7 @@ int main() {
 
 
 //2️⃣ Functor as callback
-/*
+//*
 #include <iostream>
 using namespace std;
 class Add {
@@ -74,7 +74,7 @@ int main() {
 
 
 //3️⃣ Functor vs function pointer (side by side)
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -107,7 +107,7 @@ int main() {
 
 
 //4️⃣ Functor used in STL (sort comparator)
-/*
+//*
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -135,7 +135,7 @@ Output
 
 
 //Ascending
-/*
+//*
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -163,7 +163,7 @@ Output
 
 // 5️⃣ Functor with const operator()
 // Best practice for STL algorithms
-/*
+//*
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -190,7 +190,7 @@ Even count = 3
 
 // 5️⃣ Functor with const operator()
 // Best practice for STL algorithms
-/*
+//*
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -226,7 +226,7 @@ Even count = 3
 
 
 //6️⃣ Template functor (generic)
-/*
+//*
 #include <iostream>
 using namespace std;
 template<typename T>
@@ -252,7 +252,7 @@ int main() {
 
 
 //7️⃣ Functor with overloaded operator()
-/*
+//*
 #include <iostream>
 using namespace std;
 class Printer {
@@ -277,7 +277,7 @@ double: 3.14
 
 
 //8️⃣ Functor used like strategy pattern
-/*
+//*
 #include <iostream>
 using namespace std;
 
@@ -306,7 +306,7 @@ int main() {
 
 
 //9️⃣ Functor vs Lambda (equivalent)
-/*
+//*
 #include <iostream>
 using namespace std;
 class Square {
@@ -334,7 +334,7 @@ int main() {
 
 
 //🔟 Real-world logging functor
-/*
+//*
 #include <iostream>
 using namespace std;
 class Logger {
