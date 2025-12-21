@@ -1,5 +1,28 @@
 Normal template usage
 
+#include<iostream>
+using namespace std;
+template<typename T>
+auto Add(T x, T y){
+    return x + y;
+}
+int main(){
+    cout<<Add(2,5)<<endl;
+    cout<<Add(3.5, 5.4)<<endl;
+    cout<<Add('A', 'B')<<endl;
+    //cout<<Add("Hello ", "World")<<endl;     //compile-time error
+    cout<<Add(string("Hello "), string("World"))<<endl;
+  return 0;
+}
+/* 
+7
+8.9
+131
+Hello World
+ */
+
+ 
+
 // Normal Template Usage (C++11 decltype return)
 #include <iostream>
 using namespace std;
