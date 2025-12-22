@@ -1,163 +1,157 @@
+//Stack Implementation using dynamic array without template
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+class MyStack {
+  private:
+    int* arr;
+    size_t topIndex;
+    size_t cap;
 
+  public:
+    // Constructor
+    MyStack(); 
 
+    // Destructor
+    ~MyStack();
 
+    void push(const int& value);   // L-value version
+    void push(int&& value);        // R-value version
+    void pop();
+    int top() const;
+    bool empty() const;
+    size_t size() const;
+    size_t getCap() const;
+    void Display() const;
 
+  private:
+    void resize();
+};
 
+// Constructor
+MyStack::MyStack(): arr(nullptr), topIndex(0), cap(0) {}
 
-// //Stack Implementation using dynamic array without template
-// #include <iostream>
-// #include <stdexcept>
-// using namespace std;
-// class MyStack {
-//   private:
-//     int* arr;
-//     size_t topIndex;
-//     size_t cap;
+// Destructor
+MyStack::~MyStack(){delete[] arr; }
 
-//   public:
-//     // Constructor
-//     MyStack(); 
+void MyStack::resize() {
+    cap = (cap == 0) ? 1 : cap * 2;
 
-//     // Destructor
-//     ~MyStack();
+    int* newArr = new int[cap];
+    for (size_t i = 0; i < topIndex; ++i)
+        newArr[i] = arr[i];
 
-//     void push(const int& value);   // L-value version
-//     void push(int&& value);        // R-value version
-//     void pop();
-//     int top() const;
-//     bool empty() const;
-//     size_t size() const;
-//     size_t getCap() const;
-//     void Display() const;
+    delete[] arr;
+    arr = newArr;
+}
 
-//   private:
-//     void resize();
-// };
+// L-VALUE PUSH
+void MyStack::push(const int& value) {
+    if (topIndex == cap){
+        resize();
+    }
+    arr[topIndex++] = value;
+}
 
-// // Constructor
-// MyStack::MyStack(): arr(nullptr), topIndex(0), cap(0) {}
+// R-VALUE PUSH
+void MyStack::push(int&& value){ 
+    if(topIndex == cap ){
+        resize();
+    }
+    arr[topIndex++] = std::move(value);
+}
 
-// // Destructor
-// MyStack::~MyStack(){delete[] arr; }
+void MyStack::pop() {
+    if (topIndex == 0)
+        throw underflow_error("Stack is empty!");
+    --topIndex;
+}
 
-// void MyStack::resize() {
-//     cap = (cap == 0) ? 1 : cap * 2;
+int MyStack::top() const {
+    if (topIndex == 0)
+        throw underflow_error("Stack is empty!");
+    return arr[topIndex - 1];
+}
 
-//     int* newArr = new int[cap];
-//     for (size_t i = 0; i < topIndex; ++i)
-//         newArr[i] = arr[i];
+bool MyStack::empty() const {
+    return topIndex == 0;
+}
 
-//     delete[] arr;
-//     arr = newArr;
-// }
+size_t MyStack::size() const {
+    return topIndex;
+}
 
-// // L-VALUE PUSH
-// void MyStack::push(const int& value) {
-//     if (topIndex == cap){
-//         resize();
-//     }
-//     arr[topIndex++] = value;
-// }
+size_t MyStack::getCap() const {
+    return cap;
+}
 
-// // R-VALUE PUSH
-// void MyStack::push(int&& value){ 
-//     if(topIndex == cap ){
-//         resize();
-//     }
-//     arr[topIndex++] = std::move(value);
-// }
+void MyStack::Display() const {
+    for (size_t i = 0; i < topIndex; ++i)
+        cout << arr[i] << " ";
+}
 
-// void MyStack::pop() {
-//     if (topIndex == 0)
-//         throw underflow_error("Stack is empty!");
-//     --topIndex;
-// }
+int main() {
+    try {
+        MyStack stk;
 
-// int MyStack::top() const {
-//     if (topIndex == 0)
-//         throw underflow_error("Stack is empty!");
-//     return arr[topIndex - 1];
-// }
+        cout << "Demonstrate L-value push" << endl;
+        int a = 10;     // a is lvalue
+        int b = 20;     // b is lvalue
 
-// bool MyStack::empty() const {
-//     return topIndex == 0;
-// }
-
-// size_t MyStack::size() const {
-//     return topIndex;
-// }
-
-// size_t MyStack::getCap() const {
-//     return cap;
-// }
-
-// void MyStack::Display() const {
-//     for (size_t i = 0; i < topIndex; ++i)
-//         cout << arr[i] << " ";
-// }
-
-// int main() {
-//     try {
-//         MyStack stk;
-
-//         cout << "Demonstrate L-value push" << endl;
-//         int a = 10;     // a is lvalue
-//         int b = 20;     // b is lvalue
-
-//         stk.push(a);        // L-value overload called
-//         stk.push(b);        // L-value overload called
+        stk.push(a);        // L-value overload called
+        stk.push(b);        // L-value overload called
         
-//         cout << "Stack Elements with L-value: ";
-//         stk.Display();
-//         cout << endl;
+        cout << "Stack Elements with L-value: ";
+        stk.Display();
+        cout << endl;
 
-//         cout << "\nDemonstrate R-value push" << endl;
-//         stk.push(30);       // R-value overload called
-//         stk.push(40 + 10);  // R-value overload called (expression result is rvalue)
+        cout << "\nDemonstrate R-value push" << endl;
+        stk.push(30);       // R-value overload called
+        stk.push(40 + 10);  // R-value overload called (expression result is rvalue)
 
-//         cout << "Stack Elements with R-value: ";
-//         stk.Display();
-//         cout << endl;
+        cout << "Stack Elements with R-value: ";
+        stk.Display();
+        cout << endl;
 
-//         cout << "Top element: " << stk.top() << endl;
+        cout << "Top element: " << stk.top() << endl;
 
-//         stk.pop();
-//         cout << "Top after pop: " << stk.top() << endl;
+        stk.pop();
+        cout << "Top after pop: " << stk.top() << endl;
 
-//         cout << "Stack size: " << stk.size() << endl;
-//         cout << "Stack capacity: " << stk.getCap() << endl;
+        cout << "Stack size: " << stk.size() << endl;
+        cout << "Stack capacity: " << stk.getCap() << endl;
 
-//         cout << "Clearing stack..." << endl;
-//         while (!stk.empty())
-//             stk.pop();
+        cout << "Clearing stack..." << endl;
+        while (!stk.empty())
+            stk.pop();
 
-//         cout << "Trying to pop from empty stack..." << endl;
-//         stk.pop();  // will throw
+        cout << "Trying to pop from empty stack..." << endl;
+        stk.pop();  // will throw
 
-//     }
-//     catch (const underflow_error& e) {
-//         cout << "Underflow Error: " << e.what() << endl;
-//     }
-//     catch (const exception& e) {
-//         cout << "General Exception: " << e.what() << endl;
-//     }
+    }
+    catch (const underflow_error& e) {
+        cout << "Underflow Error: " << e.what() << endl;
+    }
+    catch (const exception& e) {
+        cout << "General Exception: " << e.what() << endl;
+    }
 
-//     return 0;
-// }
-// /*
-// Demonstrate L-value push
-// Stack Elements with L-value: 10 20 
+    return 0;
+}
+/*
+Demonstrate L-value push
+Stack Elements with L-value: 10 20 
 
-// Demonstrate R-value push
-// Stack Elements with R-value: 10 20 30 50 
-// Top element: 50
-// Top after pop: 30
-// Stack size: 3
-// Stack capacity: 4
-// Clearing stack...
-// Trying to pop from empty stack...
-// Underflow Error: Stack is empty!
-// */
+Demonstrate R-value push
+Stack Elements with R-value: 10 20 30 50 
+Top element: 50
+Top after pop: 30
+Stack size: 3
+Stack capacity: 4
+Clearing stack...
+Trying to pop from empty stack...
+Underflow Error: Stack is empty!
+*/
 
 
 
@@ -341,13 +335,13 @@ class MyStack {
     }
 
     // -------- R-value push --------
-    void push(T&& val) {
-        if (topIndex == cap){
-            resize(cap == 0 ? 1 : cap * 2);
-        }
+    // void push(T&& val) {
+    //     if (topIndex == cap){
+    //         resize(cap == 0 ? 1 : cap * 2);
+    //     }
         
-        arr[topIndex++] = std::move(val);
-    }
+    //     arr[topIndex++] = std::move(val);
+    // }
 
     // -------- pop --------
     void pop() {
