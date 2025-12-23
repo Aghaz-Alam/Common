@@ -1,3 +1,100 @@
+//Stack Implementation with grow and shrink
+#include<iostream>
+#include<stdexcept>
+using namespace std;
+template<typename T>
+class stack{
+    T* arr;
+    size_t topIndex;
+    size_t cap;
+    void grow(size_t newCap){
+       if(newCap < topIndex)  newCap = topIndex;
+       if(newCap == 0) newCap =1;
+
+       T* newArr = new T[newCap];
+
+       for(size_t i=0; i<topIndex; i++){
+          newArr[i] = arr[i];
+       }
+       delete[] arr;
+       arr = newArr;
+       cap = newCap;
+    }
+   public: 
+     stack(): arr(nullptr), topIndex(0), cap(0){}
+     ~stack(){ delete[] arr;}
+
+     void push(const T& val){
+        if(topIndex == cap){
+            grow(cap == 0 ? 1: cap*2);
+        }
+        arr[topIndex] = val;
+        topIndex++;
+     }
+
+
+     void pop(){
+        if(topIndex==0) throw underflow_error("stack is empty.");
+
+        --topIndex;
+
+        if(cap>1 && (topIndex-1)<=cap/4){
+            grow(cap/2);
+        }
+        
+     }
+
+     size_t size(){
+        return topIndex;
+     }
+      
+    size_t capacity(){
+        return cap;
+    }
+
+     void display(){
+        for(size_t i=0; i<topIndex; i++){
+            cout<<arr[i]<<" ";
+        }
+        cout<<endl;
+     }
+
+};
+int main(){
+    stack<int> s;
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.push(40);
+
+    cout<<"Elements: ";
+    s.display();
+
+    cout<<"Size: "<<s.size()<<endl;
+    cout<<"Capacity: "<<s.capacity()<<endl;
+
+    s.pop();
+    s.pop();
+
+    cout<<"Elements after pop: ";
+    s.display();
+    cout<<"Size: "<<s.size()<<endl;
+    cout<<"Capacity: "<<s.capacity()<<endl;
+
+  return 0;
+}
+/* 
+Elements: 10 20 30 40 
+Size: 4
+Capacity: 4
+Elements after pop: 10 20 
+Size: 2
+Capacity: 2
+ */
+
+
+
+
 //Stack Implementation using dynamic array without template
 #include <iostream>
 #include <stdexcept>
