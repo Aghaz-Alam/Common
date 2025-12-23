@@ -38,7 +38,7 @@ class stack{
 
         --topIndex;
 
-        if(cap>1 && (topIndex-1)<=cap/4){
+        if(cap>1 && topIndex<=cap/4){
             grow(cap/2);
         }
         
@@ -89,7 +89,7 @@ Size: 4
 Capacity: 4
 Elements after pop: 10 20 
 Size: 2
-Capacity: 2
+Capacity: 4
  */
 
 
