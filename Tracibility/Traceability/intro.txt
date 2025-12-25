@@ -1,0 +1,247 @@
+What Traceability Means in Automotive/ADAS
+Requirements traceability is a structured method to track and link every requirement (especially safety-critical ones) 
+throughout the entire development lifecycle — from initial specification, design, implementation, test, validation, and release artifacts. 
+
+This is essential in automotive engineering to:
+-->Ensure nothing is overlooked or mismatched across phases
+-->Provide evidence for compliance with safety standards (ISO 26262, ASPICE, etc.)
+-->Support verified implementation and auditability for validation/testing
+-->Manage changes and impacts across the lifecycle 
+
+
+Traceability normally covers:
+Forward traceability — from high-level stakeholder and system requirements down to software/code and test cases
+Backward traceability — from implementation and test results back up to the original requirements
+Bidirectional traceability — full end-to-end linkage required for safety compliance and audits
+
+
+
+
+
+
+ADAS consists of active safety, lane and cruise control, parking, driver monitoring, perception, planning, control, and safety mechanisms, 
+all supported by diagnostics, communication, and rigorous validation.
+
+🟢 1. Active Safety (Collision Avoidance & Mitigation)
+| Abbreviation | Full Form                              |
+| ------------ | -------------------------------------- |
+| **AEB**      | Automatic Emergency Braking            |
+| **FCW**      | Forward Collision Warning              |
+| **PCW**      | Pedestrian Collision Warning           |
+| **PAEB**     | Pedestrian Automatic Emergency Braking |
+| **RCW**      | Rear Collision Warning                 |
+| **CMBS**     | Collision Mitigation Braking System    |
+| **SCBS**     | Smart City Brake Support               |
+| **DBS**      | Dynamic Brake Support                  |
+| **EBA**      | Emergency Brake Assist                 |
+| **CBC**      | Cornering Brake Control                |
+| **MEB**      | Multi-Collision Emergency Braking      |
+
+
+
+🟢 2. Lane Safety & Lateral Control
+| Abbreviation | Full Form                 |
+| ------------ | ------------------------- |
+| **LDW**      | Lane Departure Warning    |
+| **LKA**      | Lane Keep Assist          |
+| **ELK**      | Emergency Lane Keeping    |
+| **LCA**      | Lane Centering Assist     |
+| **HOD**      | Hands-On Detection        |
+| **LKS**      | Lane Keeping System       |
+| **RSA**      | Road Sign Assist          |
+| **RDM**      | Road Departure Mitigation |
+
+
+🟢 3. Adaptive Cruise & Longitudinal Control
+| Abbreviation | Full Form                           |
+| ------------ | ----------------------------------- |
+| **ACC**      | Adaptive Cruise Control             |
+| **S&G ACC**  | Stop and Go Adaptive Cruise Control |
+| **ICC**      | Intelligent Cruise Control          |
+| **TJA**      | Traffic Jam Assist                  |
+| **HWA**      | Highway Assist                      |
+| **CACC**     | Cooperative Adaptive Cruise Control |
+| **DRCC**     | Dynamic Radar Cruise Control        |
+
+
+🟢 4. Blind Spot & Surround Monitoring
+| Abbreviation | Full Form                |
+| ------------ | ------------------------ |
+| **BSD**      | Blind Spot Detection     |
+| **BSW**      | Blind Spot Warning       |
+| **BSI**      | Blind Spot Intervention  |
+| **RCTA**     | Rear Cross Traffic Alert |
+| **RCS**      | Rear Cross Safety        |
+| **SEW**      | Safe Exit Warning        |
+| **DOW**      | Door Open Warning        |
+
+
+🟢 5. Parking Assistance Systems
+| Abbreviation | Full Form                  |
+| ------------ | -------------------------- |
+| **PA**       | Park Assist                |
+| **APA**      | Automatic Parking Assist   |
+| **RPA**      | Remote Parking Assist      |
+| **SPA**      | Smart Parking Assist       |
+| **UPA**      | Ultrasonic Parking Assist  |
+| **AVP**      | Automated Valet Parking    |
+| **PDC**      | Park Distance Control      |
+| **RCTB**     | Rear Cross Traffic Braking |
+
+
+🟢 6. Driver Monitoring & Driver Assistance
+| Abbreviation | Full Form                  |
+| ------------ | -------------------------- |
+| **DMS**      | Driver Monitoring System   |
+| **OMS**      | Occupant Monitoring System |
+| **DAA**      | Driver Attention Assist    |
+| **DSM**      | Driver State Monitoring    |
+| **FAW**      | Fatigue Alert Warning      |
+| **DDW**      | Driver Drowsiness Warning  |
+| **HOD**      | Hands-On Detection         |
+
+
+🟢 7. Traffic Sign & Speed Assistance
+| Abbreviation | Full Form                |
+| ------------ | ------------------------ |
+| **TSR**      | Traffic Sign Recognition |
+| **ISA**      | Intelligent Speed Assist |
+| **SLI**      | Speed Limit Information  |
+| **OVS**      | Over-Speed Warning       |
+
+
+
+🟢 8. Night & Visibility Assistance
+| Abbreviation | Full Form                      |
+| ------------ | ------------------------------ |
+| **NVA**      | Night Vision Assist            |
+| **AFS**      | Adaptive Front Lighting System |
+| **AHB**      | Automatic High Beam            |
+| **ADB**      | Adaptive Driving Beam          |
+| **HBA**      | High Beam Assist               |
+
+
+🟢 9. Autonomous Driving Support (L2 / L2+ / L3)
+| Abbreviation | Full Form                 |
+| ------------ | ------------------------- |
+| **ADS**      | Automated Driving System  |
+| **ODD**      | Operational Design Domain |
+| **HMI**      | Human Machine Interface   |
+| **LCA**      | Lane Change Assist        |
+| **ALC**      | Automatic Lane Change     |
+| **NOP**      | Navigate on Pilot         |
+| **TJP**      | Traffic Jam Pilot         |
+
+
+
+🟢 10. Perception & Environment Understanding (ADAS Core)\
+| Abbreviation | Full Form                             |
+| ------------ | ------------------------------------- |
+| **OD**       | Object Detection                      |
+| **OT**       | Object Tracking                       |
+| **SLAM**     | Simultaneous Localization and Mapping |
+| **VIO**      | Visual Inertial Odometry              |
+| **FUSION**   | Sensor Fusion                         |
+| **TTC**      | Time To Collision                     |
+| **ROI**      | Region of Interest                    |
+
+
+
+🟢 12. Control & Vehicle Dynamics (ADAS Execution)
+| Abbreviation | Full Form                        |
+| ------------ | -------------------------------- |
+| **MPC**      | Model Predictive Control         |
+| **PID**      | Proportional Integral Derivative |
+| **ESC**      | Electronic Stability Control     |
+| **TCS**      | Traction Control System          |
+| **EPS**      | Electric Power Steering          |
+| **BBW**      | Brake-by-Wire                    |
+| **SBW**      | Steer-by-Wire                    |
+
+
+
+
+🟢 13. Communication & Integration
+| Abbreviation | Full Form                          |
+| ------------ | ---------------------------------- |
+| **V2V**      | Vehicle-to-Vehicle                 |
+| **V2I**      | Vehicle-to-Infrastructure          |
+| **V2X**      | Vehicle-to-Everything              |
+| **CAN**      | Controller Area Network            |
+| **LIN**      | Local Interconnect Network         |
+| **FlexRay**  | Flexible High-Speed Automotive Bus |
+| **Ethernet** | Automotive Ethernet                |
+
+
+
+🟢 14. Testing & Validation (ADAS Lifecycle)
+| Abbreviation | Full Form                            |
+| ------------ | ------------------------------------ |
+| **MIL**      | Model-in-the-Loop                    |
+| **SIL**      | Software-in-the-Loop                 |
+| **HIL**      | Hardware-in-the-Loop                 |
+| **VIL**      | Vehicle-in-the-Loop                  |
+| **CI**       | Continuous Integration               |
+| **OD**       | Operational Design (Testing Context) |
+
+
+
+
+🟢 L0 – No Automation (Driver Only)
+👉 System may warn, but never controls the vehicle.
+Typical Features (Warning-Only)
+FCW – Forward Collision Warning
+PCW – Pedestrian Collision Warning
+LDW – Lane Departure Warning
+BSD – Blind Spot Detection
+RCTA – Rear Cross Traffic Alert
+TSR – Traffic Sign Recognition (display only)
+OVS – Over-Speed Warning
+DDW – Driver Drowsiness Warning
+📌 Driver performs all steering, braking, and acceleration.
+
+
+
+
+🟡 L1 – Driver Assistance (Single-Function Control)
+👉 System controls either steering OR speed, not both.
+Typical Features
+ACC – Adaptive Cruise Control (longitudinal only)
+LKA – Lane Keep Assist (lateral only)
+AEB – Automatic Emergency Braking
+BSI – Blind Spot Intervention
+PA – Park Assist (basic)
+HBA / AHB – High Beam Assist
+📌 Driver must monitor the system at all times.
+
+
+
+🟠 L2 – Partial Automation (Steering + Speed)
+👉 System controls both steering and acceleration/braking
+👉 Driver must continuously supervise
+
+Typical Features
+ACC + LKA (combined)
+TJA – Traffic Jam Assist
+HWA – Highway Assist
+LCA – Lane Centering Assist
+ALC – Automatic Lane Change (driver-initiated)
+S&G ACC – Stop & Go ACC
+APA – Automatic Parking Assist
+📌 Hands-on / eyes-on driver required.
+
+
+
+
+
+
+🔵 L3 – Conditional Automation
+👉 System drives on its own within a defined ODD
+👉 Driver intervenes only when requested
+
+Typical Features
+TJP – Traffic Jam Pilot
+AVP – Automated Valet Parking
+NOP – Navigate on Pilot (limited ODD)
+Highway Pilot (OEM-specific names)
+📌 System is responsible until handover request.
