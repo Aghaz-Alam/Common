@@ -6,8 +6,8 @@ Variables store data (no type declaration needed)
 '''
 #✅ Program
 def main():
-    name = "Alex"
-    age = 15
+    name = "Alex"          #indentaion is must 1-tab or 4-spaces 
+    age = 15               #indentaion is must 1-tab or 4-spaces 
     print("Name:", name)
     print("Age:", age)
 
