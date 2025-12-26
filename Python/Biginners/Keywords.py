@@ -386,3 +386,94 @@ if __name__ == "__main__":
 🖥 Output
 20
 '''
+
+
+
+1️⃣ Global Variable (Python)
+👉 Same as what you already wrote
+👉 Accessible everywhere using global
+
+# Global variable
+x = 10
+def main():
+    global x
+    x = 20
+    print(x)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+20
+
+📌 Explanation
+x is defined outside the function
+global x allows modification inside main()
+"""
+
+
+
+2️⃣ Static Variable (Python equivalent)
+⚠️ Python does NOT have a static keyword like C/C++
+✅ Instead, we use a function attribute (exam-accepted concept)
+
+def main():
+    if not hasattr(main, "count"):
+        main.count = 0   # acts like static variable
+    main.count += 1
+    print(main.count)
+
+if __name__ == "__main__":
+    main()
+    main()
+    main()
+
+""" 
+🖥 Output
+1
+2
+3
+
+📌 Explanation
+main.count retains its value between function calls
+This behaves like a static variable in C/C++
+ """
+
+
+
+3️⃣ Global with extern (C++ concept → Python equivalent)
+⚠️ Python does NOT have extern
+✅ Python automatically treats variables from another file/module as extern
+
+
+📁 file1.py
+x = 100   # global variable
+
+
+📁 file2.py
+import file1
+def main():
+    print(file1.x)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+100
+ """
+
+📌 Explanation
+file1.x acts like extern int x; in C/C++
+Importing a module gives access to its global variables
+
+
+
+
+COMPARISON TABLE
+| Concept         | C / C++          | Python                    |
+| --------------- | ---------------- | ------------------------- |
+| Global variable | `global`         | variable outside function |
+| Static variable | `static` keyword | function attribute        |
+| Extern variable | `extern` keyword | module import             |
