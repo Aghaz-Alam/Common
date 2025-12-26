@@ -1,5 +1,5 @@
 //Global Variable vs Static Variable in C++
-
+/* 
 1️⃣ Global Variable
 🔹 Definition
 A global variable is declared outside all functions and classes.
@@ -18,7 +18,7 @@ int x = 10;   // Global variable
 | Accessibility   | Can be accessed by any function                |
 | Risk            | Can be modified accidentally (less safe)       |
 
-
+ */
 //🔹 Example: Global Variable
 #include <iostream>
 using namespace std;
@@ -47,18 +47,14 @@ Value persists throughout program execution
 
 
 
-
+/* 
 2️⃣ Static Variable
 🔹 Definition
-
 A static variable preserves its value between function calls and has limited scope depending on where it is declared.
 
 🔹 Types of Static Variables
-
 Static local variable
-
 Static global variable (file scope)
-
 Static class member (advanced topic)
 
 3️⃣ Static Local Variable
@@ -74,39 +70,39 @@ static int x = 0;
 | Memory Location | Data Segment                 |
 | Value Retention | Yes (between function calls) |
 | Safety          | Safer than globals           |
+*/
 
 
-🔹 Example: Static Local Variable
+//🔹 Example: Static Local Variable
+/*
 #include <iostream>
 using namespace std;
-
 void counter() {
     static int count = 0;  // Static variable
     count++;
     cout << "Count = " << count << endl;
 }
-
 int main() {
     counter();
     counter();
     counter();
     return 0;
 }
-
+/* 
 🔹 Output
 Count = 1
 Count = 2
 Count = 3
 
 🔹 Explanation
-
 count is initialized only once
-
 Value is preserved across function calls
-
 Scope is restricted to counter()
+*/
 
-4️⃣ Global vs Static (Local) Variable — Key Differences
+/* 
+
+//4️⃣ Global vs Static (Local) Variable — Key Differences
 | Feature         | Global Variable       | Static Variable            |
 | --------------- | --------------------- | -------------------------- |
 | Declaration     | Outside all functions | Inside function / file     |
@@ -118,15 +114,16 @@ Scope is restricted to counter()
 | Initialization  | Once                  | Once                       |
 | Access Control  | No restriction        | Restricted                 |
 
+ */
 
-5️⃣ Static Global Variable (File Scope)
+
+/*
+ //5️⃣ Static Global Variable (File Scope)
 🔹 Definition
-
 A global variable declared with static keyword becomes file-private.
 
 🔹 Example
 static int x = 50;  // Accessible only in this file
-
 
 ✔ Prevents name clashes in large projects
 ✔ Used in multi-file programs
@@ -213,5 +210,7 @@ Encapsulation is required
 Large projects
 
 9️⃣ One-Line Interview Summary ⭐
+Global variables have global scope and lifetime, 
+while static variables have restricted scope but the same lifetime, making static variables safer and more controlled.
 
-Global variables have global scope and lifetime, while static variables have restricted scope but the same lifetime, making static variables safer and more controlled.
+*/
