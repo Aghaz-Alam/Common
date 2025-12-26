@@ -165,6 +165,32 @@ Bob studies in XYZ School
 
 
 
+#class object
+class Student:
+    def __init__(self, name):
+        self.name = name
+    def show(self): 
+        print(f"{self.name} created")
+
+def main():
+    s1 = Student("Alice")
+    s2 = Student("Bob")
+    s1.show()
+    s2.show()
+    print("Objects created successfully")
+
+if __name__ == "__main__":
+    main()
+
+
+""" 
+🖥 Output
+Alice created
+Bob created
+Objects created successfully
+"""
+
+
 #4️⃣ Method Overriding (Inheritance)
 class Parent:
     def greet(self):
