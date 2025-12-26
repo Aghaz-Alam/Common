@@ -20,6 +20,7 @@ int x = 10;   // Global variable
 
  */
 //🔹 Example: Global Variable
+/*
 #include <iostream>
 using namespace std;
 int g = 10;   // Global variable
@@ -74,7 +75,7 @@ static int x = 0;
 
 
 //🔹 Example: Static Local Variable
-/*
+//*
 #include <iostream>
 using namespace std;
 void counter() {
