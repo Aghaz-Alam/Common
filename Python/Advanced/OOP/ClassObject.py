@@ -315,3 +315,389 @@ if __name__ == "__main__":
 🖥 Output
 Alex
 """
+
+
+
+
+
+
+
+🔷 14. Object as Class Attribute
+class Address:
+    def __init__(self, city):
+        self.city = city
+
+class Student:
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+
+def main():
+    addr = Address("Delhi")
+    s = Student("Alex", addr)
+    print(s.name, s.address.city)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alex Delhi
+
+📌 Object inside another object (HAS-A relationship)
+"""
+
+
+
+
+
+
+🔷 15. Shallow Copy of Object
+import copy
+
+class Student:
+    def __init__(self, name):
+        self.name = name
+
+def main():
+    s1 = Student("Alice")
+    s2 = copy.copy(s1)
+    print(s1.name)
+    print(s2.name)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alice
+Alice
+"""
+
+
+
+
+
+
+🔷 16. Deep Copy of Object
+import copy
+
+class Student:
+    def __init__(self, marks):
+        self.marks = marks
+
+def main():
+    s1 = Student([90, 80])
+    s2 = copy.deepcopy(s1)
+
+    s1.marks.append(70)
+    print(s1.marks)
+    print(s2.marks)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+[90, 80, 70]
+[90, 80]
+"""
+
+
+
+
+
+
+
+
+🔷 17. Class Method
+class Student:
+    school = "ABC School"
+
+    @classmethod
+    def show_school(cls):
+        print(cls.school)
+
+def main():
+    Student.show_school()
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+ABC School
+"""
+
+
+
+
+
+🔷 18. Static Method
+class MathUtil:
+    @staticmethod
+    def add(a, b):
+        return a + b
+
+def main():
+    print(MathUtil.add(3, 4))
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+7
+
+📌 No self, no object needed
+"""
+
+
+
+
+
+🔷 19. Method Chaining
+class Student:
+    def set_name(self, name):
+        self.name = name
+        return self
+
+    def set_age(self, age):
+        self.age = age
+        return self
+
+    def show(self):
+        print(self.name, self.age)
+
+def main():
+    s = Student()
+    s.set_name("Alex").set_age(20).show()
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alex 20
+"""
+
+
+
+
+🔷 20. Operator Overloading (==)
+class Student:
+    def __init__(self, marks):
+        self.marks = marks
+
+    def __eq__(self, other):
+        return self.marks == other.marks
+
+def main():
+    s1 = Student(90)
+    s2 = Student(90)
+    print(s1 == s2)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+True
+"""
+
+
+
+
+
+
+🔷 21. Call Object Like Function (__call__)
+class Greet:
+    def __call__(self):
+        print("Hello")
+
+def main():
+    g = Greet()
+    g()   # object behaves like function
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Hello
+"""
+
+
+
+
+
+
+🔷 22. Object Lifetime (Constructor + Destructor)
+class Test:
+    def __init__(self):
+        print("Object created")
+
+    def __del__(self):
+        print("Object destroyed")
+
+def main():
+    t = Test()
+    print("Inside main")
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Object created
+Inside main
+Object destroyed
+"""
+
+
+
+
+
+
+
+🔷 23. isinstance() – Object Type Check
+class Student:
+    pass
+
+def main():
+    s = Student()
+    print(isinstance(s, Student))
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+True
+"""
+
+
+
+
+
+
+🔷 24. Duck Typing (Polymorphism)
+class Dog:
+    def speak(self):
+        print("Bark")
+
+class Cat:
+    def speak(self):
+        print("Meow")
+
+def make_sound(animal):
+    animal.speak()
+
+def main():
+    make_sound(Dog())
+    make_sound(Cat())
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Bark
+Meow
+"""
+
+
+
+
+
+
+🔷 25. Dynamic Object Attributes
+class Student:
+    pass
+
+def main():
+    s = Student()
+    s.name = "Alex"
+    s.age = 20
+    print(s.name, s.age)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alex 20
+"""
+
+
+
+
+
+
+
+
+🔷 26. Object Deletion (del)
+class Student:
+    def __init__(self, name):
+        self.name = name
+
+def main():
+    s = Student("Alex")
+    print(s.name)
+    del s
+    # print(s.name)  # error
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alex
+"""
+
+
+
+
+
+🔷 27. getattr() / setattr()
+class Student:
+    def __init__(self):
+        self.name = "Alex"
+
+def main():
+    s = Student()
+    print(getattr(s, "name"))
+    setattr(s, "age", 20)
+    print(s.age)
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+Alex
+20
+"""
+
+
+
+
+🔷 28. Object Truth Value
+class Student:
+    def __bool__(self):
+        return False
+
+def main():
+    s = Student()
+    if s:
+        print("True")
+    else:
+        print("False")
+
+if __name__ == "__main__":
+    main()
+
+""" 
+🖥 Output
+False
+"""
