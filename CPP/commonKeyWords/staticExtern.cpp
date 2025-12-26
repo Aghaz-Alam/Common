@@ -1,4 +1,5 @@
 //static vs extern in C++
+/* 
 1️⃣ Basic dea (One-Line Difference)
 static restricts visibility (internal linkage), while extern extends visibility (external linkage).
 
@@ -24,10 +25,9 @@ Used to share data across files
 | Default value               | Zero                | Zero                  |
 | Multiple definitions        | Allowed (per file)  | Not allowed           |
 | Used in multi-file programs | Yes (for hiding)    | Yes (for sharing)     |
+*/
 
-
-
-4️⃣ Static Variable Example (Single File)
+//4️⃣ Static Variable Example (Single File)
 #include <iostream>
 using namespace std;
 static int x = 10;  // File-level static
@@ -50,7 +50,9 @@ x is visible only in this file
 Retains value between function calls
 */
 
-5️⃣ Extern Variable Example (Multi-File)
+
+
+//5️⃣ Extern Variable Example (Multi-File)
 //🔹 File 1: file1.cpp
 #include <iostream>
 using namespace std;
@@ -76,13 +78,16 @@ int main() {
 🔹 Output
 x = 100
 x = 150
-*/
+
 🔹 Explanation
 extern tells compiler variable exists elsewhere
 Same memory shared across files
 Only one definition allowed
+*/
 
-6️⃣ Static vs Extern (Multi-File Conflict Example)
+
+
+//6️⃣ Static vs Extern (Multi-File Conflict Example)
 ❌ Without static (Problem)
 // file1.cpp
 int x = 10;
