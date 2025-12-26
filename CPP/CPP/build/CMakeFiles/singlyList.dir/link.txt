@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/singlyList.dir/singlyList.cpp.o -o singlyList 

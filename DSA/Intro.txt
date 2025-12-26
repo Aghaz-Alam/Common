@@ -1,0 +1,268 @@
+Phase 0: Prerequisites (1–2 weeks)
+
+Goal: Be comfortable with C++ basics
+
+Learn:
+-->Variables, loops, conditions
+-->Functions
+-->Arrays & strings
+-->Pointers & references
+-->struct, class
+-->Basic OOP (encapsulation, constructors, destructors)
+
+Must-know C++ concepts:
+-->vector, pair
+-->auto, const
+-->cin/cout fast I/O
+-->Pass by reference
+
+
+
+
+Phase 1: Time & Space Complexity (3–4 days)
+Goal: This is mandatory before coding DSA
+
+Topics:
+-->Big-O, Big-Ω, Big-Θ
+-->Best / average / worst case
+
+Common complexities:
+-->O(1), O(log n), O(n), O(n log n), O(n²)
+-->Space complexity
+-->Recursion stack space
+👉 Practice: analyze complexity of small loops
+
+
+
+
+
+
+
+
+Phase 2: Arrays & Strings (2 weeks)
+Goal: Foundation of all problems
+
+Topics:
+-->1D & 2D arrays
+-->Sliding window
+-->Two pointers
+-->Prefix sum
+-->Kadane’s algorithm
+-->String manipulation
+
+Practice problems:
+-->Reverse array/string
+-->Move zeros
+-->Longest subarray
+-->Max sum subarray
+-->Anagrams
+-->Palindrome check
+
+
+
+
+
+
+
+Phase 3: Recursion & Backtracking (1–1.5 weeks)
+Goal: Teaches problem decomposition
+
+Topics:
+-->Base case & recursion tree
+-->Tail recursion
+-->Backtracking pattern
+
+Problems:
+-->Factorial, Fibonacci
+-->Subsets
+-->Permutations
+-->N-Queens
+-->Rat in a maze
+-->Combination sum
+
+
+
+
+
+Phase 4: Searching & Sorting (1 week)
+Goal: Core interview favorite
+
+Sorting:
+-->Bubble, Selection, Insertion
+-->Merge sort
+-->Quick sort
+-->STL sort()
+
+Searching:
+-->Linear search
+-->Binary search
+-->Binary search on answer
+
+👉 Practice problems
+-->First/last occurrence
+-->Peak element
+-->Search in rotated array
+
+
+
+
+
+Phase 5: Linked List (1 week)
+Goal: Pointer mastery
+
+Topics:
+-->Singly, doubly, circular LL
+-->Fast & slow pointer
+-->Reverse linked list
+-->Cycle detection
+
+Problems:
+-->Middle of LL
+-->Detect & remove loop
+-->Merge two sorted LL
+-->Palindrome LL
+
+
+
+
+
+Phase 6: Stack & Queue (1 week)
+Goal: Used everywhere
+
+Stack:
+-->Next greater element
+-->Valid parentheses
+-->Min stack
+-->Infix → postfix
+
+Queue:
+-->Circular queue
+-->Deque
+-->Sliding window maximum
+
+
+
+
+
+Phase 7: Hashing (4–5 days)
+Goal: Optimization weapon
+
+Topics:
+-->unordered_map
+-->unordered_set
+-->Frequency counting
+
+Problems:
+-->Two sum
+-->Subarray sum = k
+-->Longest consecutive sequence
+-->Majority element
+
+
+
+
+
+
+
+Phase 8: Trees (2 weeks)
+Goal: Very important for interviews
+
+Topics:
+-->Binary tree
+-->BST
+-->Traversals (Inorder, Preorder, Postorder)
+-->Level order
+-->Height, diameter
+-->LCA
+
+Problems:
+-->Symmetric tree
+-->Balanced tree
+-->BST validation
+-->Kth smallest element
+
+
+
+
+
+
+Phase 9: Heaps & Priority Queue (4–5 days)
+Goal: Top-K problems
+
+Topics:
+-->Min heap, Max heap
+-->Heap sort
+-->priority_queue
+
+Problems:
+-->K largest elements
+-->Merge k sorted arrays
+-->Median from data stream
+
+
+
+
+
+
+Phase 10: Graphs (2 weeks)
+Goal: High-weightage topic
+
+Topics
+-->Graph representation
+-->BFS, DFS
+-->Cycle detection
+-->Topological sort
+-->Shortest path (Dijkstra, BFS)
+-->Disjoint set (Union-Find)
+
+Problems:
+-->Number of islands
+-->Course schedule
+-->Connected components
+-->MST (Kruskal, Prim)
+
+
+
+
+
+Phase 11: Dynamic Programming (2–3 weeks)
+Goal: Most difficult but most rewarding
+
+Steps to learn DP:
+-->Recursion
+-->Memoization
+-->Tabulation
+-->Space optimization
+
+Patterns:
+-->0/1 Knapsack
+-->Subset sum
+-->LCS
+-->LIS
+-->Matrix DP
+-->DP on trees
+
+
+
+Phase 12: Advanced Topics (Optional but powerful)
+-->Tries
+-->Segment tree
+-->Fenwick tree
+-->Bit manipulation
+-->Greedy algorithms
+
+Practice Strategy 📌
+-->Solve 5–6 problems/day
+-->Start easy → medium → hard
+-->Re-solve old problems after 7 days
+-->Write code without seeing solution first
+
+Recommended Platforms
+LeetCode (best for interviews)
+GeeksforGeeks (theory + practice)
+Codeforces (logic strength)
+
+3 Golden Rules ⭐
+Don’t memorize solutions
+Understand patterns
+Consistency > speed
