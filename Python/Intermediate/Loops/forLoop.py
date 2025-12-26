@@ -14,3 +14,22 @@ if __name__ == "__main__":
 🖥 Output
 1 2 3 4 5
 '''
+
+
+
+
+
+# for
+def main():
+    for i in range(3):
+        print("Hello")
+
+if __name__ == "__main__":
+    main()
+
+'''
+🖥 Output
+Hello
+Hello
+Hello
+'''

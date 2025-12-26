@@ -17,3 +17,24 @@ if __name__ == "__main__":
 🖥 Output
 1 2 3 4 5
 '''
+
+
+
+
+
+# while
+def main():
+    i = 1
+    while i <= 3:
+        print(i)
+        i += 1
+
+if __name__ == "__main__":
+    main()
+
+'''
+🖥 Output
+1
+2
+3
+'''
