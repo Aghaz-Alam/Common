@@ -1,0 +1,239 @@
+Phase 0 – Python Foundations (1–2 weeks)
+Learn:
+Variables, keywords, operators.
+conditions, conditional statements
+typecasting,
+Input / Output
+Input from users 
+Loops (for, while)
+Functions
+Lists, Tuples
+Dictionaries, Sets
+String operations
+List comprehension
+lambda, map, filter
+collections module
+defaultdict
+Counter
+deque
+heapq
+bisect
+
+📌 Practice
+Basic problems on lists, strings, dicts
+Small scripts (reverse string, frequency count, etc.)
+
+
+
+
+
+
+Phase 1 – Complexity & Basics (1 week)
+This is where most beginners fail interviews
+
+Topics
+Time Complexity (Big-O)
+Space Complexity
+Best / Average / Worst case
+Recursion basics
+Iterative vs Recursive solutions
+
+📌 Must know
+Why nested loops ≠ always O(n²)
+Stack space in recursion
+
+
+
+
+
+
+
+
+
+Phase 2 – Arrays & Strings (2–3 weeks)
+Most asked interview topic
+Arrays / Lists
+Traversal
+Prefix Sum
+Sliding Window
+Two Pointers
+Kadane’s Algorithm
+Sorting basics
+Strings
+Frequency counting
+Palindromes
+Anagrams
+Pattern matching basics
+
+📌 Typical Problems
+Maximum subarray sum
+Longest substring without repeating characters
+Rotate array
+String compression
+
+🔹 Phase 3 – Searching & Sorting (1–2 weeks)
+Searching
+Linear Search
+Binary Search (VERY IMPORTANT)
+Binary Search on Answer
+
+Sorting
+Bubble, Selection, Insertion (basics)
+Merge Sort
+Quick Sort
+Built-in sort with key
+
+📌 Interview Focus
+When to use Binary Search
+Sorting + two pointers tricks
+
+
+
+
+Phase 4 – Hashing (1–2 weeks)
+Python shines here 💡
+
+Topics
+Hash maps (dict)
+Hash sets (set)
+Frequency maps
+Prefix sum + hashing
+
+
+
+📌 Problems
+Two Sum
+Subarray sum equals K
+Longest consecutive sequence
+Group anagrams
+
+
+
+
+Phase 5 – Stack & Queue (1–2 weeks)
+Stack
+Next Greater Element
+Balanced parentheses
+Infix → Postfix
+Stock Span
+Queue / Deque
+Sliding window maximum
+Circular queue
+Monotonic queue
+
+📌 Python Tools
+list
+collections.deque
+
+
+
+
+Phase 6 – Linked List (1–2 weeks)
+Topics
+Singly / Doubly LL
+Fast & Slow pointers
+Reverse LL
+Cycle detection
+Merge sorted lists
+
+📌 Interview Favorites
+Reverse in groups
+Detect loop
+Find middle
+
+
+
+
+Phase 7 – Trees (2–3 weeks)
+High weightage in interviews
+
+Topics:
+Binary Tree
+Traversals (DFS, BFS)
+Height / Diameter
+Binary Search Tree
+Lowest Common Ancestor
+
+📌 Python
+Recursion
+collections.deque for level order
+
+
+
+Phase 8 – Heap & Priority Queue (1 week)
+Topics
+Min Heap
+Max Heap
+Kth largest / smallest
+Top-K problems
+
+📌 Python
+heapq
+
+
+
+
+Phase 9 – Graphs (2–3 weeks)
+Tough but very rewarding
+
+Topics
+Graph representation
+BFS / DFS
+Cycle detection
+Topological Sort
+Shortest path (Dijkstra, BFS)
+
+📌 Problems
+Number of islands
+Course schedule
+Shortest path in grid
+
+
+
+
+
+Phase 10 – Dynamic Programming (3–4 weeks)
+The hardest phase
+
+Steps to learn DP
+Recursion
+Memoization
+Tabulation
+Space optimization
+Classic Problems
+Fibonacci
+Knapsack
+LIS
+LCS
+Coin Change
+Matrix DP
+
+📌 Golden Rule
+“If overlapping subproblems + optimal substructure → DP”
+
+
+
+
+
+Phase 11 – Advanced Topics (Optional)
+Trie
+Segment Tree
+Bit Manipulation
+Greedy algorithms
+
+🧠 How to Practice (IMPORTANT)
+Daily Routine
+
+⏱ 2–3 problems/day
+🧠 Dry run before coding
+✍️ Write brute → optimize
+
+Best Platforms
+LeetCode
+Codeforces
+GeeksforGeeks
+HackerRank
+
+📌 Suggested Order for LeetCode
+Arrays → Strings → Hashing → Stack → Queue →
+Linked List → Trees → Heap → Graph → DP
