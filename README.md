@@ -4,6 +4,11 @@ Problems
 <br> 
 //https://godbolt.org/       runtime check compiler link
 
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+
+
+
 git add .                                                                 //add
 git commit -m "Initial commit"                                            //commit
 
