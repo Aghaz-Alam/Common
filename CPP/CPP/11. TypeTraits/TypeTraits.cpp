@@ -1,7 +1,8 @@
 type traits
 
 1. Type Traits in C++11
-C++11 introduced the core set of type traits. It provides several templates to inspect, transform, or manipulate types at compile time. 
+C++11 introduced the core set of type traits. 
+It provides several templates to inspect, transform, or manipulate types at compile time. 
 The most commonly used type traits in C++11 are in the <type_traits> header.
 
 

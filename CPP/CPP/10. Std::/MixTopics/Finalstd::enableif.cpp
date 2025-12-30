@@ -1,5 +1,5 @@
 //Example: std::enable_if to enable a function only for integral types
-/*
+//*
 #include <iostream>
 #include <type_traits> // For std::enable_if, std::is_integral
 using namespace std;
@@ -21,10 +21,30 @@ Sum of 5 and 3 (int): 8
 */
 
 
+//vvi for char sum
+#include<iostream>
+#include<type_traits>
+using namespace std;
+template<typename T>
+typename std::enable_if<std::is_arithmetic<T>::value, typename std::common_type<T, int>::type>::type
+add(T a, T b){
+    return a+b;
+}
+int main(){
+    cout<<add(2,5)<<endl;
+    cout<<add(2.5, 5.1)<<endl;
+    cout<<add('A', 'B')<<endl;               //char sum
+}
+/* 
+7
+7.6
+131
+ */
+
 
 
 //Example: std::enable_if to enable a function only for arithmetic types
-/*
+//*
 #include <iostream>
 #include <type_traits> // For std::enable_if, std::is_arithmetic
 using namespace std;
@@ -51,7 +71,7 @@ Sum of 5.5 and 3.3 (double): 8.8
 
 
 //C++14 SFINAE
-/*
+//*
 #include <iostream>
 #include <type_traits>   // std::enable_if_t, std::is_arithmetic
 
@@ -78,19 +98,36 @@ Sum (long long): 300000
 */
 
 
+//enable_if_t
+#include<iostream>
+#include<type_traits>
+using namespace std;
+template<typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+T add(T a, T b){
+    return a+b;
+}
+int main(){
+    cout<<add(5, 4)<<endl;
+    cout<<add(2.5, 4.2)<<endl;
+    cout<<add(2.5f, 4.2f)<<endl;
+    cout<<add(250000LL, 420000LL)<<endl;
+}
+/* 
+9
+6.7
+6.7
+670000
+ */
 
 
 
 //C++17 Style 1 — enable_if in the template parameter list (cleanest)
-/*
+///*
 #include <iostream>
 #include <type_traits>
 
 // C++17: SFINAE using enable_if in template parameter list
-template <
-    typename T,
-    std::enable_if_t<std::is_arithmetic_v<T>, int> = 0
->
+template <typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
 T add(T a, T b) {
     return a + b;
 }
@@ -112,9 +149,29 @@ Sum (long long): 300000
 */
 
 
+//is_arithmetic_v
+#include<iostream>
+#include<type_traits>
+using namespace std;
+template<typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> =0 >
+T add(T a, T b){
+    return a+b;
+}
+int main(){
+    cout<<add(5, 4)<<endl;
+    cout<<add(2.5, 4.2)<<endl;
+    cout<<add(2.5f, 4.2f)<<endl;
+    cout<<add(250000LL, 420000LL)<<endl;
+}
+/* 
+9
+6.7
+6.7
+670000
+ */
 
 //C++17 Style 2 — enable_if in the return type
-/*
+///*
 #include <iostream>
 #include <type_traits>
 
@@ -137,6 +194,28 @@ Sum (double): 8.8
 Sum (long long): 300000
 */
 
+
+//is_arithmetic_v
+#include<iostream>
+#include<type_traits>
+using namespace std;
+template<typename T>
+std::enable_if_t<std::is_arithmetic_v<T>, T >
+add(T a, T b){
+    return a+b;
+}
+int main(){
+    cout<<add(5, 4)<<endl;
+    cout<<add(2.5, 4.2)<<endl;
+    cout<<add(2.5f, 4.2f)<<endl;
+    cout<<add(250000LL, 420000LL)<<endl;
+}
+/* 
+9
+6.7
+6.7
+670000
+ */
 
 //C++17 Style 3 — enable_if as a default parameter (your original approach improved)
 

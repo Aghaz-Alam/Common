@@ -1,3 +1,122 @@
+//std::function with no return
+#include<iostream>
+#include<functional>
+using namespace std;
+void add(int x, int y){
+    cout<<"Sum: "<< x+y <<endl;
+}
+int main(){
+    std::function<void(int, int)> fun= add;
+    fun(20,30);
+
+    //OR
+    auto (*f)(int, int) = add;
+    f(10,20);
+
+  return 0;
+}
+/* 
+Sum: 50
+Sum: 30
+*/
+
+
+//std::function with return
+#include<iostream>
+#include<functional>
+using namespace std;
+int add(int x, int y){
+    return x+y;
+}
+int main(){
+    std::function<int(int, int)> fun= add;
+    cout<<"Sum: "<<fun(10,20)<<endl;
+
+    //OR
+    auto (*f)(int, int) = add;
+    cout<<"Sum: "<<f(20,30)<<endl;
+  return 0;
+}
+/* 
+Sum: 30
+Sum: 50
+*/
+
+
+
+//std::function with lembda expression
+#include<iostream>
+#include<functional>
+using namespace std;
+int main(){
+    auto add = [](int x, int y){
+        return x+y;
+    };
+
+    std::function<int(int, int)> fun= add;
+    cout<<"Sum: "<<fun(10,20);
+  return 0;
+}
+/* 
+Sum: 30
+*/
+
+
+
+#include<iostream>
+#include<functional>
+using namespace std;
+int main(){
+    auto add = [](auto x, auto y){
+        return x+y;
+    };
+
+    std::function<int(int, int)> fun1= add;
+    cout<<"Sum: "<<fun1(10,20)<<endl;
+
+    std::function<float(float, float)> fun2= add;
+    cout<<"Sum: "<<fun2(10.5,20.2)<<endl;
+
+  return 0;
+}
+/* 
+Sum: 30
+Sum: 30.7
+*/
+
+
+//using std::function,  Explicit cast and Unary+ with lambda
+#include<iostream>
+#include<functional>
+using namespace std;
+int main(){
+    auto add = [](int x, int y){
+        return x+y;
+    };
+
+    std::function<int(int, int)> fun= add;
+    cout<<"Sum: "<<fun(10,20)<<endl;
+
+
+    //Option 1: Explicit cast
+    auto (*f1)(int, int) = static_cast<int(*)(int,int)>(add);
+    cout<<"Sum: "<<f1(20, 30)<<endl;
+
+
+    //Option 2: Unary + trick (most common)
+    auto (*f2)(int, int) = +add;
+    cout<<"Sum: "<<f2(30, 40)<<endl;
+  return 0;
+}
+/* 
+Sum: 30
+Sum: 50
+Sum: 70
+*/
+
+
+
+
 //std::function
 std::function in C++ (C++11, C++14, C++17)
 std::function is a general-purpose polymorphic function wrapper introduced in C++11 that can store any callable object 
@@ -35,6 +154,7 @@ int main() {
 Explanation:
 std::function<int(int, int)> can store any function or callable object that takes two int arguments and returns an int.
 In this case, it stores the function pointer add and allows it to be called through the std::function object func.
+
 
 
 

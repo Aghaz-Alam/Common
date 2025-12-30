@@ -21,6 +21,25 @@ Hello
 
 
 
+#int sum using a parameterized function
+class Calculator:
+    def add(self, a, b):
+        sum = a + b
+        print("Sum:", sum)
+
+def main():
+    c = Calculator()   # object
+    c.add(5,10)
+
+if __name__ == "__main__":
+    main()
+
+"""
+Output
+Sum: 15
+"""
+
+
 2️⃣ Constructor (__init__)
 class Person:
     def __init__(self, name):
@@ -62,6 +81,64 @@ if __name__ == "__main__":
 Output
 Destructor called
 """
+
+
+
+#int sum using a default function, passing parameters to the constructor
+class Calculator:
+    def add(self, a, b):
+        sum = a + b
+        print("Sum:", sum)
+    
+    def __init__(self):
+        print("constructor called")
+    
+    def __del__(self):
+        print("destructor called")
+
+def main():
+    c = Calculator()   # object
+    c.add(5.5,10)
+
+if __name__ == "__main__":
+    main()
+
+"""
+Output
+constructor called
+Sum: 15.5
+destructor called
+"""
+
+
+
+class Calculator:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        print("constructor called")
+    
+    def __del__(self):
+        print("destructor called")
+    
+    def show(self):
+        sum = self.a + self.b
+        print("Sum: ", sum)
+
+def main():
+    c = Calculator(10, 20)   # object
+    c.show()
+
+if __name__ == "__main__":
+    main()
+
+"""
+Output
+constructor called
+Sum: 30
+destructor called
+"""
+
 
 
 
@@ -140,7 +217,7 @@ Output
 
 
 5️⃣ Encapsulation (Public / Protected / Private)
-Public
+#Public
 class Demo:
     def __init__(self):
         self.x = 10
@@ -157,9 +234,32 @@ Output
 10
 """
 
+#public
+class Calculator:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        print("Constructor called")
+
+    def __del__(self):
+        print("Destructor called!")
+    
+def main():
+    c = Calculator(10,20)
+    print("Sum:", c.a + c.b)
+
+if __name__ == "__main__":
+    main()
+
+''' 
+Output:
+Constructor called
+Sum: 30
+Destructor called!
+'''
 
 
-Protected (_var – convention)
+#Protected (_var – convention)
 class Demo:
     def __init__(self):
         self._x = 20
@@ -176,7 +276,29 @@ Output
 20
 """
 
+#protected
+class Calculator:
+    def __init__(self, a, b):
+        self._a = a
+        self._b = b
+        print("Constructor called")
 
+    def __del__(self):
+        print("Destructor called!")
+    
+def main():
+    c = Calculator(10,20)
+    print("Sum:", c._a + c._b)
+
+if __name__ == "__main__":
+    main()
+
+''' 
+Output:
+Constructor called
+Sum: 30
+Destructor called!
+'''
 
 
 
@@ -198,6 +320,29 @@ Output
 """
 
 
+#private
+class Calculator:
+    def __init__(self, a, b):
+        self.__a = a
+        self.__b = b
+        print("Constructor called")
+
+    def __del__(self):
+        print("Destructor called!")
+    
+def main():
+    c = Calculator(10,20)
+    print("Sum:", c._Calculator__a + c._Calculator__b)
+
+if __name__ == "__main__":
+    main()
+
+''' 
+Output:
+Constructor called
+Sum: 30
+Destructor called!
+'''
 
 
 6️⃣ Inheritance
