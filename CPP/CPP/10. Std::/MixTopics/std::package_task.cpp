@@ -19,8 +19,44 @@ int main() {
     task(10, 20);  // execute the function
     cout << "Result = " << f.get() << endl;
 }
+/* 
 Output:
 Result = 30
+*/
+
+
+
+//with Thread
+#include<iostream>
+#include<future>
+#include<thread>
+using namespace std;
+int add(int x, int y){
+    return x+y;
+}
+int main(){
+    packaged_task<int(int, int)> task(add);
+    future<int>f = task.get_future();
+    
+    //Method 1 
+    task(10,20); 
+    cout<<"Sum: "<<f.get()<<endl;    //Sum: 30
+    
+    //OR
+    
+    //Method 2 
+    // thread t(move(task),40,50);
+    // t.join();
+    // cout<<"Sum: "<<f.get()<<endl;   //Sum: 90
+    
+    return 0;
+}
+
+
+
+
+
+
 
 ✅ Example with Thread
 #include <iostream>
@@ -72,19 +108,12 @@ void worker() {
         task();
     }
 }
-
-
 This is how real thread pools are built.
 
-
 This demonstrates:
-
 submitting tasks to a queue
-
 worker threads picking tasks
-
 returning results via future
-
 graceful shutdown
 
 ✅ Complete Example Using std::packaged_task
