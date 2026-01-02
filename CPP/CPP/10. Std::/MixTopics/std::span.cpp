@@ -106,6 +106,73 @@ void f(std::span<int> s) {
 
 
 
+/* =========================================================== */
+❌ Problematic version (raw pointer)
+#include <iostream>
+using namespace std;
+void f(int* p, size_t n) {
+    p += 5;            // pointer moved
+    // ❌ n is STILL the old size → BUG
+
+    for (size_t i = 0; i < n; i++) {
+        cout << p[i] << " ";   // out-of-bounds access possible
+    }
+    cout << endl;
+}
+int main() {
+    int arr[] = {1,2,3,4,5,6,7,8,9,10};
+    f(arr, 10);
+}
+
+❌ What goes wrong
+p now points to arr[5]
+n is still 10
+Loop accesses memory past array end
+Undefined behavior
+
+
+/* ------------------------------ */
+#include <iostream>
+using namespace std;
+
+void f(int* begin, int* end) {
+    begin += 5;   // move start
+
+    for (int* p = begin; p < end; ++p) {
+        cout << *p << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int arr[] = {1,2,3,4,5,6,7,8,9,10};
+    f(arr, arr + 10);
+}
+//6 7 8 9 10 
+/* ------------------------------ */
+
+✅ Safe version using std::span
+#include <iostream>
+#include <span>
+using namespace std;
+void f(span<int> s) {
+    s = s.subspan(5);   // ✔ pointer + size updated safely
+
+    for (int x : s) {
+        cout << x << " ";
+    }
+    cout << endl;
+}
+int main() {
+    int arr[] = {1,2,3,4,5,6,7,8,9,10};
+
+    f(arr);   // array → span automatically
+}
+/* 
+✔ Output
+6 7 8 9 10
+*/
+/* =========================================================== */
 
 5️⃣ Works with all contiguous containers
 std::span seamlessly accepts:
