@@ -144,6 +144,36 @@ Output:
 -2 4
 -1 5
 
+
+
+
+Slicing with Positive & Negative Indices
+numbers[1:4]    # [2, 3, 4]
+numbers[-4:-1]  # [2, 3, 4]
+
+📌 Slice rule:
+[start : end]   # end is NOT included
+
+
+
+
+
+Slicing: Where Confusion Peaks
+lst = [1, 2, 3, 4, 5]
+
+Positive slicing
+lst[1:4]   # [2, 3, 4]
+
+Negative slicing
+lst[-4:-1] # [2, 3, 4]
+
+Mix is allowed
+lst[1:-1]  # [2, 3, 4]
+
+
+📌 Slice formula:
+[start : end]  → end is excluded
+
 """ ================================================ """
 
 9. Functions
