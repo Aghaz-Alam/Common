@@ -1,0 +1,58 @@
+QEMU Commands
+ctrl + alt  ==Release mouse & keyboard
+ctrl + alt + F == Toggle full screen
+ctrl + alt + 1/2 == Switch console 
+Ctrl + Q  == force quit
+
+
+
+//Install QEMU
+sudo apt update && sudo apt upgrade
+sudo apt install -y qemu-system-x86 qemu-utils
+
+//QEMU version
+qemu-system-x86_64 --version
+
+//launch QEMU
+qemu-system-x86_64 -nic user,model=e1000
+
+qemu-system-x86_64, -m 2048, -hda disk.img, -nic user,model=e1000
+
+
+
+//Confirm host connectivity from guest
+ip route
+
+
+
+
+
+✅ CORRECT WAYS TO SWITCH DIRECTORIES
+
+✅ WAY 1: Single absolute path (BEST)
+cd /home/dell/Music/Self/Common/gtest/Multifile16/
+
+
+✅ WAY 2: Two commands (if you really want)
+cd ..
+cd /home/dell/Music/Self/Common/gtest/Multifile16/
+
+
+
+✅ WAY 3: Using && (command chaining)
+cd .. && cd /home/dell/Music/Self/Common/gtest/Multifile16/
+
+✔ Second cd runs only if first succeeds
+
+
+
+
+✅ WAY 4: Relative path (clean & fast)
+
+If both folders share a parent:
+cd ../Multifile16
+
+
+
+✅ WAY 5: Use ~ (home shortcut)
+cd ~/Music/Self/Common/gtest/Multifile16

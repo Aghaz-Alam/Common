@@ -157,7 +157,6 @@ numbers[-4:-1]  # [2, 3, 4]
 
 
 
-
 Slicing: Where Confusion Peaks
 lst = [1, 2, 3, 4, 5]
 
