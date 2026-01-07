@@ -761,26 +761,62 @@ if s == s[::-1]:
 
 # Common Python Surprises (for C++ devs)
 #❌ Loop variable leaks
-'''
+#❌ Surprise 1: Loop variable “leaks” (NOT an error)
 for i in range(3):
     pass
-print(i)  # prints 2
+
+print(i)   # prints 2
+
+
+#Equivalent C++ (different behavior)
+'''
+for(int i = 0; i < 3; i++) {}
+cout << i;   // ❌ ERROR: i not declared
 '''
 
-#❌ Mutable default arguments
+#Python equivalent
+i = 0
+for i in range(3):
+    pass
+
+print(i)   # 2
+
+
+#But if we avoid initializing i before loop
+i = None
+for i in range(3):
+    pass
+
+print(i)   # 2
+
+
+#❌ Surprise 2: Mutable default argument (REAL logical bug)
 def f(x=[]):   # dangerous
+    x.append(1)
+    return x
+
+print(f())
+print(f())
+'''
+Output
+[1]
+[1, 1]
+'''
 
 
-#✔ Correct
+
+
+#✔ Correct Way (No Bug)
 def f(x=None):
     if x is None:
         x = []
-
-
-
-
-
-
+    x.append(1)
+    return x
+'''
+Output
+[1]
+[1]
+'''
 
 
 # Debugging Mindset Shift
