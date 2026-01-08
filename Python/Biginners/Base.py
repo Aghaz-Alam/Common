@@ -309,8 +309,7 @@ for(int i = 0; i < n; i++) {
 }
 '''
 # Python
-found = key in arr
-
+#found = key in arr
 
 
 
@@ -594,10 +593,22 @@ for(int i = 0; i < n; i++) {
 }
 '''
 #Python style (no flag)
-found = key in arr
-
+#found = key in arr
 #📌 Python lets you ask the question directly
 
+def main():
+    arr = [10, 20, 30, 40]
+    key = 30
+
+    found = key in arr
+    print(found)
+
+if __name__ == "__main__":
+    main()
+'''
+🖥 Output
+True
+'''
 
 
 
@@ -749,85 +760,3 @@ if(s == string(s.rbegin(), s.rend()))
 '''
 #Python
 if s == s[::-1]:
-
-
-
-
-
-
-
-
-# Common Python Surprises (for C++ devs)
-#❌ Loop variable leaks
-#❌ Surprise 1: Loop variable “leaks” (NOT an error)
-
-#p = 0       # Loop variable “leaks” if we forget this line
-for p in range(3):
-    pass
-
-print(p)   # prints 10
-
-
-#Equivalent C++ (different behavior)
-'''
-for(int i = 0; i < 3; i++) {}
-cout << i;   // ❌ ERROR: i not declared
-'''
-
-#Python equivalent
-i = 0
-for i in range(3):
-    pass
-
-print(i)   # 2
-
-
-#But if we avoid initializing i before loop
-i = None
-for i in range(3):
-    pass
-
-print(i)   # 2
-
-
-#❌ Surprise 2: Mutable default argument (REAL logical bug)
-def f(x=[]):   # dangerous
-    x.append(1)
-    return x
-
-print(f())
-print(f())
-'''
-Output
-[1]
-[1, 1]
-'''
-
-
-
-
-#✔ Correct Way (No Bug)
-def f(x=None):
-    if x is None:
-        x = []
-    x.append(1)
-    return x
-'''
-Output
-[1]
-[1]
-'''
-
-
-# Debugging Mindset Shift
-'''
-C++
-cout << i;
-'''
-#Python
-print(i)
-
-# But Python also offers:
-print(type(i))
-print(len(arr))
-
