@@ -741,4 +741,161 @@ Hello from thread
 
 
 
+# ❌ Surprise 14: Immutable integers modified via list
+def modify(lst):
+    lst[0] += 100   # modifies the first element of the list    
+def main():
+    n = [1, 2, 3]   # list containing an integer
+    modify(n)
+    print(n)    
+if __name__ == "__main__":
+    main()      
+
+'''
+🖥 Output
+[101, 2, 3]
+🧠 Reason: 
+In Python, lists are mutable objects. 
+When you pass a list to a function, you're passing a reference to the same list object in memory. 
+Modifying an element of the list inside the function modifies the original list.
+'''
+
+
+
+
+
+#❌ Surprise 22: Dictionary insertion order
+def main():
+    d = {}
+    d['a'] = 1
+    d['b'] = 2
+    d['c'] = 3
+
+    for key in d:
+        print(key, end=" ")     
+if __name__ == "__main__":
+    main()  
+''' 
+🖥 Output
+a b c   
+🧠 Reason:  
+➡ Python 3.7+ maintains insertion order in dictionaries
+'''
+
+
+
+
+
+
+#📌 Python passes object references 
+def modify(lst):
+    lst[0] += 100   # modifies the first element of the list    
+def main():
+    n = [1, 2, 3]   # list containing an integer
+    modify(n)
+    print(n)    
+if __name__ == "__main__":
+    main()  
+'''
+🖥 Output
+[101, 2, 3]
+🧠 Reason:
+In Python, lists are mutable objects. When you pass a list to a function, you're passing a reference to the same list object in memory. Modifying an element of the list inside the function modifies the original list.
+''' 
+
+
+
+#📌 C++ passes by value (copies)    
+def modify(n):
+    n += 100   # modifies local copy    
+def main():
+    n = 1
+    modify(n)
+    print(n)    
+if __name__ == "__main__":
+    main()  
+''' 
+🖥 Output
+1
+🧠 Reason:
+In C++, when you pass a variable to a function, it's passed by value, meaning a copy is made. Modifying the copy inside the function doesn't affect the original variable.
+''' 
+
+
+
+
+
+#2D-Arrays → Nested Lists
+''' 
+C++
+#include <iostream>
+using namespace std;
+int main() {
+    int arr[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+    for(int i=0; i<3; i++) {
+        for(int j=0; j<3; j++) {
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+'''
+# Python
+def main():
+    matrix = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ]
+
+    for row in matrix:
+        for val in row:
+            print(val, end=" ")
+        print()     
+if __name__ == "__main__":
+    main()  
+
+'''
+🖥 Output   
+1 2 3
+4 5 6
+7 8 9
+''' 
+
+
+
+#Common Algorithms Conversion
+#Fibonacci
+'''         
+C++ 
+#include <iostream>
+using namespace std;
+int main() {
+    int n = 10; 
+    int a = 0, b = 1;   
+    for(int i = 0; i < n; i++) {
+        cout << a << " ";
+        int c = a + b;
+        a = b;
+        b = c;
+    }
+    return 0;   
+}
+'''
+#Python
+def main():
+    n = 10
+    a, b = 0, 1
+    for _ in range(n):
+        print(a, end=" ")
+        a, b = b, a + b 
+if __name__ == "__main__":
+    main()  
+''' 
+🖥 Output   
+0 1 1 2 3 5 8 13 21 34 
+'''
+
+
 

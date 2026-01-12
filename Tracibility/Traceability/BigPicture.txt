@@ -1,0 +1,137 @@
+//ADAS / AD Core Blocks — Big Picture
+Sensors
+  │
+  ▼
+┌─────────────┐
+│ Active      │  ← Prevent accidents
+│ Safety      │
+└─────┬───────┘
+      │ (threats, constraints)
+      ▼
+┌─────────────┐
+│ AV Planner  │  ← Decide what to do
+└─────┬───────┘
+      │ (trajectory / targets)
+      ▼
+┌─────────────┐
+│ Controls    │  ← Execute safely
+└─────┬───────┘
+      │ (actuation status)
+      ▼
+┌─────────────┐
+│ SSM         │  ← Monitor & fail-safe
+└─────────────┘
+
+
+
+
+1️⃣ Active Safety
+🔹 Purpose
+Avoid or mitigate accidents when risk is imminent.
+
+🔹 Typical Functions
+AEB (Automatic Emergency Braking)
+FCW (Forward Collision Warning)
+LKA (Lane Keeping Assist)
+ESC / Traction coordination
+
+🔹 Characteristics
+Reactive
+Fast, deterministic
+Often ASIL-D / ASIL-C
+Can override planner decisions
+
+🔹 Example
+Obstacle detected at short TTC → emergency braking triggered
+
+
+
+
+
+2️⃣ AV Planner
+🔹 Purpose
+Decide vehicle motion based on environment and goals.
+
+🔹 Responsibilities
+Path planning
+Speed planning
+Maneuver selection
+Constraint satisfaction
+
+🔹 Characteristics
+Predictive
+Uses perception + maps + rules
+Medium determinism
+Never directly actuates
+
+🔹 Example
+Plan lane change with safe gap and legal speed
+
+
+
+
+
+
+
+3️⃣ Controls
+🔹 Purpose
+Convert decisions into physical vehicle actions.
+
+🔹 Responsibilities
+Longitudinal control (brake, throttle)
+Lateral control (steering)
+Actuator coordination
+
+🔹 Characteristics
+Hard real-time
+Strongly safety-critical
+ASIL-C / ASIL-D
+Executes commands from:
+Planner
+Active Safety
+SSM (highest priority)
+
+🔹 Example
+Apply 30% brake torque within 50 ms
+
+
+
+
+Longitudinal control = controlling the vehicle forward/backward speed, i.e., acceleration and deceleration.
+Brake → slows down the vehicle.
+Throttle → speeds up the vehicle.
+
+Throttle specifics:
+In internal combustion engine (ICE) vehicles, the throttle is a valve that controls the air intake into the engine, which determines engine power.
+In electric vehicles (EVs), throttle usually controls motor torque output to accelerate the car.
+In simpler terms: more throttle → more acceleration; less throttle → less acceleration.
+
+Example:
+Cruise control or adaptive cruise control uses throttle to maintain speed when the car needs to speed up and brake to slow down.
+
+4️⃣ SSM – Safety State Manager
+🔹 Purpose
+Protect the vehicle when something goes wrong.
+
+🔹 Responsibilities
+Monitor health of:
+Planner
+Active Safety
+Controls
+Sensors & comms
+
+Detect:
+Faults
+Inconsistencies
+Timing violations
+
+Trigger:
+Fallback
+Minimal Risk Maneuver (MRM)
+Safe stop
+
+🔹 Characteristics
+Supervisory
+Always active
+Highest safety authority
+Maps directly to vehicle safe states
