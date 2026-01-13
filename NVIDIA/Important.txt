@@ -1,2 +1,168 @@
 Password reset
 https://mysignins.microsoft.com/security-info
+
+
+
+
+
+
+To install global protect 
+./gp_install.sh 
+
+
+
+
+
+
+Cursor
+Requesting access for cursor:
+https://confluence.nvidia.com/pages/viewpage.action?spaceKey=GAIT&title=Cursor+-+Developer+Onboarding
+
+Steps:
+1. accept
+2.India
+3.Linux
+4.Gerrit
+5.C,C++
+6.Expert
+7.30% to 60%
+8.Visual Studio Code
+9.Drive AV
+For 9 , I guess you can aad multiple options
+
+
+download package from:
+https://cursor.com/
+
+sudo apt install ./cursor_2.3.34_amd64.deb
+
+
+
+
+
+
+
+
+slack
+install slack and setup account  - join "NVIDIA Internal workgroup"
+
+sudo snap install slack
+
+
+
+
+
+
+Please use the below link to request access to google docs:
+https://nvidia.identitynow.com/ui/d/request-center/requesting-for
+Request For Myself
+Google Workspace, Save
+Review Request
+Submit Request
+ 
+ 
+
+
+
+
+
+
+https://dlrequest/GroupID/Home/Index <- request here groups
+Request for dlls
+maglev-workflows-users
+gerrit-git-av-ndas-developers
+ngc-drivesw-users
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+git-av: for ssh and http
+https://git-av.nvidia.com/r/settings/
+
+ssh-keygen -t ed25519 -C "aghaza@nvidia.com"
+
+
+The key fingerprint is:
+SHA256:Qn2jbrzJqxwhn9g0BdhKYXGGLfMq0pfYHg5ZIn1eAIU aghaza@nvidia.com
+The key's randomart image is:
++--[ED25519 256]--+
+|  .+=B+          |
+|  E.Booo         |
+| . . *. o o      |
+|. o +.o. o .     |
+| o O.+= S        |
+|. * B* B         |
+| . *..= +        |
+|    o. + o       |
+|      o.=.       |
++----[SHA256]-----+
+
+
+
+
+HTTP Password:
+Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
+
+
+
+
+machine git-av.nvidia.com
+  login aghaza@nvidia.com
+  password Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
+
+
+
+
+
+git config --global nvidia.username aghaza
+git config --global user.name "Aghaz Alam"
+git config --global user.email "aghaza@nvidia.com"
+git config --global color.ui auto
+git config --global core.editor "nano"
+
+
+
+
+
+
+git-av
+https://git-av.nvidia.com/r/settings/#HTTPCredentials
+https://git-av.nvidia.com/r/admin/repos
+
+NDAS Repository:
+https://git-av.nvidia.com/r/admin/repos/ndas,general
+
+
+
+
+git clone "https://aghaza@git-av.nvidia.com/r/a/ndas" && (cd "ndas" && mkdir -p `git rev-parse --git-dir`/hooks/ && curl -Lo `git rev-parse --git-dir`/hooks/commit-msg https://git-av.nvidia.com/r/tools/hooks/commit-msg && chmod +x `git rev-parse --git-dir`/hooks/commit-msg)
+
+
+Password: Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
+
+
+
+
+
+
+
+PaCSIM: (Planning and Control Simulation Framework)
+https://confluence.nvidia.com/pages/viewpage.action?spaceKey=AVQA&title=PaCSIM
+
+
+
+
+
