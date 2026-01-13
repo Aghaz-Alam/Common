@@ -1,0 +1,160 @@
+Steps to raise a CL:
+
+git branch
+git checkout -b sandbox/shirisha/coverage
+git status
+git add
+git commit
+dazel run //:format_py  (There should be no error ) Check git status again after this
+dazel run //:generate
+dazel run //tools/validate_commit_message
+git push origin HEAD:refs/for/av-dev-l2pp-2
+
+CL commit message format:
+
+[MCSSM] Unstaging ssm_Degradation_TSA test 
+ 
+Background & Motivation:
+ssm_Degradation_TSA passing locally
+ 
+Test results:
+Test pass locally.
+ 
+Jira AVPC-54703
+ 
+*******************************************************************************
+
+Command to run any test:
+
+use this config:
+for silverstone: --config=host-linux_6.0.9_int-bld_av-silverstone_rel, 
+for laguna: host-linux_6.0.9_int-bld_av-laguna_rel or linux-cuda-11.4.28_x86_int-bld_git-av_av-sae2pp-prod_rel
+
+
+
+
+for safety: 
+source scripts/envsetup.sh
+
+
+testRun:
+dazel test --config=host-linux_6.0.9_int-bld_av-gingerman_rel --config=remote_exec --remote_execution_priority=125 --runs_per_test=1 --remote_upload_local_results // "relativePath":"testName"
+
+for example:
+dazel test --config=host-linux_6.0.9_int-bld_av-gingerman_rel --config=remote_exec --remote_execution_priority=125 --runs_per_test=1 --remote_upload_local_results //src/dwdriveav/dw/modesanddegradations/systemstatemanager/ssm/test/pacsim:PacsimPlanningGymModuleTest_ssm_Degradation_TSA
+
+
+
+
+dazel test --config=host-linux_6.0.9_int-bld_av-silverstone_rel --config=remote_exec --remote_execution_priority=125 --runs_per_test=1 --remote_upload_local_results //src/dwdriveav/dw/modesanddegradations/systemstatemanager/ssm/test/pacsim:PacsimPlanningGymModuleTest_ssm_Degradation_TSA
+
+OR
+
+dazel test --config=remote_exec --config=linux-cuda-11.4.28_x86_int-bld_git-av_av-sae2-prod_rel --nocache_test_results --experimental_ui_max_stdouterr_bytes=107374181 //src/dwdriveav/dw/modesanddegradations/systemstatemanager/ssm/test/pacsim:PacsimPlanningGymModuleTest_ssm_ACCLC_ESS_ACCLK
+
+
+********************************************************************************
+
+Builds To be Used
+All 3 jobs (L0, L1 & L2) are used for results on av-dev-l2pp-2 branch and the following builds corresponding to av-gingerman are used
+
+av-dev-l2pp-2 drive-qnx-6.0.9 tegra int-bld git-av av-sae2-safety rel   -->
+av-dev-l2pp-2 linux-cuda-11.4.28 x86 int-bld git-av av-sae2-prod rel    -->
+
+*******************************************************************************
+
+dazel run --config=av_gingerman //av/doc/ndas/scripts:run_doxygen_ndas_onvehicle_public -- -e System_State_Manager -m "html,xml" --> local tracebility
+
+The output file will be genrated locally in the path: bazel-bin/av/doc/ndas/doxygen_plc_package --> trace_output.json
+
+
+*******************************************************************************
+
+https://git-av.nvidia.com/r/plugins/gitiles/ndas/+/refs/changes/04/492204/5/av/doc/ndas/plc_guidelines/how_to_software_test_specifications.md#how-to-document-inspection-tests
+ 
+Guidelines to document the test
+
+*******************************************************************************
+
+Information regarding important terms in a test/build file:
+https://git-av.nvidia.com/r/plugins/gitiles/ndas/+/refs/heads/av-dev-l2pp-2
+ 
+Link to access any bug: https://nvbugspro.nvidia.com/bug/5291769
+
+*******************************************************************************
+
+Nigthlies:
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/login?from=%2Fsw-mobile-av-prod%2Fjob%2Fndas%2Fjob%2Fnightlies%2F
+ 
+Periodics:
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/periodics/job/av-dev-l2pp-2_nightly_linux-cuda-11.4.28_av-gingerman_rel_av_L0/
+ 
+Test Tracker:
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/TestTracker/job/database-less-results-as-artifact/
+ 
+Ugiza: (av-dev-l2pp-2)
+
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/docs/job/ndas_doxygen_test_results/ --> Logs
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/docs/job/ndas_doxygen_xml/         --> Tracebility
+
+Ugiza: (av-rel-ndas-15.0)
+
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/docs/job/doxygen-rel-15.0/job/ndas-ugiza-test-results-rel-15.0/ --> Logs
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/docs/job/doxygen-rel-15.0/job/ndas_doxygen_xml-15.0/ --> Trace
+
+Test Tracker:
+
+https://prod.blsm.nvidia.com/sw-mobile-av-prod/job/ndas/job/TestTracker/job/database-less-results-as-artifact/
+
+ 
+P&C Triage Jira doc:
+
+https://docs.google.com/document/d/1LDdJ4Vtf1CPPOaBe9OmBiACwKIpsLgD9smQwF45HgKA/edit?pli=1&tab=t.0
+ 
+***************************************************************
+
+Stress Test:
+ 
+https://prod.blsm.nvidia.com/sw-mobile-av-prod-ci/job/ndas/job/maintainer/job/stress-test-L0/7857/ --> stress test parameters
+ 
+
+***************************************************************
+
+Git bisect:
+
+https://prod.blsm.nvidia.com/sw-mobile-av-prod-ci/job/ndas/job/maintainer/job/bisect/build?delay=0sec
+
+****************************************************************
+
+Confluence:
+
+https://confluence.nvidia.com/pages/viewpage.action?spaceKey=AVQA&title=PaCSIM
+
+*****************************************************************
+
+git bisect locally:
+
+git reset --hard HEAD~500
+git stash save
+$ git bisect start
+$ git bisect bad
+$ git bisect good 0
+ 
+make
+$ make test
+... ... ...
+$ git bisect good
+ 
+ 
+$ git bisect bad
+ 
+git bisect bad
+< ... sha ... > is the first bad commit
+< ... commit message ... >
+git bisect reset
+
+
+
+
+
+ 
