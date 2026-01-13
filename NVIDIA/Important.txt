@@ -1,9 +1,8 @@
-Password reset
+password reset
 https://mysignins.microsoft.com/security-info
 
 
-
-
+=====================================================================
 
 
 To install global protect 
@@ -11,7 +10,7 @@ To install global protect
 
 
 
-
+=====================================================================
 
 
 Cursor
@@ -39,7 +38,7 @@ sudo apt install ./cursor_2.3.34_amd64.deb
 
 
 
-
+=====================================================================
 
 
 
@@ -49,7 +48,7 @@ install slack and setup account  - join "NVIDIA Internal workgroup"
 sudo snap install slack
 
 
-
+=====================================================================
 
 
 
@@ -62,7 +61,7 @@ Submit Request
  
  
 
-
+=====================================================================
 
 
 
@@ -76,7 +75,7 @@ ngc-drivesw-users
 
 
 
-
+=====================================================================
 
 
 
@@ -92,7 +91,49 @@ ngc-drivesw-users
 git-av: for ssh and http
 https://git-av.nvidia.com/r/settings/
 
+
+=====================================================================
+
+
+
+Open Terminal:
+To create file:
+touch .netrc
+
+
+To see the hidden file
+ls -a 
+
+
+To open file:
+nano .netrc  
+
+
+machine git-av.nvidia.com
+  login <username>
+  password <password copied from the HTTP Credential>
+
+
+Add this to .netrc file:
+machine git-av.nvidia.com
+  login aghaza@nvidia.com
+  password Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
+
+
+
+
+cat id_ed25519.pub.pub
+cat id_ed25519.pub
+
+
+
+Open Terminal: 
+ssh-keygen -t ed25519 -C "<username>@nvidia.com"
+
 ssh-keygen -t ed25519 -C "aghaza@nvidia.com"
+
+
+
 
 
 The key fingerprint is:
@@ -110,20 +151,30 @@ The key's randomart image is:
 |      o.=.       |
 +----[SHA256]-----+
 
-
+=====================================================================
 
 
 HTTP Password:
 Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
 
 
+=====================================================================
+
+  
+
+To create the file:
+touch .config
+
+To see the hidden file
+ls -a 
 
 
-machine git-av.nvidia.com
-  login aghaza@nvidia.com
-  password Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
 
-
+git config --global nvidia.username <username>
+git config --global user.name "Your Name"
+git config --global user.email "<username>@nvidia.com"
+git config --global color.ui auto
+git config --global core.editor "vim"
 
 
 
@@ -135,18 +186,20 @@ git config --global core.editor "nano"
 
 
 
-
+=====================================================================
 
 
 git-av
 https://git-av.nvidia.com/r/settings/#HTTPCredentials
 https://git-av.nvidia.com/r/admin/repos
 
+
+
 NDAS Repository:
 https://git-av.nvidia.com/r/admin/repos/ndas,general
 
 
-
+=====================================================================
 
 git clone "https://aghaza@git-av.nvidia.com/r/a/ndas" && (cd "ndas" && mkdir -p `git rev-parse --git-dir`/hooks/ && curl -Lo `git rev-parse --git-dir`/hooks/commit-msg https://git-av.nvidia.com/r/tools/hooks/commit-msg && chmod +x `git rev-parse --git-dir`/hooks/commit-msg)
 
@@ -156,13 +209,13 @@ Password: Nh2MHYeaegOohl5pQ8iX2Iw6Ox13b1QYosH0ur4/Kw
 
 
 
-
+=====================================================================
 
 
 PaCSIM: (Planning and Control Simulation Framework)
 https://confluence.nvidia.com/pages/viewpage.action?spaceKey=AVQA&title=PaCSIM
 
 
-
+=====================================================================
 
 
