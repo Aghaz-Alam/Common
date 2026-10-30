@@ -1,4 +1,5 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
-    "java.dependency.syncWithFolderExplorer": false
+    "java.dependency.syncWithFolderExplorer": false,
+    "cmake.sourceDirectory": "/home/dell/Music/OneDrive_2026-01-29/Alam'sBackUps/Self/Common/CPP/CPP/CPPCMake"
 }

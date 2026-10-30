@@ -1,3 +1,193 @@
+/* Implement Your Own Static Array (StaticArray<T, N>)
+
+Problem Statement:
+Implement a template class StaticArray<T, N> with a fixed-size internal array T data[N], supporting:
+operator[] with bounds checking
+size(), fill(T), find(const T&)
+Numeric-only sum(), max(), min()
+printAll()
+Custom iterators compatible with range-based for loops
+Specialization for bool with bit-packing (uint64_t) supporting set(), get(), printBits()
+
+Sample Input:
+StaticArray<int, 5> arr;
+arr.fill(3);
+arr[1] = 10;
+arr.printAll();
+cout << "Sum: " << arr.sum() << endl;
+cout << "Max: " << arr.max() << endl;
+cout << "Min: " << arr.min() << endl;
+
+for(auto& x : arr) x += 1;
+arr.printAll();
+
+// Specialization for bool
+StaticArray<bool, 10> b;
+b.set(3, true);
+b.set(7, true);
+b.printBits();
+
+
+Expected Output:
+3 10 3 3 3
+Sum: 22
+Max: 10
+Min: 3
+4 11 4 4 4
+0001000010
+*/
+
+
+#include <iostream>
+#include <stdexcept>
+#include <type_traits>
+#include <cstdint>
+using namespace std;
+
+// ===================== GENERIC TEMPLATE =====================
+template<typename T, size_t N>
+class StaticArray {
+    T data[N];
+
+public:
+    // Iterator support
+    T* begin() { return data; }
+    T* end() { return data + N; }
+
+    // Size
+    size_t size() const { return N; }
+
+    // Fill
+    void fill(const T& val) {
+        for(size_t i = 0; i < N; i++)
+            data[i] = val;
+    }
+
+    // operator[] with bounds checking
+    T& operator[](size_t index) {
+        if(index >= N)
+            throw out_of_range("Index out of range");
+        return data[index];
+    }
+
+    // Find element
+    int find(const T& value) {
+        for(size_t i = 0; i < N; i++) {
+            if(data[i] == value)
+                return i;
+        }
+        return -1;
+    }
+
+    // Print all
+    void printAll() const {
+        for(size_t i = 0; i < N; i++)
+            cout << data[i] << " ";
+        cout << endl;
+    }
+
+    // Numeric-only functions
+    template<typename U = T>
+    typename enable_if<is_arithmetic<U>::value, U>::type sum() const {
+        U s = 0;
+        for(size_t i = 0; i < N; i++)
+            s += data[i];
+        return s;
+    }
+
+    template<typename U = T>
+    typename enable_if<is_arithmetic<U>::value, U>::type max() const {
+        U m = data[0];
+        for(size_t i = 1; i < N; i++)
+            if(data[i] > m) m = data[i];
+        return m;
+    }
+
+    template<typename U = T>
+    typename enable_if<is_arithmetic<U>::value, U>::type min() const {
+        U m = data[0];
+        for(size_t i = 1; i < N; i++)
+            if(data[i] < m) m = data[i];
+        return m;
+    }
+};
+
+// ===================== BOOL SPECIALIZATION =====================
+template<size_t N>
+class StaticArray<bool, N> {
+    uint64_t bits[(N + 63) / 64] = {0};
+
+public:
+    size_t size() const { return N; }
+
+    void set(size_t index, bool value) {
+        if(index >= N)
+            throw out_of_range("Index out of range");
+
+        size_t block = index / 64;
+        size_t pos = index % 64;
+
+        if(value)
+            bits[block] |= (1ULL << pos);
+        else
+            bits[block] &= ~(1ULL << pos);
+    }
+
+    bool get(size_t index) const {
+        if(index >= N)
+            throw out_of_range("Index out of range");
+
+        size_t block = index / 64;
+        size_t pos = index % 64;
+
+        return (bits[block] >> pos) & 1ULL;
+    }
+
+    void printBits() const {
+        for(size_t i = 0; i < N; i++)
+            cout << get(i);
+        cout << endl;
+    }
+};
+
+// ===================== MAIN =====================
+int main() {
+    StaticArray<int, 5> arr;
+    arr.fill(3);
+    arr[1] = 10;
+
+    arr.printAll();
+
+    cout << "Sum: " << arr.sum() << endl;
+    cout << "Max: " << arr.max() << endl;
+    cout << "Min: " << arr.min() << endl;
+
+    for(auto& x : arr)
+        x += 1;
+
+    arr.printAll();
+
+    // Bool specialization
+    StaticArray<bool, 10> b;
+    b.set(3, true);
+    b.set(7, true);
+
+    b.printBits();
+
+    return 0;
+}
+/*
+Output:
+3 10 3 3 3
+Sum: 22
+Max: 10
+Min: 3
+4 11 4 4 4
+0001000010
+*/
+
+
+
 //Fixed Sized Array
 #include<iostream>
 using namespace std;

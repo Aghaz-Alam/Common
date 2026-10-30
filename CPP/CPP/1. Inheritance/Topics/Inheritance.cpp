@@ -185,13 +185,13 @@ This repeated constructor forwarding is boilerplate code.
 using namespace std;
 
 class Base {
-public:
+  public:
     Base(int x) { cout << "Base(int) called: x=" << x << endl; }
     Base(string s) { cout << "Base(string) called: s=" << s << endl; }
 };
 
 class Derived : public Base {
-public:
+  public:
     // BOILERPLATE: must manually rewrite each constructor
     Derived(int x) : Base(x) {}
     Derived(string s) : Base(s) {}

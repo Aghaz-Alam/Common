@@ -561,9 +561,7 @@ class Bike {
     unique_ptr<Wheel> w2;   // ✅ Exclusive ownership
 
  public:
-    Bike()
-        : w1(make_unique<Wheel>()),
-          w2(make_unique<Wheel>()) {
+    Bike(): w1(make_unique<Wheel>()), w2(make_unique<Wheel>()) {
         cout << "Bike constructed\n";
     }
 };

@@ -1,22 +1,20 @@
-//https://godbolt.org/       runtime check compiler link
-
 //4 pillars of OOPS
 #include<iostream>
 using namespace std;
 class Base{
-  //encapsulation
+  //Encapsulation: Data members are kept protected and accessed/modified through class methods.
   protected:
    int x, y;  
   public:
-    Base(int a, int b):x(a), y(b){}
+    Base(int a, int b):x(a), y(b){}        // Constructor using an initializer list
     void setX(int val){
       x=val;
     }
-    //Abstraction
-    virtual void Add() const=0;
+    //Abstraction: The interface (Add) is exposed, while its implementation is left to the derived class.
+    virtual void Add() const=0;  
     virtual ~Base()=default;
 };
-//inheritance
+//inheritance: Derived publicly inherits from Base.
 class Derived: public Base{
     public:
      Derived(int x, int y):Base(x, y){}
@@ -25,23 +23,24 @@ class Derived: public Base{
      }
      
 };
-//polymorphism
+//polymorphism: Derived provides its own implementation of the virtual function declared in Base.
 void testFun(const Base& Obj){
    Obj.Add();   
 }
 int main(){
+  
+  //Method: 1 Base pointer → Derived object
    Base* b = new Derived(10,20);
-   testFun(*b);                                       //30
+   testFun(*b);                  //Output: 30, // Dereferencing b gives a Base reference to the Derived object. Runtime polymorphism calls Derived::Add().
    
-   //Or
-    
+   //Or Method: 2 Base reference → Derived object.
    Derived d(100, 200);
+      Base& ptr = d;              //Base reference refers to the Derived object.
+      testFun(ptr);               //Output: 300,  Runtime polymorphism calls Derived::Add().
    
-   Base& ptr = d;
-   testFun(ptr);                                        //300
-   
-   Base* p=&d;
-   testFun(*p);                                          //300
+      //Or Method: 3 Base pointer → existing Derived object
+      Base* p=&d;                 //Base pointer points to the existing Derived object through a Base* pointer.
+      testFun(*p);                //Output: 300, Dereferencing p gives a Base reference to the same Derived object. Runtime polymorphism calls Derived::Add().
    
   return 0;
 }
@@ -49,6 +48,9 @@ int main(){
 30
 300
 300
+
+
+//https://godbolt.org/       runtime check compiler link
 */
 
 
